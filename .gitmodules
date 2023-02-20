@@ -1,0 +1,3 @@
+[submodule "packages/rrrcn-services"]
+	path = packages/rrrcn-services
+	url = git@github.com:kiri-rin/rrrcn-ee-nodejs.git

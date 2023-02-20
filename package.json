@@ -1,0 +1,28 @@
+{
+  "name": "@rrrcn/mono",
+  "packageManager": "yarn@3.2.1",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "libraries/packages/*"
+  ],
+  "nohoist": [
+    "**/web",
+    "**/web/**",
+    "**/admin",
+    "**/admin/**"
+  ],
+
+  "devDependencies": {
+    "@react-native-community/eslint-config": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb": "latest",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "^2.6.2"
+  }
+}
