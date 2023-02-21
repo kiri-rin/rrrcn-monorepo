@@ -1,3 +1,4 @@
+const eekey = require("../../ee-key.json");
 export default {
   /**
    * An asynchronous register function that runs before
@@ -5,8 +6,20 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register({ strapi }) {
-    console.log(strapi.services);
+  async register({ strapi }) {
+    await new Promise((resolve, reject) => {
+      ee.data.authenticateViaPrivateKey(
+        eekey,
+        async () => {
+          ee.initialize(null, null, async () => {
+            resolve(true);
+          });
+        },
+        (r: string) => {
+          reject(r);
+        }
+      );
+    });
   },
 
   /**
