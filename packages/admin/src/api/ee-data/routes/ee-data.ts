@@ -10,5 +10,15 @@ module.exports = {
         prefix: "",
       },
     },
+    {
+      method: "GET",
+      path: "/ee-data/loading",
+      handler: "ee-data.getLoadingInfo",
+      config: {
+        policies: [],
+        middlewares: ["global::merge-form"],
+        prefix: "",
+      },
+    },
   ],
 };

@@ -1,0 +1,25 @@
+import { Upload_Folder } from "./Upload_Folder";
+export type Upload_File = {
+  id: number;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number | null;
+  height: number | null;
+  formats: object | null;
+  hash: string;
+  ext: string | null;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: object | null;
+  related: any | null;
+  folder: Upload_Folder | null;
+  folderPath: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  createdBy: any | null;
+  updatedBy: any | null;
+};
