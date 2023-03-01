@@ -6,9 +6,13 @@ import {
 } from "@rrrcn/services/dist/src/analytics_config_types";
 import { GeometryInput } from "../../../common/geometry-input";
 import { ScriptSelectInput } from "../../../common/script-input";
+import { DatesInputConfig } from "../../../common/dates-input";
+export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
+  dates?: DatesInputConfig;
+}
 export interface DataExtractionInput
-  extends DataExtractionConfig<File | undefined> {
-  scripts: ScriptConfig[];
+  extends Omit<DataExtractionConfig<File | undefined>, "scripts"> {
+  scripts: ScriptInputConfig[];
 }
 export const DataExtractionConfigForm = ({
   onSend,
@@ -16,6 +20,7 @@ export const DataExtractionConfigForm = ({
   onSend?: (config: Partial<DataExtractionInput>) => any;
 }) => {
   const [config, setConfig] = useState<Partial<DataExtractionInput>>({});
+  console.log(config);
   //TODO VALIDATE
   return (
     <div>
@@ -29,10 +34,13 @@ export const DataExtractionConfigForm = ({
           onChange={(config) => {
             setConfig((prev) => {
               if (!prev.scripts) {
-                return { ...prev, scripts: [config] };
+                return { ...prev, scripts: [config as ScriptInputConfig] };
               }
-              prev.scripts[index] = config;
-              return { ...prev };
+              prev.scripts[index] = {
+                ...prev.scripts[index],
+                ...config,
+              } as ScriptInputConfig;
+              return { ...prev, scripts: [...prev.scripts] };
             });
           }}
           value={it}

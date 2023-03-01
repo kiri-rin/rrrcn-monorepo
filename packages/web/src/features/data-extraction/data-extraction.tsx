@@ -6,10 +6,14 @@ import {
 } from "@react-google-maps/api";
 import React, { useEffect, useState } from "react";
 import { Libraries } from "@react-google-maps/api/dist/utils/make-load-script-url";
-import { DataExtractionConfigForm } from "./components/config-form";
+import {
+  DataExtractionConfigForm,
+  DataExtractionInput,
+} from "./components/config-form";
 import Drawer from "@mui/material/Drawer";
 import { api } from "../../api";
 import { serializeRequestToForm } from "../../utils/request";
+import { mapConfigToRequest } from "./utils";
 const center = {
   lat: -3.745,
   lng: -38.523,
@@ -27,7 +31,10 @@ export const DataExtractionPage = () => {
         <DataExtractionConfigForm
           onSend={(config) => {
             const form = new FormData();
-            serializeRequestToForm(config, form);
+            serializeRequestToForm(
+              mapConfigToRequest(config as DataExtractionInput),
+              form
+            );
             api.eeData
               .postApiEeDataExtract(form, { responseType: "stream" })
               .then((res) => {

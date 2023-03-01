@@ -7,6 +7,7 @@ import fsPromises from "fs/promises";
 import fs from "fs";
 import { extractData } from "@rrrcn/services/dist/src/controllers/extract-data/extract-data";
 const archiver = require("archiver");
+const util = require("util");
 const { PassThrough } = require("stream");
 const streams = {};
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
@@ -26,8 +27,9 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
         "data: " + args.map((it) => it.toString()).join(" ") + "\n\n"
       );
     };
-    ctx.body = timestamp;
+    console.error(util.inspect(ctx.request.fullBody, false, null, true));
 
+    ctx.body = timestamp;
     extractData({
       ...ctx.request.fullBody,
       outputs: tempFolderPath,
