@@ -9,6 +9,12 @@
     "build": "strapi build",
     "strapi": "strapi"
   },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
+  "workspaces": {
+    "nohoist": ["**"]
+  },
   "devDependencies": {
     "@types/koa": "^2.13.5"
   },

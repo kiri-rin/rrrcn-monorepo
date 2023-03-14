@@ -1,3 +1,5 @@
+import { isNumber } from "util";
+
 const objectPath = require("object-path");
 const isISOString = (input: any) => {
   //TODO refactor
@@ -8,15 +10,16 @@ const isISOString = (input: any) => {
   }
 };
 module.exports = (config, { strapi }) => {
-  return (context, next) => {
+  return async (context, next) => {
     context.request.fullBody = {};
     if (context.request.body) {
       for (let [key, value] of Object.entries(context.request.body)) {
-        objectPath.set(
-          context.request.fullBody,
-          key,
-          isISOString(value) ? new Date(value as string) : value
-        );
+        const newValue = isISOString(value)
+          ? new Date(value as string)
+          : Number.isFinite(Number(value))
+          ? Number(value)
+          : value;
+        objectPath.set(context.request.fullBody, key, newValue);
       }
     }
     if (context.request.files) {
@@ -26,6 +29,6 @@ module.exports = (config, { strapi }) => {
         objectPath.set(context.request.fullBody, key, value.path);
       }
     }
-    next();
+    await next();
   };
 };

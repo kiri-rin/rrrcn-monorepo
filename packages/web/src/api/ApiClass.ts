@@ -1077,6 +1077,78 @@ export class Api {
         any,
         AxiosResponse<Types["eeData"]["postApiEeDataExtract"]["output"]>
       >(`/api/ee-data/extract`, data, options),
+
+    postApiEeDataScripts: (
+      data: Types["eeData"]["postApiEeDataScripts"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<Types["eeData"]["postApiEeDataScripts"]["output"]>
+      >(`/api/ee-data/scripts`, data, options),
+
+    getApiEeDataScripts: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["eeData"]["getApiEeDataScripts"]["output"]>
+      >(`/api/ee-data/scripts`, options),
+  };
+
+  result = {
+    getApiResultDownloadResultId: (
+      resultId: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["result"]["getApiResultDownloadResultId"]["output"]>
+      >(`/api/result/download/${resultId}`, options),
+
+    getApiResultLoadingResultId: (
+      resultId: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["result"]["getApiResultLoadingResultId"]["output"]>
+      >(`/api/result/loading/${resultId}`, options),
+
+    getApiResults: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["result"]["getApiResults"]["output"]>
+      >(`/api/results`, options),
+
+    getApiResultsId: (id: string, options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["result"]["getApiResultsId"]["output"]>
+      >(`/api/results/${id}`, options),
+
+    postApiResults: (
+      data: Types["result"]["postApiResults"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<Types["result"]["postApiResults"]["output"]>
+      >(`/api/results`, data, options),
+
+    putApiResultsId: (
+      id: string,
+      data: Types["result"]["putApiResultsId"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.put<
+        any,
+        AxiosResponse<Types["result"]["putApiResultsId"]["output"]>
+      >(`/api/results/${id}`, data, options),
+
+    deleteApiResultsId: (id: string, options?: AxiosRequestConfig) =>
+      this.axiosInstance.delete<
+        any,
+        AxiosResponse<Types["result"]["deleteApiResultsId"]["output"]>
+      >(`/api/results/${id}`, options),
   };
 
   constructor(instance: AxiosInstance = axios.create()) {

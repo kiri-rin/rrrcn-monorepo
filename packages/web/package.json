@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.10",
     "@react-google-maps/api": "^2.18.1",
     "@testing-library/jest-dom": "^5.14.1",
@@ -15,10 +16,19 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "axios": "0.21.4",
+    "customize-cra": "^1.0.0",
+    "formik": "^2.2.9",
+    "geojson": "^0.5.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
+    "react-redux": "^8.0.5",
     "react-scripts": "5.0.1",
+    "redux": "^4.2.1",
+    "redux-saga": "^1.2.2",
+    "sass": "^1.59.2",
+    "typesafe-actions": "^5.1.0",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },
@@ -28,11 +38,19 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   },
   "browserslist": {
     "production": [
@@ -45,5 +63,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-app-alias": "^2.2.2",
+    "react-app-rewired": "^2.2.1"
   }
 }

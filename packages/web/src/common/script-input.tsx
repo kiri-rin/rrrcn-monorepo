@@ -3,48 +3,87 @@ import React, { useEffect, useState } from "react";
 import { Button, Select, TextField } from "@mui/material";
 import { scriptKey } from "@rrrcn/services/dist/src/services/ee-data";
 import MenuItem from "@mui/material/MenuItem";
-import { DatesIntervalsInput, ScriptDatesInput } from "./dates-input";
+import {
+  DatesIntervalsInput,
+  ScriptDatesInput,
+} from "./date-inputs/dates-input";
 import { useEffectNoOnMount } from "../utils/hooks";
-import { ScriptInputConfig } from "../features/data-extraction/components/config-form";
+import { ScriptInputConfig } from "../features/main-page/left-panel/data-extraction";
+import { useTranslations } from "../utils/translations";
+import "./script-input.scss";
 
-const scripts = ["elevation", "geomorph"];
+import Box from "@mui/material/Box";
+import { useQuery } from "react-query";
+import { api } from "../api";
+const scripts = ["elevation", "geomorph", "ndvi"];
 export const ScriptSelectInput = ({
   value: scriptConfig,
   onChange,
+  onDelete,
+  error,
 }: {
   value: ScriptInputConfig;
   onChange?: (config: Partial<ScriptInputConfig>) => any;
+  onDelete?: () => any;
+  error?: string;
 }) => {
+  const strings = useTranslations();
+  const { data: scriptsList } = useQuery(
+    "data-extraction-scripts",
+    (opt) => api.eeData.getApiEeDataScripts(),
+    { enabled: false, refetchOnWindowFocus: false }
+  );
+
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   return (
-    <div>
+    <Box className={"script-input"}>
       <Select
+        className={"script-input__select"}
         value={scriptConfig.key}
         onChange={({ target: { value: _value } }) => {
           onChange?.({ key: _value as scriptKey });
         }}
         size={"small"}
       >
-        {scripts.map((it) => (
+        {scriptsList?.data?.map((it: any) => (
           <MenuItem key={it} value={it}>
             {it}
           </MenuItem>
         ))}
       </Select>
-      <Button
-        size={"small"}
-        onClick={() => setShowAdvancedSettings((prev) => !prev)}
-      >
-        Расширенные настройки
-      </Button>
+
       {showAdvancedSettings && (
         <ScriptAdvanceSettings
           value={scriptConfig}
           onChange={(adv) => onChange?.(adv)}
         />
       )}
-    </div>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Button
+          className={"script-input__advanced-button"}
+          size={"small"}
+          onClick={() => onDelete?.()}
+        >
+          {strings["common.delete"]}
+        </Button>
+        <Button
+          className={"script-input__advanced-button"}
+          size={"small"}
+          style={{ marginLeft: "auto" }}
+          onClick={() => setShowAdvancedSettings((prev) => !prev)}
+        >
+          {strings["common.advanced-settings"]}
+        </Button>
+      </div>
+    </Box>
   );
 };
 const ScriptAdvanceSettings = ({
@@ -55,15 +94,19 @@ const ScriptAdvanceSettings = ({
   onChange: (val: Partial<Omit<ScriptInputConfig, "key">>) => any;
 }) => {
   return (
-    <div style={styles.advancedSettings}>
-      <div>
+    <div className={"script-input__advanced-settings"}>
+      <div className={"script-input__advanced-settings__buffer-container"}>
         <TextField
           size={"small"}
           label={"Буффер"}
           type={"numeric"}
+          onChange={({ target: { value: val } }) =>
+            onChange({ buffer: Number(val) as ScriptConfig["buffer"] })
+          }
           value={value.buffer}
         />
         <Select
+          size={"small"}
           value={value.mode}
           onChange={({ target: { value: val } }) =>
             onChange({ mode: val as ScriptConfig["mode"] })

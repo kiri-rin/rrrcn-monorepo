@@ -562,6 +562,53 @@ type Types = {
 
       output: any;
     };
+    postApiEeDataScripts: {
+      input: any;
+
+      output: any;
+    };
+    getApiEeDataScripts: {
+      input: any;
+
+      output: any;
+    };
+  };
+  result: {
+    getApiResultDownloadResultId: {
+      input: any;
+
+      output: any;
+    };
+    getApiResultLoadingResultId: {
+      input: any;
+
+      output: any;
+    };
+    getApiResults: {
+      input: any;
+
+      output: any;
+    };
+    getApiResultsId: {
+      input: any;
+
+      output: any;
+    };
+    postApiResults: {
+      input: any;
+
+      output: any;
+    };
+    putApiResultsId: {
+      input: any;
+
+      output: any;
+    };
+    deleteApiResultsId: {
+      input: any;
+
+      output: any;
+    };
   };
 };
 export default Types;

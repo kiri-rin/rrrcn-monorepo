@@ -1,19 +1,18 @@
 module.exports = {
   routes: [
     {
-      method: "POST",
-      path: "/ee-data/extract",
-      handler: "ee-data.extractData",
+      method: "GET",
+      path: "/result/download/:resultId",
+      handler: "result.getResultArchive",
       config: {
         policies: [],
-        middlewares: ["global::merge-form"],
         prefix: "",
       },
     },
     {
       method: "GET",
-      path: "/ee-data/scripts",
-      handler: "ee-data.getAvailableScripts",
+      path: "/result/loading/:resultId",
+      handler: "result.getLoadingInfo",
       config: {
         policies: [],
         prefix: "",

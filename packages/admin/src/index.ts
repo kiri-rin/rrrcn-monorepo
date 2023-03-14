@@ -52,7 +52,10 @@ export default {
 declare global {
   //@ts-ignore
   let ee: any;
+  let resultStreams: { [resultId: string]: WritableStreamDefaultWriter }; //TODO check types
 }
 const ee = require("@google/earthengine");
 //@ts-ignore
 globalThis.ee = ee;
+//@ts-ignore
+globalThis.resultStreams = {};
