@@ -43,12 +43,19 @@ export const MapDrawingContext = createContext<{
   setDrawingManager: () => {},
 });
 type ShapeKeys = "overlay" | "circle" | "marker" | "polygon" | "rectangle";
+
 export type MapDrawingShape =
   // | { type: "overlay"; shape: google.maps.drawing.OverlayCompleteEvent["overlay"] }
-  | { type: "circle"; shape: google.maps.Circle }
-  | { type: "marker"; shape: google.maps.Marker }
-  | { type: "polygon"; shape: google.maps.Polygon }
-  | { type: "rectangle"; shape: google.maps.Rectangle };
+  | { type: google.maps.drawing.OverlayType.CIRCLE; shape: google.maps.Circle }
+  | { type: google.maps.drawing.OverlayType.MARKER; shape: google.maps.Marker }
+  | {
+      type: google.maps.drawing.OverlayType.POLYGON;
+      shape: google.maps.Polygon;
+    }
+  | {
+      type: google.maps.drawing.OverlayType.RECTANGLE;
+      shape: google.maps.Rectangle;
+    };
 
 export const MapEdit = () => {
   const {
@@ -86,10 +93,18 @@ export const MapEdit = () => {
             onLoad={(dw) => setDrawingManager(dw)}
             drawingMode={drawing === true ? undefined : drawing}
             // onOverlayComplete={_onShapeReady("overlay")}
-            onCircleComplete={_onShapeReady("circle")}
-            onMarkerComplete={_onShapeReady("marker")}
-            onPolygonComplete={_onShapeReady("polygon")}
-            onRectangleComplete={_onShapeReady("rectangle")}
+            onCircleComplete={_onShapeReady(
+              google.maps.drawing.OverlayType.CIRCLE
+            )}
+            onMarkerComplete={_onShapeReady(
+              google.maps.drawing.OverlayType.MARKER
+            )}
+            onPolygonComplete={_onShapeReady(
+              google.maps.drawing.OverlayType.POLYGON
+            )}
+            onRectangleComplete={_onShapeReady(
+              google.maps.drawing.OverlayType.RECTANGLE
+            )}
           />
         )}
 

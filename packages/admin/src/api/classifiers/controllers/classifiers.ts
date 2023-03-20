@@ -1,16 +1,14 @@
 import { Strapi } from "@strapi/strapi";
 import { Context, Request } from "koa";
-import { DataExtractionConfig } from "@rrrcn/services/src/analytics_config_types";
-
+import { RandomForestConfig } from "@rrrcn/services/dist/src/analytics_config_types";
 import fs from "fs";
 import { extractData } from "@rrrcn/services/dist/src/controllers/extract-data/extract-data";
-import scripts from "@rrrcn/services/dist/src/services/ee-data";
-import util from "util";
+import { randomForest } from "@rrrcn/services/dist/src/controllers/random-forest/random-forest";
 const archiver = require("archiver");
 const { PassThrough } = require("stream");
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
-  async extractData(
-    ctx: Context & { request: Request & { fullBody: DataExtractionConfig } }
+  async randomForest(
+    ctx: Context & { request: Request & { fullBody: RandomForestConfig } }
   ) {
     const resultService = strapi.service("api::result.result");
 
@@ -30,15 +28,17 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
     });
     const stream = new PassThrough();
     resultStreams[resultId] = stream;
-    ctx.state.logger = (...args: any[]) => {
-      resultStreams[resultId].write(
-        "data: " + args.map((it) => it.toString()).join(" ") + "\n\n"
-      );
-    };
+    // ctx.state.logger = (...args: any[]) => {
+    //   console.error(...args);
+    //
+    //   resultStreams[resultId].write(
+    //     "data: " + args.map((it) => it.toString()).join(" ") + "\n\n"
+    //   );
+    // };
     output.on("close", function () {
       stream.end("id: success\ndata: success \n\n");
     });
-    extractData({
+    randomForest({
       ...ctx.request.fullBody,
       outputs: tempFolderPath,
     })
@@ -61,10 +61,8 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
         archive.finalize();
       })
       .catch((e) => {
+        console.error(e);
         stream.end(`id: error\ndata: ${e} \n\n`);
       });
-  },
-  async getAvailableScripts(ctx) {
-    return Object.keys(scripts);
   },
 });

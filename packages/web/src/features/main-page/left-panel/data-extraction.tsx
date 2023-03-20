@@ -1,6 +1,7 @@
 import React, { useState, useTransition } from "react";
 import { Button, Container } from "@mui/material";
 import {
+  CommonScriptParams,
   DataExtractionConfig,
   ScriptConfig,
 } from "@rrrcn/services/dist/src/analytics_config_types";
@@ -9,7 +10,7 @@ import { ScriptSelectInput } from "../../../common/script-input";
 import { DatesInputConfig } from "../../../common/date-inputs/dates-input";
 import { useTranslations } from "../../../utils/translations";
 import { serializeRequestToForm } from "../../../utils/request";
-import { mapConfigToRequest } from "./utils";
+import { mapScriptsConfigToRequest } from "./utils";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../../api";
 import Box from "@mui/material/Box";
@@ -18,7 +19,13 @@ export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
   dates?: DatesInputConfig;
 }
 export interface DataExtractionInput
-  extends Omit<DataExtractionConfig<File | undefined>, "scripts"> {
+  extends Omit<
+    DataExtractionConfig<File | undefined>,
+    "scripts" | "defaultScriptParams"
+  > {
+  defaultScriptParams: Omit<CommonScriptParams, "dates"> & {
+    dates: DatesInputConfig;
+  };
   scripts: ScriptInputConfig[];
 }
 export const DataExtractionConfigForm = () => {
@@ -35,7 +42,7 @@ export const DataExtractionConfigForm = () => {
   const onSend = () => {
     const form = new FormData();
     serializeRequestToForm(
-      mapConfigToRequest(config as DataExtractionInput),
+      mapScriptsConfigToRequest(config as DataExtractionInput),
       form
     );
     postDataExtraction(form);
@@ -54,12 +61,9 @@ export const DataExtractionConfigForm = () => {
         <ScriptSelectInput
           onDelete={() => {
             setConfig((prev) => {
-              if (!prev.scripts) {
-                return { ...prev, scripts: [config as ScriptInputConfig] };
-              }
               prev.scripts = [
-                ...prev.scripts.slice(0, index),
-                ...prev.scripts.slice(index + 1),
+                ...(prev.scripts?.slice(0, index) || []),
+                ...(prev.scripts?.slice(index + 1) || []),
               ] as ScriptInputConfig[];
               return { ...prev, scripts: [...prev.scripts] };
             });

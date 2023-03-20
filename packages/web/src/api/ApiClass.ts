@@ -1068,6 +1068,19 @@ export class Api {
       >(`/api/users-permissions/permissions`, options),
   };
 
+  classifiers = {
+    postApiClassifiersRandomForest: (
+      data: Types["classifiers"]["postApiClassifiersRandomForest"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["classifiers"]["postApiClassifiersRandomForest"]["output"]
+        >
+      >(`/api/classifiers/randomForest`, data, options),
+  };
+
   eeData = {
     postApiEeDataExtract: (
       data: Types["eeData"]["postApiEeDataExtract"]["input"],
@@ -1077,15 +1090,6 @@ export class Api {
         any,
         AxiosResponse<Types["eeData"]["postApiEeDataExtract"]["output"]>
       >(`/api/ee-data/extract`, data, options),
-
-    postApiEeDataScripts: (
-      data: Types["eeData"]["postApiEeDataScripts"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.post<
-        any,
-        AxiosResponse<Types["eeData"]["postApiEeDataScripts"]["output"]>
-      >(`/api/ee-data/scripts`, data, options),
 
     getApiEeDataScripts: (options?: AxiosRequestConfig) =>
       this.axiosInstance.get<

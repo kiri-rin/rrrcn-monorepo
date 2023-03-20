@@ -6,11 +6,14 @@ import React, {
   useState,
 } from "react";
 import { GeometriesImportConfig } from "@rrrcn/services/dist/src/analytics_config_types";
-import { Button, Input, Select } from "@mui/material";
+import { Button, Input, Select, TextField } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useEffectNoOnMount } from "../utils/hooks";
 import { MapDrawingContext, MapDrawingShape } from "./map/MapEdit";
-import { pointsToGeojson } from "../utils/map/map-geojson-utils";
+import {
+  pointsToGeojson,
+  polygonsToGeojson,
+} from "../utils/map/map-geojson-utils";
 type InputModesType = "csv" | "geojson" | "geojson_file" | "shp";
 
 const inputModes: InputModesType[] = ["csv", "geojson", "geojson_file", "shp"];
@@ -25,9 +28,13 @@ export type GeometryInputConfig = GeometriesImportConfig<File | undefined>;
 export const GeometryInput = ({
   value,
   onChange,
+  available = inputModes,
+  type = "marker" as google.maps.drawing.OverlayType.MARKER,
 }: {
   value?: GeometryInputConfig;
+  available?: InputModesType[];
   onChange?: (config: GeometryInputConfig) => any;
+  type?: google.maps.drawing.OverlayType;
 }) => {
   const [geometryConfig, setGeometryConfig] = useState<GeometryInputConfig>(
     value || {
@@ -43,70 +50,106 @@ export const GeometryInput = ({
   }, [value]);
 
   return (
-    <div>
-      {geometryConfig.type !== "geojson" ? (
-        <Input
+    <>
+      <div>
+        {geometryConfig.type !== "geojson" ? (
+          <Input
+            size={"small"}
+            type={"file"}
+            onChange={({
+              target: { files, form },
+            }: React.ChangeEvent<HTMLInputElement>) =>
+              setGeometryConfig((prev) =>
+                prev.type !== "computedObject" &&
+                prev.type !== "asset" &&
+                files?.[0]
+                  ? { ...prev, path: files?.[0] }
+                  : prev
+              )
+            }
+          />
+        ) : (
+          <MapGeometryInput
+            type={type}
+            onSave={(json) => {
+              setGeometryConfig({ type: "geojson", json });
+            }}
+          />
+        )}
+        <Select
           size={"small"}
-          type={"file"}
-          onChange={({
-            target: { files, form },
-          }: React.ChangeEvent<HTMLInputElement>) =>
-            setGeometryConfig((prev) =>
-              prev.type !== "computedObject" &&
-              prev.type !== "asset" &&
-              files?.[0]
-                ? { ...prev, path: files?.[0] }
-                : prev
-            )
+          onChange={(it) =>
+            setGeometryConfig({
+              type: it.target.value as GeometryInputConfig["type"],
+              path: it.target.value === "asset" ? "" : undefined,
+            } as GeometryInputConfig)
           }
-        />
-      ) : (
-        <MapGeometryInput
-          onSave={(json) => {
-            setGeometryConfig({ type: "geojson", json });
-          }}
-        />
+          value={geometryConfig.type}
+        >
+          {available.map((it) => (
+            <MenuItem key={it} value={it}>
+              {it}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+      {geometryConfig.type === "csv" && (
+        <>
+          <TextField
+            sx={{ marginTop: "2px" }}
+            size={"small"}
+            label={"latitude_key"}
+            onChange={({ target: { value } }) => {
+              setGeometryConfig({ ...geometryConfig, latitude_key: value });
+            }}
+            value={geometryConfig.longitude_key}
+          />
+          <TextField
+            sx={{ marginTop: "2px" }}
+            size={"small"}
+            label={"longitude_key"}
+            onChange={({ target: { value } }) => {
+              setGeometryConfig({ ...geometryConfig, longitude_key: value });
+            }}
+            value={geometryConfig.latitude_key}
+          />
+          <TextField
+            sx={{ marginTop: "2px" }}
+            size={"small"}
+            label={"id_key"}
+            onChange={({ target: { value } }) => {
+              setGeometryConfig({ ...geometryConfig, id_key: value });
+            }}
+            value={geometryConfig.id_key}
+          />
+        </>
       )}
-      <Select
-        size={"small"}
-        onChange={(it) =>
-          setGeometryConfig({
-            type: it.target.value as GeometryInputConfig["type"],
-            path: it.target.value === "asset" ? "" : undefined,
-          } as GeometryInputConfig)
-        }
-        value={geometryConfig.type}
-      >
-        {inputModes.map((it) => (
-          <MenuItem key={it} value={it}>
-            {it}
-          </MenuItem>
-        ))}
-      </Select>
-    </div>
+    </>
   );
 };
 export const MapGeometryInput = ({
+  type = google.maps.drawing.OverlayType.MARKER,
   onSave,
 }: {
+  type?: google.maps.drawing.OverlayType;
   onSave: (json: GeoJSON.FeatureCollection) => any;
 }) => {
   const { onShapeReady, drawing, setDrawing, setOnShapeReady, map } =
     useContext(MapDrawingContext);
   const [show, setShow] = useState(true);
   const [edit, setEdit] = useState(true);
-  const mapShapesRef = useRef<google.maps.Marker[]>([]);
+  const mapShapesRef = useRef<MapDrawingShape["shape"][]>([]);
 
   useEffect(() => {
     if (edit) {
       const _onShapeReady = (shape: MapDrawingShape) => {
-        if (shape.type === "marker") {
+        if (shape.type === type) {
           mapShapesRef.current.push(shape.shape);
         }
       };
       setOnShapeReady(() => _onShapeReady);
     }
-    setDrawing(edit ? google.maps.drawing.OverlayType.MARKER : false);
+    setDrawing(edit ? type : false);
   }, [edit]);
   useEffect(() => {
     if (show) {
@@ -136,7 +179,23 @@ export const MapGeometryInput = ({
             <Button
               onClick={() => {
                 setEdit(false);
-                onSave(pointsToGeojson(mapShapesRef.current));
+                switch (type) {
+                  case google.maps.drawing.OverlayType.MARKER: {
+                    onSave(
+                      pointsToGeojson(
+                        mapShapesRef.current as google.maps.Marker[]
+                      )
+                    );
+                    break;
+                  }
+                  case google.maps.drawing.OverlayType.POLYGON: {
+                    onSave(
+                      polygonsToGeojson(
+                        mapShapesRef.current as google.maps.Polygon[]
+                      )
+                    );
+                  }
+                }
               }}
             >
               Save

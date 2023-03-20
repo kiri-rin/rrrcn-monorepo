@@ -556,13 +556,15 @@ type Types = {
       output: any;
     };
   };
-  eeData: {
-    postApiEeDataExtract: {
+  classifiers: {
+    postApiClassifiersRandomForest: {
       input: any;
 
       output: any;
     };
-    postApiEeDataScripts: {
+  };
+  eeData: {
+    postApiEeDataExtract: {
       input: any;
 
       output: any;

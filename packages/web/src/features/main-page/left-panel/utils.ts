@@ -27,12 +27,20 @@ export const mapDatesConfigToRequest = (
     return acc;
   }, {} as any) as DatesConfig;
 };
-export const mapConfigToRequest = (
-  config: DataExtractionInput
-): DataExtractionConfig<File | undefined> => {
+export const mapScriptsConfigToRequest = (
+  config: Partial<DataExtractionInput>
+): Partial<DataExtractionConfig<File | undefined>> => {
   return {
     ...config,
-    scripts: config.scripts.map((script) => ({
+    defaultScriptParams: {
+      ...config.defaultScriptParams,
+      dates: config.defaultScriptParams?.dates
+        ? mapDatesConfigToRequest(
+            config.defaultScriptParams?.dates as DatesInputConfig
+          )
+        : undefined,
+    },
+    scripts: config.scripts?.map((script) => ({
       ...script,
       dates:
         script.dates &&

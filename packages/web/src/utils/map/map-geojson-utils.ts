@@ -36,3 +36,25 @@ export const pointsToGeojson = (
     })),
   };
 };
+export const polygonsToGeojson = (
+  polygons: google.maps.Polygon[]
+): GeoJSON.FeatureCollection<GeoJSON.Polygon> => {
+  return {
+    type: "FeatureCollection",
+    features: polygons.map((polygon, index) => ({
+      type: "Feature",
+      id: index,
+      geometry: {
+        coordinates: [
+          polygon
+            .getPaths()
+            .getAt(0)
+            .getArray()
+            .map((path) => [Number(path.lng() || 0), Number(path.lat() || 0)]),
+        ],
+        type: "Polygon",
+      },
+      properties: {},
+    })),
+  };
+};
