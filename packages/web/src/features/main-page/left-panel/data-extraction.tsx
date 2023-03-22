@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../../api";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
+import set = Reflect.set;
 export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
   dates?: DatesInputConfig;
 }
@@ -28,78 +29,65 @@ export interface DataExtractionInput
   };
   scripts: ScriptInputConfig[];
 }
-export const DataExtractionConfigForm = () => {
-  const [config, setConfig] = useState<Partial<DataExtractionInput>>({});
-  const queryClient = useQueryClient();
-  const { data: dataExtractionState, mutateAsync: postDataExtraction } =
-    useMutation("data-extraction-result", api.eeData.postApiEeDataExtract, {
-      onSuccess(data) {
-        queryClient.setQueriesData("data-extraction-result", data);
-      },
-    });
-
+export const DataExtractionConfigForm = ({
+  value: config,
+  onChange: setConfig,
+  errors,
+}: {
+  value: Partial<DataExtractionInput>;
+  onChange: (val: Partial<DataExtractionInput>) => any;
+  errors?: Partial<DataExtractionInput>;
+}) => {
   const strings = useTranslations();
-  const onSend = () => {
-    const form = new FormData();
-    serializeRequestToForm(
-      mapScriptsConfigToRequest(config as DataExtractionInput),
-      form
-    );
-    postDataExtraction(form);
-  };
   //TODO VALIDATE
   return (
     <div>
-      <Box sx={{ marginY: "10px" }}>Выберите точки для получения данных</Box>
+      <Box sx={{ marginY: "10px" }}>
+        {strings["data-extraction.choose-points"]}
+      </Box>
       <GeometryInput
         value={config.points}
-        onChange={(value) => setConfig((prev) => ({ ...prev, points: value }))}
+        onChange={(value) => setConfig({ points: value })}
       />
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <Box sx={{ marginY: "10px" }}>Добавьте продукты для получения данных</Box>
+      <Box sx={{ marginY: "10px" }}>
+        {strings["data-extraction.choose-params"]}
+      </Box>
       {config.scripts?.map((it, index) => (
         <ScriptSelectInput
           onDelete={() => {
-            setConfig((prev) => {
-              prev.scripts = [
-                ...(prev.scripts?.slice(0, index) || []),
-                ...(prev.scripts?.slice(index + 1) || []),
-              ] as ScriptInputConfig[];
-              return { ...prev, scripts: [...prev.scripts] };
-            });
+            const scripts = [
+              ...(config.scripts?.slice(0, index) || []),
+              ...(config.scripts?.slice(index + 1) || []),
+            ] as ScriptInputConfig[];
+            setConfig({ scripts });
           }}
           key={index}
-          onChange={(config) => {
-            setConfig((prev) => {
-              if (!prev.scripts) {
-                return { ...prev, scripts: [config as ScriptInputConfig] };
-              }
-              prev.scripts[index] = {
-                ...prev.scripts[index],
-                ...config,
+          onChange={(scriptConfig) => {
+            if (!config?.scripts) {
+              return setConfig({
+                scripts: [scriptConfig as ScriptInputConfig],
+              });
+            } else {
+              const scripts = [...config.scripts];
+              scripts[index] = {
+                ...scripts[index],
+                ...scriptConfig,
               } as ScriptInputConfig;
-              return { ...prev, scripts: [...prev.scripts] };
-            });
+              setConfig({ scripts });
+            }
           }}
           value={it}
         />
       ))}
       <Button
         onClick={() => {
-          setConfig((prev) => ({
-            ...prev,
-            scripts: [...(prev.scripts || []), { key: "elevation" }],
-          }));
+          setConfig({
+            scripts: [...(config.scripts || []), { key: "elevation" }],
+          });
         }}
       >
         {strings["data-extraction.add-data"]}
-      </Button>
-      <Button
-        onClick={() => {
-          onSend();
-        }}
-      >
-        {strings["data-extraction.get-result"]}
       </Button>
     </div>
   );

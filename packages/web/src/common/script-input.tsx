@@ -29,8 +29,8 @@ export const ScriptSelectInput = ({
 }) => {
   const strings = useTranslations();
   const { data: scriptsList } = useQuery(
-    "data-extraction-scripts",
-    (opt) => api.eeData.getApiEeDataScripts(),
+    "analysis-scripts",
+    (opt) => api.analysis.getApiAnalysisScripts(),
     { enabled: false, refetchOnWindowFocus: false }
   );
 
@@ -93,12 +93,13 @@ const ScriptAdvanceSettings = ({
   value: Omit<ScriptInputConfig, "key">;
   onChange: (val: Partial<Omit<ScriptInputConfig, "key">>) => any;
 }) => {
+  const strings = useTranslations();
   return (
     <div className={"script-input__advanced-settings"}>
       <div className={"script-input__advanced-settings__buffer-container"}>
         <TextField
           size={"small"}
-          label={"Буффер"}
+          label={strings["script-input.buffer"]}
           type={"numeric"}
           onChange={({ target: { value: val } }) =>
             onChange({ buffer: Number(val) as ScriptConfig["buffer"] })
@@ -118,7 +119,7 @@ const ScriptAdvanceSettings = ({
       </div>
       <TextField
         size={"small"}
-        label={"scale"}
+        label={strings["script-input.scale"]}
         type={"numeric"}
         value={value.scale}
         onChange={({ target: { value: val } }) =>
@@ -127,7 +128,7 @@ const ScriptAdvanceSettings = ({
       />
       <TextField
         size={"small"}
-        label={"filename"}
+        label={strings["script-input.filename"]}
         type={"numeric"}
         value={value.filename}
         onChange={({ target: { value: val } }) =>

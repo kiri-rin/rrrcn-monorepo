@@ -2,8 +2,8 @@ module.exports = {
   routes: [
     {
       method: "POST",
-      path: "/ee-data/extract",
-      handler: "ee-data.extractData",
+      path: "/analysis/process",
+      handler: "analysis.processAnalysis",
       config: {
         policies: [],
         middlewares: ["global::merge-form"],
@@ -12,8 +12,8 @@ module.exports = {
     },
     {
       method: "GET",
-      path: "/ee-data/scripts",
-      handler: "ee-data.getAvailableScripts",
+      path: "/analysis/scripts",
+      handler: "analysis.getAvailableScripts",
       config: {
         policies: [],
         prefix: "",

@@ -16,7 +16,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { api } from "../../../api";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import { ScriptInputConfig } from "./data-extraction";
+import { DataExtractionInput, ScriptInputConfig } from "./data-extraction";
 import { ParamsImageInput } from "../../../common/params-image-input";
 
 export interface RandomForestInputConfig
@@ -38,14 +38,14 @@ export interface RandomForestInputConfig
         scripts: ScriptInputConfig[];
       };
 }
-const mapConfigToRequest = (config: RandomForestInputConfig) => {
+export const mapRFConfigToRequest = (config: RandomForestInputConfig) => {
   if (config.params.type === "scripts") {
     return { ...config, params: mapScriptsConfigToRequest(config.params) };
   } else {
     return config;
   }
 };
-const defaultConfig: Partial<RandomForestInputConfig> = {
+export const defaultRFConfig: Partial<RandomForestInputConfig> = {
   params: { type: "scripts", scripts: [] },
   trainingPoints: {
     type: "all-points",
@@ -57,55 +57,46 @@ const defaultConfig: Partial<RandomForestInputConfig> = {
   regionOfInterest: { type: "csv", path: undefined },
   outputMode: "PROBABILITY",
 };
-export const RandomForestConfigForm = () => {
-  const [config, setConfig] =
-    useState<Partial<RandomForestInputConfig>>(defaultConfig);
-  const queryClient = useQueryClient();
-  const { data: randomForestState, mutateAsync: postRandomForest } =
-    useMutation(
-      "data-extraction-result",
-      api.classifiers.postApiClassifiersRandomForest,
-      {
-        onSuccess(data) {
-          queryClient.setQueriesData("data-extraction-result", data);
-        },
-      }
-    );
-
+export const RandomForestConfigForm = ({
+  value: config,
+  onChange: setConfig,
+  errors,
+}: {
+  value: Partial<RandomForestInputConfig>;
+  onChange: (val: Partial<RandomForestInputConfig>) => any;
+  errors?: Partial<RandomForestInputConfig>;
+}) => {
   const strings = useTranslations();
-  const onSend = () => {
-    const form = new FormData();
-    serializeRequestToForm(
-      mapConfigToRequest(config as RandomForestInputConfig),
-      form
-    );
-    postRandomForest(form);
-  };
   //TODO VALIDATE
   return (
     <div>
-      <Box sx={{ marginY: "10px" }}>Выберите область интереса</Box>
+      <Box sx={{ marginY: "10px" }}>
+        {strings["random-forest.choose-region"]}
+      </Box>
       <GeometryInput
-        type={google.maps.drawing.OverlayType.POLYGON}
+        type={"polygon" as google.maps.drawing.OverlayType.POLYGON}
         value={config.regionOfInterest}
-        onChange={(value) =>
-          setConfig((prev) => ({ ...prev, regionOfInterest: value }))
-        }
+        onChange={(value) => setConfig({ regionOfInterest: value })}
       />
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
 
-      <Box sx={{ marginY: "10px" }}>Выберите Точки для обучения</Box>
+      <Box sx={{ marginY: "10px" }}>
+        {strings["random-forest.choose-training-points"]}
+      </Box>
       <Select
         value={config.trainingPoints?.type}
         onChange={({ target: { value } }) =>
-          setConfig((prev) => ({
-            ...prev,
+          setConfig({
             trainingPoints: { type: value as "all-points" | "separate-points" },
-          }))
+          })
         }
       >
-        <MenuItem value={"all-points"}>all-points</MenuItem>
-        <MenuItem value={"separate-points"}>separate-points</MenuItem>
+        <MenuItem value={"all-points"}>
+          {strings["random-forest.all-training-points"]}
+        </MenuItem>
+        <MenuItem value={"separate-points"}>
+          {strings["random-forest.separate-training-points"]}
+        </MenuItem>
       </Select>
       {(() => {
         switch (config.trainingPoints?.type) {
@@ -114,16 +105,15 @@ export const RandomForestConfigForm = () => {
               <>
                 <GeometryInput
                   available={["csv", "shp"]}
-                  type={google.maps.drawing.OverlayType.MARKER}
+                  type={"marker" as google.maps.drawing.OverlayType.MARKER}
                   value={config.trainingPoints?.allPoints?.points}
                   onChange={(value) =>
-                    setConfig((prev) => ({
-                      ...prev,
+                    setConfig({
                       trainingPoints: {
                         type: "all-points",
                         allPoints: { points: value },
                       },
-                    }))
+                    })
                   }
                 />
               </>
@@ -132,33 +122,31 @@ export const RandomForestConfigForm = () => {
             return (
               <>
                 <GeometryInput
-                  type={google.maps.drawing.OverlayType.MARKER}
+                  type={"marker" as google.maps.drawing.OverlayType.MARKER}
                   value={config.trainingPoints.presencePoints}
-                  onChange={(value) =>
-                    setConfig((prev) => ({
-                      ...prev,
+                  onChange={(geometryConfig) =>
+                    setConfig({
                       trainingPoints: {
-                        ...(prev.trainingPoints as SeparateTrainingPoints<
+                        ...(config.trainingPoints as SeparateTrainingPoints<
                           File | undefined
                         >),
-                        presencePoints: value,
+                        presencePoints: geometryConfig,
                       },
-                    }))
+                    })
                   }
                 />
                 <GeometryInput
-                  type={google.maps.drawing.OverlayType.MARKER}
+                  type={"marker" as google.maps.drawing.OverlayType.MARKER}
                   value={config.trainingPoints.absencePoints}
-                  onChange={(value) =>
-                    setConfig((prev) => ({
-                      ...prev,
+                  onChange={(geometryConfig) =>
+                    setConfig({
                       trainingPoints: {
-                        ...(prev.trainingPoints as SeparateTrainingPoints<
+                        ...(config.trainingPoints as SeparateTrainingPoints<
                           File | undefined
                         >),
-                        absencePoints: value,
+                        absencePoints: geometryConfig,
                       },
-                    }))
+                    })
                   }
                 />
               </>
@@ -169,15 +157,8 @@ export const RandomForestConfigForm = () => {
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
       <ParamsImageInput
         value={config.params}
-        onChange={(params) => setConfig((prev) => ({ ...prev, params }))}
+        onChange={(params) => setConfig({ params })}
       />
-      <Button
-        onClick={() => {
-          onSend();
-        }}
-      >
-        {strings["data-extraction.get-result"]}
-      </Button>
     </div>
   );
 };

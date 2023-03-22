@@ -27,7 +27,7 @@ export const ParamsImageInput = ({
       return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Add params</Typography>
+            <Typography>{strings["data-extraction.choose-params"]}</Typography>
             <Select
               size={"small"}
               value={config?.type}

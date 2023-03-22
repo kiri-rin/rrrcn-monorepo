@@ -17,28 +17,11 @@ import {
   MapDrawingShape,
   MapEdit,
 } from "../../common/map/MapEdit";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../api";
+import { AnalysisRightPanel } from "./right-panel";
 
 export const MainPage = () => {
-  const { data: dataExtractionState } = useQuery(
-    "data-extraction-result",
-    api.eeData.postApiEeDataExtract,
-    { enabled: false }
-  );
-  const { data: scriptsList } = useQuery(
-    "data-extraction-scripts",
-    (opt) => api.eeData.getApiEeDataScripts(),
-    { refetchOnWindowFocus: false }
-  );
-  console.log({ dataExtractionState });
-
-  const resultId = dataExtractionState?.data;
-  const { message, id: messageId } = useEventSource(
-    // TODO maybe better to handle messages on low level? like dom
-    `${BASE_PATH}/api/result/loading/${resultId}`,
-    [dataExtractionState]
-  );
   const [drawing, setDrawing] = useState<
     boolean | google.maps.drawing.OverlayType
   >(false);
@@ -64,14 +47,7 @@ export const MainPage = () => {
       <div>
         <MainPageLeftPanel />
         <MapEdit />
-        <Drawer variant="permanent" anchor="right">
-          <Offset />
-
-          <div style={{ width: 200 }}>{message}</div>
-          {messageId === "success" && (
-            <a>{`${BASE_PATH}/api/result/download/${resultId}`}</a>
-          )}
-        </Drawer>
+        <AnalysisRightPanel />
       </div>
     </MapDrawingContext.Provider>
   );

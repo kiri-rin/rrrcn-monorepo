@@ -21,6 +21,7 @@ export const useEffectNoOnMount = (
 };
 export const useEventSource = (url: string, deps: any[]) => {
   const [message, setMessage] = useState({ message: "", id: "" });
+  const [close, setClose] = useState(true);
   useEffect(() => {
     const source = new EventSource(url);
     const messageListener = (ev: MessageEvent) => {
@@ -29,15 +30,17 @@ export const useEventSource = (url: string, deps: any[]) => {
     };
     const errorListener = (e: Event) => {
       console.log(e, "ERROR");
+      setClose(true);
       source.close();
     };
 
     source.addEventListener("message", messageListener);
     source.addEventListener("error", errorListener, false);
+    setClose(false);
     return () => {
       source.removeEventListener("message", messageListener);
       source.removeEventListener("error", errorListener);
     };
   }, deps);
-  return message;
+  return { message, close };
 };

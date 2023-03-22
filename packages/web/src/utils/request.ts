@@ -11,7 +11,6 @@ export const serializeRequestToForm = (
   switch (typeof request) {
     case "object": {
       if (isDate(request)) {
-        console.log(request);
         form.append(prevKey, (request as Date).toISOString() as string);
         break;
       }

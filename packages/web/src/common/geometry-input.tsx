@@ -14,6 +14,7 @@ import {
   pointsToGeojson,
   polygonsToGeojson,
 } from "../utils/map/map-geojson-utils";
+import { useTranslations } from "../utils/translations";
 type InputModesType = "csv" | "geojson" | "geojson_file" | "shp";
 
 const inputModes: InputModesType[] = ["csv", "geojson", "geojson_file", "shp"];
@@ -26,8 +27,11 @@ const inputTypesPlaceholders = {
 };
 export type GeometryInputConfig = GeometriesImportConfig<File | undefined>;
 export const GeometryInput = ({
-  value,
-  onChange,
+  value: geometryConfig = {
+    type: "csv",
+    path: undefined,
+  },
+  onChange: setGeometryConfig = () => {},
   available = inputModes,
   type = "marker" as google.maps.drawing.OverlayType.MARKER,
 }: {
@@ -36,37 +40,25 @@ export const GeometryInput = ({
   onChange?: (config: GeometryInputConfig) => any;
   type?: google.maps.drawing.OverlayType;
 }) => {
-  const [geometryConfig, setGeometryConfig] = useState<GeometryInputConfig>(
-    value || {
-      type: "csv",
-      path: undefined,
-    }
-  );
-  useEffectNoOnMount(() => {
-    onChange?.(geometryConfig);
-  }, [geometryConfig]);
-  useEffectNoOnMount(() => {
-    value && setGeometryConfig(value);
-  }, [value]);
-
   return (
     <>
       <div>
-        {geometryConfig.type !== "geojson" ? (
+        {geometryConfig?.type !== "geojson" ? (
           <Input
             size={"small"}
             type={"file"}
             onChange={({
               target: { files, form },
-            }: React.ChangeEvent<HTMLInputElement>) =>
-              setGeometryConfig((prev) =>
+            }: React.ChangeEvent<HTMLInputElement>) => {
+              const prev = geometryConfig;
+              setGeometryConfig?.(
                 prev.type !== "computedObject" &&
-                prev.type !== "asset" &&
-                files?.[0]
+                  prev.type !== "asset" &&
+                  files?.[0]
                   ? { ...prev, path: files?.[0] }
                   : prev
-              )
-            }
+              );
+            }}
           />
         ) : (
           <MapGeometryInput
@@ -102,7 +94,7 @@ export const GeometryInput = ({
             onChange={({ target: { value } }) => {
               setGeometryConfig({ ...geometryConfig, latitude_key: value });
             }}
-            value={geometryConfig.longitude_key}
+            value={geometryConfig.latitude_key}
           />
           <TextField
             sx={{ marginTop: "2px" }}
@@ -111,7 +103,7 @@ export const GeometryInput = ({
             onChange={({ target: { value } }) => {
               setGeometryConfig({ ...geometryConfig, longitude_key: value });
             }}
-            value={geometryConfig.latitude_key}
+            value={geometryConfig.longitude_key}
           />
           <TextField
             sx={{ marginTop: "2px" }}
@@ -139,6 +131,7 @@ export const MapGeometryInput = ({
   const [show, setShow] = useState(true);
   const [edit, setEdit] = useState(true);
   const mapShapesRef = useRef<MapDrawingShape["shape"][]>([]);
+  const strings = useTranslations();
 
   useEffect(() => {
     if (edit) {
@@ -174,7 +167,7 @@ export const MapGeometryInput = ({
                 mapShapesRef.current.forEach((shape) => shape.setMap(null));
               }}
             >
-              Clear
+              {strings["common.clear"]}
             </Button>
             <Button
               onClick={() => {
@@ -198,12 +191,13 @@ export const MapGeometryInput = ({
                 }
               }}
             >
-              Save
+              {strings["common.save"]}
             </Button>
           </>
         ) : (
           <>
-            {mapShapesRef.current.length} точек
+            {mapShapesRef.current.length}{" "}
+            {strings["common.objects-plural"](mapShapesRef.current.length)}
             <Button
               onClick={() => {
                 //@ts-ignore
@@ -211,7 +205,7 @@ export const MapGeometryInput = ({
                 setEdit(true);
               }}
             >
-              Edit
+              {strings["common.edit"]}
             </Button>
           </>
         )}
@@ -221,7 +215,7 @@ export const MapGeometryInput = ({
             setShow(!show);
           }}
         >
-          {show ? "hide" : "show"}
+          {show ? strings["common.hide"] : strings["common.show"]}
         </Button>
       </>
     </>

@@ -556,20 +556,13 @@ type Types = {
       output: any;
     };
   };
-  classifiers: {
-    postApiClassifiersRandomForest: {
+  analysis: {
+    postApiAnalysisProcess: {
       input: any;
 
       output: any;
     };
-  };
-  eeData: {
-    postApiEeDataExtract: {
-      input: any;
-
-      output: any;
-    };
-    getApiEeDataScripts: {
+    getApiAnalysisScripts: {
       input: any;
 
       output: any;
@@ -607,6 +600,25 @@ type Types = {
       output: any;
     };
     deleteApiResultsId: {
+      input: any;
+
+      output: any;
+    };
+  };
+  classifiers: {
+    postApiClassifiersRandomForest: {
+      input: any;
+
+      output: any;
+    };
+  };
+  eeData: {
+    postApiEeDataExtract: {
+      input: any;
+
+      output: any;
+    };
+    getApiEeDataScripts: {
       input: any;
 
       output: any;
