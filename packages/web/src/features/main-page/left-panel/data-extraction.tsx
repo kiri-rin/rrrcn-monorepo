@@ -15,7 +15,15 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../../api";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import set = Reflect.set;
+import {
+  useFormikContext,
+  Formik,
+  Form,
+  Field,
+  useField,
+  FieldArray,
+} from "formik";
+
 export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
   dates?: DatesInputConfig;
 }
@@ -25,20 +33,20 @@ export interface DataExtractionInput
     "scripts" | "defaultScriptParams"
   > {
   defaultScriptParams: Omit<CommonScriptParams, "dates"> & {
-    dates: DatesInputConfig;
+    dates?: DatesInputConfig;
   };
   scripts: ScriptInputConfig[];
 }
-export const DataExtractionConfigForm = ({
-  value: config,
-  onChange: setConfig,
-  errors,
-}: {
-  value: Partial<DataExtractionInput>;
-  onChange: (val: Partial<DataExtractionInput>) => any;
-  errors?: Partial<DataExtractionInput>;
-}) => {
+
+export const DataExtractionConfigForm = ({ name }: { name: string }) => {
   const strings = useTranslations();
+  const { errors } = useFormikContext<{ data: Partial<DataExtractionInput> }>();
+  const [{ value: config = {} }, {}, { setValue: setConfig }] =
+    useField<Partial<DataExtractionInput>>(name);
+  console.log({ errors });
+  console.log({
+    config,
+  });
   //TODO VALIDATE
   return (
     <div>
@@ -47,48 +55,34 @@ export const DataExtractionConfigForm = ({
       </Box>
       <GeometryInput
         value={config.points}
-        onChange={(value) => setConfig({ points: value })}
+        onChange={(value) => setConfig({ ...config, points: value })}
       />
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
       <Box sx={{ marginY: "10px" }}>
         {strings["data-extraction.choose-params"]}
       </Box>
-      {config.scripts?.map((it, index) => (
-        <ScriptSelectInput
-          onDelete={() => {
-            const scripts = [
-              ...(config.scripts?.slice(0, index) || []),
-              ...(config.scripts?.slice(index + 1) || []),
-            ] as ScriptInputConfig[];
-            setConfig({ scripts });
-          }}
-          key={index}
-          onChange={(scriptConfig) => {
-            if (!config?.scripts) {
-              return setConfig({
-                scripts: [scriptConfig as ScriptInputConfig],
-              });
-            } else {
-              const scripts = [...config.scripts];
-              scripts[index] = {
-                ...scripts[index],
-                ...scriptConfig,
-              } as ScriptInputConfig;
-              setConfig({ scripts });
-            }
-          }}
-          value={it}
-        />
-      ))}
-      <Button
-        onClick={() => {
-          setConfig({
-            scripts: [...(config.scripts || []), { key: "elevation" }],
-          });
-        }}
-      >
-        {strings["data-extraction.add-data"]}
-      </Button>
+      <FieldArray name={`${name}.scripts`}>
+        {({ push, remove, name: _name }) => (
+          <>
+            {config?.scripts?.map((it: any, index: number) => (
+              <ScriptSelectInput
+                key={it.id}
+                name={`${_name}.${index}`}
+                onDelete={() => {
+                  remove(index);
+                }}
+              />
+            ))}
+            <Button
+              onClick={() => {
+                push({ id: Math.random() }); //TODO create new id getter
+              }}
+            >
+              {strings["data-extraction.add-data"]}
+            </Button>
+          </>
+        )}
+      </FieldArray>
     </div>
   );
 };

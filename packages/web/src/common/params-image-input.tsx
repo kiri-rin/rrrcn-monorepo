@@ -51,34 +51,34 @@ export const ParamsImageInput = ({
           </AccordionSummary>
 
           <AccordionDetails>
-            {config.scripts?.map((it, index) => (
-              <ScriptSelectInput
-                onDelete={() => {
-                  const newConfig = { ...config };
-                  newConfig.scripts = [
-                    ...(newConfig.scripts?.slice(0, index) || []),
-                    ...(newConfig.scripts?.slice(index + 1) || []),
-                  ] as ScriptInputConfig[];
-                  setConfig(newConfig);
-                }}
-                key={index}
-                onChange={(scriptConfig) => {
-                  const prev = { ...config };
-                  if (!prev.scripts) {
-                    setConfig({
-                      ...prev,
-                      scripts: [scriptConfig as ScriptInputConfig],
-                    });
-                  }
-                  prev.scripts[index] = {
-                    ...prev.scripts[index],
-                    ...scriptConfig,
-                  } as ScriptInputConfig;
-                  setConfig({ ...prev, scripts: [...prev.scripts] });
-                }}
-                value={it}
-              />
-            ))}
+            {/*{config.scripts?.map((it, index) => (*/}
+            {/*  <ScriptSelectInput*/}
+            {/*    onDelete={() => {*/}
+            {/*      const newConfig = { ...config };*/}
+            {/*      newConfig.scripts = [*/}
+            {/*        ...(newConfig.scripts?.slice(0, index) || []),*/}
+            {/*        ...(newConfig.scripts?.slice(index + 1) || []),*/}
+            {/*      ] as ScriptInputConfig[];*/}
+            {/*      setConfig(newConfig);*/}
+            {/*    }}*/}
+            {/*    key={index}*/}
+            {/*    onChange={(scriptConfig) => {*/}
+            {/*      const prev = { ...config };*/}
+            {/*      if (!prev.scripts) {*/}
+            {/*        setConfig({*/}
+            {/*          ...prev,*/}
+            {/*          scripts: [scriptConfig as ScriptInputConfig],*/}
+            {/*        });*/}
+            {/*      }*/}
+            {/*      prev.scripts[index] = {*/}
+            {/*        ...prev.scripts[index],*/}
+            {/*        ...scriptConfig,*/}
+            {/*      } as ScriptInputConfig;*/}
+            {/*      setConfig({ ...prev, scripts: [...prev.scripts] });*/}
+            {/*    }}*/}
+            {/*    value={it}*/}
+            {/*  />*/}
+            {/*))}*/}
             <Button
               onClick={() => {
                 const prev = { ...config };

@@ -19,6 +19,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { api } from "../../../api";
 import { serializeRequestToForm } from "../../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
+import { Formik } from "formik";
+import { DataExtractionValidationSchema } from "./schemas";
 
 export const MainPageLeftPanel = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -44,8 +46,7 @@ export const MainPageLeftPanel = () => {
   );
 
   const onSend = () => {
-    const form = new FormData();
-    const prepared = [
+    [
       analysisIncluded.data && {
         type: "data",
         config: mapScriptsConfigToRequest(
@@ -58,9 +59,13 @@ export const MainPageLeftPanel = () => {
           randomForestConfig as RandomForestInputConfig
         ),
       },
-    ].filter((it) => it);
-    serializeRequestToForm({ configs: prepared }, form);
-    postAnalysis(form);
+    ].forEach((analysisConfig) => {
+      if (analysisConfig) {
+        const form = new FormData();
+        serializeRequestToForm(analysisConfig, form);
+        postAnalysis(form);
+      }
+    });
   };
   return (
     <Drawer style={{ resize: "horizontal" }} variant="permanent" anchor="left">
@@ -107,12 +112,26 @@ export const MainPageLeftPanel = () => {
           {/*<Tab label="Item Three" />*/}
         </Tabs>
         <div style={activeTab !== 0 ? { display: "none" } : undefined}>
-          <DataExtractionConfigForm
-            value={dataExtractionConfig}
-            onChange={(part) => {
-              setDataExtractionConfig((prev) => ({ ...prev, ...part }));
+          <Formik
+            validationSchema={DataExtractionValidationSchema}
+            initialValues={{}}
+            onSubmit={(data) => {
+              console.log(data);
             }}
-          />
+          >
+            {(props) => (
+              <>
+                <DataExtractionConfigForm name={"data"} />
+                <Button
+                  onClick={() => {
+                    props.submitForm();
+                  }}
+                >
+                  Submit
+                </Button>
+              </>
+            )}
+          </Formik>
         </div>
         <div style={activeTab !== 1 ? { display: "none" } : undefined}>
           <RandomForestConfigForm

@@ -16,82 +16,34 @@ type RandomForestBodyType = {
   config: RandomForestConfig;
 };
 type AnalysisBodyType = GetDataBodyType | RandomForestBodyType;
-type AnalysisConfigsArray =
-  | [AnalysisBodyType]
-  | [GetDataBodyType, RandomForestBodyType];
 
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
   async processAnalysis(
     ctx: Context & {
-      request: Request & { fullBody: { configs: AnalysisConfigsArray } };
+      request: Request & { fullBody: AnalysisBodyType };
     }
   ) {
     const resultService = strapi.service("api::result.result");
 
-    const { configs } = ctx.request.fullBody;
-    console.log(configs);
-    if (configs.length === 2) {
-      const [dataConfig, rfConfig] = configs;
+    const { config, type } = ctx.request.fullBody;
+    const { id: resultId } = await resultService.create({
+      data: {
+        status: "processing",
+        type,
+      },
+    });
+    ctx.body = [resultId];
 
-      const { id: dataResultId } = await resultService.create({
-        data: {
-          status: "processing",
-          type: "data",
-        },
-      });
+    resultStreams[resultId] = new PassThrough();
 
-      const { id: rfResultId } = await resultService.create({
-        data: {
-          status: "processing",
-          type: "data",
-        },
-      });
-      ctx.body = [dataResultId, rfResultId];
-      resultStreams[dataResultId] = new PassThrough();
-      resultStreams[rfResultId] = new PassThrough();
-      processServiceAndStreamResults({
-        service: extractData,
-        strapi,
-        config: dataConfig.config,
-        ctx,
-        stream: resultStreams[dataResultId],
-        resultId: dataResultId,
-      }).then((res) => {
-        processServiceAndStreamResults({
-          service: (config: RandomForestConfig) =>
-            randomForest({
-              ...config,
-              params: { type: "computedObject", object: res },
-            }),
-          ctx,
-          stream: resultStreams[rfResultId],
-
-          config: rfConfig.config,
-          resultId: rfResultId,
-          strapi,
-        });
-      });
-    } else {
-      const [{ config, type }] = configs;
-      const { id: resultId } = await resultService.create({
-        data: {
-          status: "processing",
-          type,
-        },
-      });
-      ctx.body = [resultId];
-
-      resultStreams[resultId] = new PassThrough();
-
-      processServiceAndStreamResults({
-        service: type === "data" ? extractData : randomForest,
-        strapi,
-        config,
-        stream: resultStreams[resultId],
-        ctx,
-        resultId,
-      });
-    }
+    processServiceAndStreamResults({
+      service: type === "data" ? extractData : randomForest,
+      strapi,
+      config,
+      stream: resultStreams[resultId],
+      ctx,
+      resultId,
+    });
   },
   async getAvailableScripts(ctx) {
     return Object.keys(scripts);

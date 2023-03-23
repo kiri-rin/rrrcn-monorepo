@@ -15,17 +15,15 @@ import "./script-input.scss";
 import Box from "@mui/material/Box";
 import { useQuery } from "react-query";
 import { api } from "../api";
+import { useField, useFormikContext } from "formik";
 const scripts = ["elevation", "geomorph", "ndvi"];
 export const ScriptSelectInput = ({
-  value: scriptConfig,
-  onChange,
   onDelete,
-  error,
+  name,
 }: {
-  value: ScriptInputConfig;
-  onChange?: (config: Partial<ScriptInputConfig>) => any;
   onDelete?: () => any;
-  error?: string;
+
+  name: string;
 }) => {
   const strings = useTranslations();
   const { data: scriptsList } = useQuery(
@@ -33,6 +31,9 @@ export const ScriptSelectInput = ({
     (opt) => api.analysis.getApiAnalysisScripts(),
     { enabled: false, refetchOnWindowFocus: false }
   );
+  const { getFieldProps, getFieldHelpers } = useFormikContext();
+  const { value: scriptConfig } = getFieldProps(name);
+  const { setValue: setConfig } = getFieldHelpers(name);
 
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
@@ -40,9 +41,9 @@ export const ScriptSelectInput = ({
     <Box className={"script-input"}>
       <Select
         className={"script-input__select"}
-        value={scriptConfig.key}
+        value={scriptConfig?.key}
         onChange={({ target: { value: _value } }) => {
-          onChange?.({ key: _value as scriptKey });
+          setConfig?.({ ...scriptConfig, key: _value as scriptKey });
         }}
         size={"small"}
       >
@@ -53,12 +54,7 @@ export const ScriptSelectInput = ({
         ))}
       </Select>
 
-      {showAdvancedSettings && (
-        <ScriptAdvanceSettings
-          value={scriptConfig}
-          onChange={(adv) => onChange?.(adv)}
-        />
-      )}
+      {showAdvancedSettings && <ScriptAdvanceSettings name={name} />}
       <div
         style={{
           width: "100%",
@@ -86,13 +82,9 @@ export const ScriptSelectInput = ({
     </Box>
   );
 };
-const ScriptAdvanceSettings = ({
-  value,
-  onChange,
-}: {
-  value: Omit<ScriptInputConfig, "key">;
-  onChange: (val: Partial<Omit<ScriptInputConfig, "key">>) => any;
-}) => {
+const ScriptAdvanceSettings = ({ name }: { name: string }) => {
+  const [{ value }, { error }, { setValue: onChange }] =
+    useField<ScriptInputConfig>(name);
   const strings = useTranslations();
   return (
     <div className={"script-input__advanced-settings"}>
@@ -102,7 +94,10 @@ const ScriptAdvanceSettings = ({
           label={strings["script-input.buffer"]}
           type={"numeric"}
           onChange={({ target: { value: val } }) =>
-            onChange({ buffer: Number(val) as ScriptConfig["buffer"] })
+            onChange({
+              ...value,
+              buffer: Number(val) as ScriptConfig["buffer"],
+            })
           }
           value={value.buffer}
         />
@@ -110,7 +105,7 @@ const ScriptAdvanceSettings = ({
           size={"small"}
           value={value.mode}
           onChange={({ target: { value: val } }) =>
-            onChange({ mode: val as ScriptConfig["mode"] })
+            onChange({ ...value, mode: val as ScriptConfig["mode"] })
           }
         >
           <MenuItem value={"SUM"}>SUM</MenuItem>
@@ -123,22 +118,18 @@ const ScriptAdvanceSettings = ({
         type={"numeric"}
         value={value.scale}
         onChange={({ target: { value: val } }) =>
-          onChange({ scale: Number(val) as ScriptConfig["scale"] })
+          onChange({ ...value, scale: Number(val) as ScriptConfig["scale"] })
         }
       />
       <TextField
         size={"small"}
         label={strings["script-input.filename"]}
-        type={"numeric"}
         value={value.filename}
         onChange={({ target: { value: val } }) =>
-          onChange({ filename: val as ScriptConfig["filename"] })
+          onChange({ ...value, filename: val as ScriptConfig["filename"] })
         }
       />
-      <ScriptDatesInput
-        value={value.dates || []}
-        onChange={(dates) => onChange({ dates })}
-      />
+      <ScriptDatesInput name={`${name}.dates`} />
     </div>
   );
 };

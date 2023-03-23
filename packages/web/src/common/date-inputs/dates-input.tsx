@@ -15,12 +15,16 @@ import { Offset } from "../../App";
 import "./dates-input.scss";
 import "../modal.scss";
 import { DatesRepeatedInput } from "./repeated-dates";
+import { InputDatesModal } from "./input-dates-modal";
+import { useField, useFormikContext } from "formik";
+import { ScriptInputConfig } from "../../features/main-page/left-panel/data-extraction";
 
 const currentYear = new Date().getFullYear();
 const yearsArray = new Array(currentYear - 2000)
   .fill(0)
   .map((it, index) => index + 2000);
-type DateIntervalsInputConfig =
+
+export type DateIntervalsInputConfig =
   | { type: "date"; date?: string }
   | { type: "range"; dates?: [string | undefined, string | undefined] }
   | {
@@ -35,22 +39,11 @@ export type DatesInputConfig = {
   key: string;
   dateIntervals: DateIntervalsInputConfig[];
 }[];
-export const ScriptDatesInput = ({
-  value,
-  onChange,
-}: {
-  value: DatesInputConfig;
-  onChange: (val: DatesInputConfig) => any;
-}) => {
-  const [dateConfig, setDateConfig] = useState<DatesInputConfig>([]);
+export const ScriptDatesInput = ({ name }: { name: string }) => {
   const [openModal, setOpenModal] = useState<number | undefined>();
-  useEffectNoOnMount(() => {
-    //TODO remove inner states
-    dateConfig !== value && onChange(dateConfig);
-  }, [dateConfig]);
-  useEffectNoOnMount(() => {
-    value !== dateConfig && setDateConfig(value);
-  }, [value]);
+  const [{ value: dateConfig = [] }, { error }, { setValue: setDateConfig }] =
+    useField<DatesInputConfig>(name);
+  const { setFieldValue } = useFormikContext();
   const strings = useTranslations();
 
   return (
@@ -58,17 +51,17 @@ export const ScriptDatesInput = ({
       {strings["common.dates"]}:
       {dateConfig.map((conf, index) => {
         return (
-          <div className={"data-dates-input__container"}>
+          <div key={index} className={"data-dates-input__container"}>
             <Input
+              error={!!error}
               className={"data-dates-input__container__key-input"}
               value={conf.key}
-              onChange={({ target: { value } }) =>
-                setDateConfig((prev) => {
-                  const newState = [...prev];
-                  newState[index] = { ...newState[index], key: value };
-                  return newState;
-                })
-              }
+              onChange={({ target: { value } }) => {
+                setFieldValue(`${name}.${index}`, {
+                  ...dateConfig[index],
+                  key: value,
+                });
+              }}
             />
             :
             {conf.dateIntervals
@@ -83,8 +76,19 @@ export const ScriptDatesInput = ({
                 }
               })
               .join(", ")}
-            <Button onClick={() => setOpenModal(index)}>
+            <Button size={"small"} onClick={() => setOpenModal(index)}>
               {strings["common.edit"]}
+            </Button>
+            <Button
+              size={"small"}
+              onClick={() =>
+                setDateConfig([
+                  ...dateConfig.slice(0, index),
+                  ...dateConfig.slice(index + 1),
+                ])
+              }
+            >
+              {strings["common.delete"]}
             </Button>
           </div>
         );
@@ -92,97 +96,25 @@ export const ScriptDatesInput = ({
       <Button
         size={"small"}
         onClick={() => {
-          setDateConfig((prev) => {
-            const newState = [...prev, { key: "", dateIntervals: [] }];
-            return newState;
-          });
+          setDateConfig([
+            ...dateConfig,
+            { key: "date" + (dateConfig.length + 1), dateIntervals: [] },
+          ]);
         }}
       >
         {strings["data-extraction.add-dates-to-result"]}
       </Button>
-      <Modal
-        className={"common-modal dates-modal"}
-        open={openModal !== undefined}
-      >
-        <>
-          <Offset />
-          {openModal !== undefined ? (
-            <Box
-              className={"common-modal__body"}
-              style={{ backgroundColor: "white" }}
-            >
-              <Button
-                className={"common-modal__close"}
-                onClick={() => setOpenModal(undefined)}
-              >
-                Закрыть
-              </Button>
-              <TextField
-                label={"key"}
-                value={dateConfig[openModal as number].key}
-                onChange={({ target: { value } }) =>
-                  setDateConfig((prev) => {
-                    const newState = [...prev];
-                    newState[openModal].key = value;
-                    return newState;
-                  })
-                }
-              />
-              {dateConfig[openModal as number].dateIntervals.map(
-                (it, _index) => (
-                  <div key={_index} className={"dates-modal__dates-element"}>
-                    <DatesIntervalsInput
-                      value={it}
-                      onChange={(changed) =>
-                        setDateConfig((prev) => {
-                          const newConfig = [...prev];
-                          const opened = newConfig[openModal as number];
-                          opened.dateIntervals[_index] = changed;
-                          return newConfig;
-                        })
-                      }
-                    />
-                    <div>
-                      <Button
-                        onClick={() => {
-                          setDateConfig((prev) => {
-                            const newConfig = [...prev];
-                            const opened = newConfig[openModal as number];
-                            opened.dateIntervals = [
-                              ...opened.dateIntervals.slice(0, _index),
-                              ...opened.dateIntervals.slice(_index + 1),
-                            ];
-                            return newConfig;
-                          });
-                        }}
-                      >
-                        {strings["common.delete"]}
-                      </Button>
-                    </div>
-                  </div>
-                )
-              )}
-              <Button
-                size={"small"}
-                onClick={() =>
-                  setDateConfig((prev) => {
-                    const newState = [...prev];
-                    newState[openModal].dateIntervals = [
-                      ...newState[openModal].dateIntervals,
-                      { type: "date" },
-                    ];
-                    return newState;
-                  })
-                }
-              >
-                Добавить даты в результат
-              </Button>
-            </Box>
-          ) : (
-            <></>
-          )}
-        </>
-      </Modal>
+      {openModal !== undefined && (
+        <InputDatesModal
+          onSave={(data) => {
+            setFieldValue(`${name}.${openModal}`, data);
+          }}
+          value={dateConfig[openModal]}
+          onClose={() => {
+            setOpenModal(undefined);
+          }}
+        />
+      )}
     </div>
   );
 };
