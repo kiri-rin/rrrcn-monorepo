@@ -20,7 +20,7 @@ import { api } from "../../../api";
 import { serializeRequestToForm } from "../../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
 import { Formik } from "formik";
-import { DataExtractionValidationSchema } from "./schemas";
+import { getFormSchema } from "./schemas";
 
 export const MainPageLeftPanel = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -45,18 +45,19 @@ export const MainPageLeftPanel = () => {
     }
   );
 
-  const onSend = () => {
+  const onSend = (data: {
+    data?: Partial<DataExtractionInput>;
+    randomForest?: Partial<RandomForestInputConfig>;
+  }) => {
     [
       analysisIncluded.data && {
         type: "data",
-        config: mapScriptsConfigToRequest(
-          dataExtractionConfig as DataExtractionInput
-        ),
+        config: mapScriptsConfigToRequest(data.data as DataExtractionInput),
       },
       analysisIncluded.randomForest && {
         type: "random-forest",
         config: mapRFConfigToRequest(
-          randomForestConfig as RandomForestInputConfig
+          data.randomForest as RandomForestInputConfig
         ),
       },
     ].forEach((analysisConfig) => {
@@ -68,87 +69,104 @@ export const MainPageLeftPanel = () => {
     });
   };
   return (
-    <Drawer style={{ resize: "horizontal" }} variant="permanent" anchor="left">
-      <div className="data-extraction-left__container">
-        <Offset />
-        <Tabs
-          value={activeTab}
-          onChange={(e, newValue) => {
-            setActiveTab(newValue);
-          }}
-        >
-          <Tab
-            label={
-              <>
-                <Checkbox
-                  checked={analysisIncluded.data}
-                  onChange={({ target: { value } }) => {
-                    setAnalysisIncluded((prev) => ({
-                      ...prev,
-                      data: !prev.data,
-                    }));
-                  }}
-                />
-                <Typography>{strings["data-extraction.title"]}</Typography>
-              </>
-            }
-          />
-          <Tab
-            label={
-              <>
-                <Checkbox
-                  checked={analysisIncluded.randomForest}
-                  onChange={({ target: { value } }) => {
-                    setAnalysisIncluded((prev) => ({
-                      ...prev,
-                      randomForest: !prev.randomForest,
-                    }));
-                  }}
-                />
-                <Typography>{strings["random-forest.title"]}</Typography>
-              </>
-            }
-          />
-          {/*<Tab label="Item Three" />*/}
-        </Tabs>
-        <div style={activeTab !== 0 ? { display: "none" } : undefined}>
-          <Formik
-            validationSchema={DataExtractionValidationSchema}
-            initialValues={{}}
-            onSubmit={(data) => {
-              console.log(data);
-            }}
+    <Formik<{
+      data?: Partial<DataExtractionInput>;
+      randomForest?: Partial<RandomForestInputConfig>;
+    }>
+      validationSchema={getFormSchema(analysisIncluded)}
+      initialValues={{ data: {}, randomForest: defaultRFConfig }}
+      onSubmit={(data) => {
+        onSend(data);
+      }}
+    >
+      {({ submitForm, errors }) => {
+        return (
+          <Drawer
+            style={{ resize: "horizontal" }}
+            variant="permanent"
+            anchor="left"
           >
-            {(props) => (
-              <>
+            <div className="data-extraction-left__container">
+              <Offset />
+              <Tabs
+                value={activeTab}
+                onChange={(e, newValue) => {
+                  setActiveTab(newValue);
+                }}
+              >
+                <Tab
+                  style={
+                    errors.data
+                      ? {
+                          backgroundColor: "rgba(255,0,0,0.2)",
+                        }
+                      : undefined
+                  }
+                  label={
+                    <>
+                      <Checkbox
+                        checked={analysisIncluded.data}
+                        onChange={({ target: { value } }) => {
+                          setAnalysisIncluded((prev) => ({
+                            ...prev,
+                            data: !prev.data,
+                          }));
+                        }}
+                      />
+                      <Typography>
+                        {strings["data-extraction.title"]}
+                      </Typography>
+                    </>
+                  }
+                />
+                <Tab
+                  style={
+                    errors.randomForest
+                      ? {
+                          backgroundColor: "rgba(255,0,0,0.2)",
+                        }
+                      : undefined
+                  }
+                  label={
+                    <>
+                      <Checkbox
+                        checked={analysisIncluded.randomForest}
+                        onChange={({ target: { value } }) => {
+                          setAnalysisIncluded((prev) => ({
+                            ...prev,
+                            randomForest: !prev.randomForest,
+                          }));
+                        }}
+                      />
+                      <Typography>{strings["random-forest.title"]}</Typography>
+                    </>
+                  }
+                />
+                {/*<Tab label="Item Three" />*/}
+              </Tabs>
+              <div style={activeTab !== 0 ? { display: "none" } : undefined}>
                 <DataExtractionConfigForm name={"data"} />
-                <Button
-                  onClick={() => {
-                    props.submitForm();
+              </div>
+              <div style={activeTab !== 1 ? { display: "none" } : undefined}>
+                <RandomForestConfigForm
+                  name={"randomForest"}
+                  value={randomForestConfig}
+                  onChange={(part) => {
+                    setRandomForestConfig((prev) => ({ ...prev, ...part }));
                   }}
-                >
-                  Submit
-                </Button>
-              </>
-            )}
-          </Formik>
-        </div>
-        <div style={activeTab !== 1 ? { display: "none" } : undefined}>
-          <RandomForestConfigForm
-            value={randomForestConfig}
-            onChange={(part) => {
-              setRandomForestConfig((prev) => ({ ...prev, ...part }));
-            }}
-          />
-        </div>
-      </div>
-      <Button
-        onClick={() => {
-          onSend();
-        }}
-      >
-        {strings["data-extraction.get-result"]}
-      </Button>
-    </Drawer>
+                />
+              </div>
+            </div>
+            <Button
+              onClick={() => {
+                submitForm();
+              }}
+            >
+              {strings["data-extraction.get-result"]}
+            </Button>
+          </Drawer>
+        );
+      }}
+    </Formik>
   );
 };

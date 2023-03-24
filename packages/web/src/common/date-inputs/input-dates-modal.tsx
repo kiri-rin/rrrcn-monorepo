@@ -10,6 +10,11 @@ import { useEffectNoOnMount } from "../../utils/hooks";
 import cloneDeep from "lodash/cloneDeep";
 import { useTranslations } from "../../utils/translations";
 import { useFormik } from "formik";
+import {
+  DateIntervalsSchema,
+  DatesInputItemSchema,
+  DatesInputSchema,
+} from "../../features/main-page/left-panel/schemas";
 export const InputDatesModal = ({
   onSave,
   value,
@@ -20,12 +25,19 @@ export const InputDatesModal = ({
   onClose: () => any;
 }) => {
   const strings = useTranslations();
-  const { values: dateConfig, setValues: setDateConfig } = useFormik({
+  const {
+    values: dateConfig,
+    setValues: setDateConfig,
+    submitForm,
+    errors,
+  } = useFormik({
     initialValues: cloneDeep(value),
     onSubmit: (data) => {
       onSave(data);
     },
+    validationSchema: DatesInputItemSchema,
   });
+  console.log({ dateErrors: errors });
 
   return (
     <Modal className={"common-modal dates-modal"} open={true}>
@@ -49,6 +61,7 @@ export const InputDatesModal = ({
           {dateConfig.dateIntervals.map((it, _index) => (
             <div key={_index} className={"dates-modal__dates-element"}>
               <DatesIntervalsInput
+                error={errors?.dateIntervals?.[_index]}
                 value={it}
                 onChange={(changed) =>
                   setDateConfig((prev) => {
@@ -96,7 +109,7 @@ export const InputDatesModal = ({
           </Button>
           <Button
             onClick={() => {
-              onSave(dateConfig);
+              submitForm();
             }}
           >
             {strings["common.save"]}

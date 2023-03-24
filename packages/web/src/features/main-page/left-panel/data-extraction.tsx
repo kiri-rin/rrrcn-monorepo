@@ -22,6 +22,7 @@ import {
   Field,
   useField,
   FieldArray,
+  FormikErrors,
 } from "formik";
 
 export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
@@ -40,13 +41,14 @@ export interface DataExtractionInput
 
 export const DataExtractionConfigForm = ({ name }: { name: string }) => {
   const strings = useTranslations();
-  const { errors } = useFormikContext<{ data: Partial<DataExtractionInput> }>();
-  const [{ value: config = {} }, {}, { setValue: setConfig }] =
+  const [{ value: config = {} }, fieldMeta, { setValue: setConfig }] =
     useField<Partial<DataExtractionInput>>(name);
-  console.log({ errors });
-  console.log({
-    config,
-  });
+  const { data: scriptsList } = useQuery(
+    "analysis-scripts",
+    (opt) => api.analysis.getApiAnalysisScripts(),
+    { enabled: false, refetchOnWindowFocus: false }
+  );
+  const errors = fieldMeta.error as FormikErrors<Partial<DataExtractionInput>>;
   //TODO VALIDATE
   return (
     <div>
@@ -54,11 +56,15 @@ export const DataExtractionConfigForm = ({ name }: { name: string }) => {
         {strings["data-extraction.choose-points"]}
       </Box>
       <GeometryInput
+        error={!!errors?.points}
         value={config.points}
         onChange={(value) => setConfig({ ...config, points: value })}
       />
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <Box sx={{ marginY: "10px" }}>
+      <Box
+        className={errors?.scripts && "common__error-container"}
+        sx={{ marginY: "10px" }}
+      >
         {strings["data-extraction.choose-params"]}
       </Box>
       <FieldArray name={`${name}.scripts`}>
@@ -75,7 +81,7 @@ export const DataExtractionConfigForm = ({ name }: { name: string }) => {
             ))}
             <Button
               onClick={() => {
-                push({ id: Math.random() }); //TODO create new id getter
+                push({ id: Math.random(), key: scriptsList?.data?.[0] }); //TODO create new id getter
               }}
             >
               {strings["data-extraction.add-data"]}

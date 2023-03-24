@@ -15,7 +15,7 @@ import "./script-input.scss";
 import Box from "@mui/material/Box";
 import { useQuery } from "react-query";
 import { api } from "../api";
-import { useField, useFormikContext } from "formik";
+import { FormikErrors, useField, useFormikContext } from "formik";
 const scripts = ["elevation", "geomorph", "ndvi"];
 export const ScriptSelectInput = ({
   onDelete,
@@ -31,15 +31,15 @@ export const ScriptSelectInput = ({
     (opt) => api.analysis.getApiAnalysisScripts(),
     { enabled: false, refetchOnWindowFocus: false }
   );
-  const { getFieldProps, getFieldHelpers } = useFormikContext();
-  const { value: scriptConfig } = getFieldProps(name);
-  const { setValue: setConfig } = getFieldHelpers(name);
-
+  const [{ value: scriptConfig }, fieldMeta, { setValue: setConfig }] =
+    useField<ScriptInputConfig>(name);
+  const errors = fieldMeta.error as FormikErrors<ScriptInputConfig>;
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
   return (
     <Box className={"script-input"}>
       <Select
+        error={!!errors?.key}
         className={"script-input__select"}
         value={scriptConfig?.key}
         onChange={({ target: { value: _value } }) => {
@@ -132,12 +132,4 @@ const ScriptAdvanceSettings = ({ name }: { name: string }) => {
       <ScriptDatesInput name={`${name}.dates`} />
     </div>
   );
-};
-const styles: { [p: string]: React.CSSProperties } = {
-  //TODO move to SCSS
-  advancedSettings: {
-    marginRight: 2,
-    display: "flex",
-    flexDirection: "column",
-  },
 };

@@ -1,7 +1,7 @@
 import { RandomForestInputConfig } from "../features/main-page/left-panel/random-forest";
 import { ScriptSelectInput } from "./script-input";
 import { ScriptInputConfig } from "../features/main-page/left-panel/data-extraction";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary/AccordionSummary";
 import {
@@ -13,14 +13,21 @@ import {
 } from "@mui/material";
 import { useTranslations } from "../utils/translations";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-export const ParamsImageInput = ({
-  value: config,
-  onChange: setConfig = () => {},
-}: {
-  value?: RandomForestInputConfig["params"];
-  onChange?: (val: RandomForestInputConfig["params"]) => any;
-}) => {
+import { FieldArray, useField } from "formik";
+import { useQuery } from "react-query";
+import { api } from "../api";
+export const ParamsImageInput = ({ name }: { name: string }) => {
+  const [{ value: config }, fieldMeta, { setValue: setConfig }] = useField<
+    RandomForestInputConfig["params"] //@ts-ignore
+  >(name);
+  const errors = fieldMeta.error as any;
+  const { data: scriptsList } = useQuery(
+    "analysis-scripts",
+    (opt) => api.analysis.getApiAnalysisScripts(),
+    { enabled: false, refetchOnWindowFocus: false }
+  );
   const strings = useTranslations();
+  console.log({ config });
 
   switch (config?.type) {
     case "scripts":
@@ -29,8 +36,9 @@ export const ParamsImageInput = ({
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>{strings["data-extraction.choose-params"]}</Typography>
             <Select
+              error={errors?.type}
               size={"small"}
-              value={config?.type}
+              value={config?.type || "scripts"}
               onChange={({ target: { value } }) => {
                 setConfig({
                   type: value as RandomForestInputConfig["params"]["type"],
@@ -41,9 +49,9 @@ export const ParamsImageInput = ({
                 } as RandomForestInputConfig["params"]);
               }}
             >
-              <MenuItem onClick={(e) => e.stopPropagation()} value={"asset"}>
-                asset
-              </MenuItem>
+              {/*<MenuItem onClick={(e) => e.stopPropagation()} value={"asset"}>*/}
+              {/*  asset*/}
+              {/*</MenuItem>*/}
               <MenuItem onClick={(e) => e.stopPropagation()} value={"scripts"}>
                 scripts
               </MenuItem>
@@ -51,45 +59,28 @@ export const ParamsImageInput = ({
           </AccordionSummary>
 
           <AccordionDetails>
-            {/*{config.scripts?.map((it, index) => (*/}
-            {/*  <ScriptSelectInput*/}
-            {/*    onDelete={() => {*/}
-            {/*      const newConfig = { ...config };*/}
-            {/*      newConfig.scripts = [*/}
-            {/*        ...(newConfig.scripts?.slice(0, index) || []),*/}
-            {/*        ...(newConfig.scripts?.slice(index + 1) || []),*/}
-            {/*      ] as ScriptInputConfig[];*/}
-            {/*      setConfig(newConfig);*/}
-            {/*    }}*/}
-            {/*    key={index}*/}
-            {/*    onChange={(scriptConfig) => {*/}
-            {/*      const prev = { ...config };*/}
-            {/*      if (!prev.scripts) {*/}
-            {/*        setConfig({*/}
-            {/*          ...prev,*/}
-            {/*          scripts: [scriptConfig as ScriptInputConfig],*/}
-            {/*        });*/}
-            {/*      }*/}
-            {/*      prev.scripts[index] = {*/}
-            {/*        ...prev.scripts[index],*/}
-            {/*        ...scriptConfig,*/}
-            {/*      } as ScriptInputConfig;*/}
-            {/*      setConfig({ ...prev, scripts: [...prev.scripts] });*/}
-            {/*    }}*/}
-            {/*    value={it}*/}
-            {/*  />*/}
-            {/*))}*/}
-            <Button
-              onClick={() => {
-                const prev = { ...config };
-                setConfig({
-                  ...prev,
-                  scripts: [...(prev.scripts || []), { key: "elevation" }],
-                });
-              }}
-            >
-              {strings["data-extraction.add-data"]}
-            </Button>
+            <FieldArray name={`${name}.scripts`}>
+              {({ push, remove, name: _name }) => (
+                <>
+                  {config?.scripts?.map((it: any, index: number) => (
+                    <ScriptSelectInput
+                      key={it.id}
+                      name={`${_name}.${index}`}
+                      onDelete={() => {
+                        remove(index);
+                      }}
+                    />
+                  ))}
+                  <Button
+                    onClick={() => {
+                      push({ id: Math.random(), key: scriptsList?.data?.[0] }); //TODO create new id getter
+                    }}
+                  >
+                    {strings["data-extraction.add-data"]}
+                  </Button>
+                </>
+              )}
+            </FieldArray>
           </AccordionDetails>
         </Accordion>
       );

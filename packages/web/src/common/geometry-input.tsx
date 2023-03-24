@@ -15,6 +15,7 @@ import {
   polygonsToGeojson,
 } from "../utils/map/map-geojson-utils";
 import { useTranslations } from "../utils/translations";
+import Box from "@mui/material/Box";
 type InputModesType = "csv" | "geojson" | "geojson_file" | "shp";
 
 const inputModes: InputModesType[] = ["csv", "geojson", "geojson_file", "shp"];
@@ -31,6 +32,7 @@ export const GeometryInput = ({
     type: "csv",
     path: undefined,
   },
+  error,
   onChange: setGeometryConfig = () => {},
   available = inputModes,
   type = "marker" as google.maps.drawing.OverlayType.MARKER,
@@ -39,10 +41,11 @@ export const GeometryInput = ({
   available?: InputModesType[];
   onChange?: (config: GeometryInputConfig) => any;
   type?: google.maps.drawing.OverlayType;
+  error?: boolean;
 }) => {
   return (
     <>
-      <div>
+      <div className={(error && "common__error-container") || ""}>
         {geometryConfig?.type !== "geojson" ? (
           <Input
             size={"small"}

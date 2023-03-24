@@ -16,8 +16,9 @@ import "./dates-input.scss";
 import "../modal.scss";
 import { DatesRepeatedInput } from "./repeated-dates";
 import { InputDatesModal } from "./input-dates-modal";
-import { useField, useFormikContext } from "formik";
+import { FormikErrors, useField, useFormikContext } from "formik";
 import { ScriptInputConfig } from "../../features/main-page/left-panel/data-extraction";
+import { getIdGetter } from "../../utils/id";
 
 const currentYear = new Date().getFullYear();
 const yearsArray = new Array(currentYear - 2000)
@@ -41,8 +42,9 @@ export type DatesInputConfig = {
 }[];
 export const ScriptDatesInput = ({ name }: { name: string }) => {
   const [openModal, setOpenModal] = useState<number | undefined>();
-  const [{ value: dateConfig = [] }, { error }, { setValue: setDateConfig }] =
+  const [{ value: dateConfig = [] }, fieldMeta, { setValue: setDateConfig }] =
     useField<DatesInputConfig>(name);
+  const errors = fieldMeta.error as unknown as FormikErrors<DatesInputConfig>;
   const { setFieldValue } = useFormikContext();
   const strings = useTranslations();
 
@@ -53,7 +55,7 @@ export const ScriptDatesInput = ({ name }: { name: string }) => {
         return (
           <div key={index} className={"data-dates-input__container"}>
             <Input
-              error={!!error}
+              error={!!errors?.[index]?.key}
               className={"data-dates-input__container__key-input"}
               value={conf.key}
               onChange={({ target: { value } }) => {
@@ -121,9 +123,11 @@ export const ScriptDatesInput = ({ name }: { name: string }) => {
 export const DatesIntervalsInput = ({
   value: dateConfig,
   onChange: setDateConfig,
+  error,
 }: {
   value: DateIntervalsInputConfig;
   onChange: (val: DateIntervalsInputConfig) => any;
+  error: any;
 }) => {
   return (
     <div className={"date-intervals-input"}>
@@ -144,6 +148,7 @@ export const DatesIntervalsInput = ({
             return (
               <div>
                 <Input
+                  error={!!error?.date}
                   type={"date"}
                   value={dateConfig?.date}
                   onChange={({ target: { value } }) =>
@@ -159,6 +164,7 @@ export const DatesIntervalsInput = ({
             return (
               <div>
                 <Input
+                  error={!!error?.dates?.[0]}
                   type={"date"}
                   value={dateConfig.dates?.[0]}
                   onChange={({ target: { value } }) =>
@@ -176,6 +182,7 @@ export const DatesIntervalsInput = ({
                   }
                 />
                 <Input
+                  error={!!error?.dates?.[1]}
                   type={"date"}
                   value={dateConfig.dates?.[1]}
                   onChange={({ target: { value } }) =>
@@ -197,6 +204,7 @@ export const DatesIntervalsInput = ({
           case "repeated":
             return (
               <DatesRepeatedInput
+                error={error}
                 value={dateConfig.dates || {}}
                 onChange={(changed) => {
                   setDateConfig({ ...dateConfig, dates: changed });
