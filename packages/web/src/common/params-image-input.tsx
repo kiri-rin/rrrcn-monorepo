@@ -13,14 +13,16 @@ import {
 } from "@mui/material";
 import { useTranslations } from "../utils/translations";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { FieldArray, useField } from "formik";
+import { FieldArray, useField, useFormikContext } from "formik";
 import { useQuery } from "react-query";
 import { api } from "../api";
 export const ParamsImageInput = ({ name }: { name: string }) => {
+  const { submitCount } = useFormikContext();
   const [{ value: config }, fieldMeta, { setValue: setConfig }] = useField<
     RandomForestInputConfig["params"] //@ts-ignore
   >(name);
   const errors = fieldMeta.error as any;
+  const touched = fieldMeta.touched;
   const { data: scriptsList } = useQuery(
     "analysis-scripts",
     (opt) => api.analysis.getApiAnalysisScripts(),
@@ -32,30 +34,41 @@ export const ParamsImageInput = ({ name }: { name: string }) => {
   switch (config?.type) {
     case "scripts":
       return (
-        <Accordion>
+        <Accordion
+          className={`common__card_${
+            (touched || submitCount) && errors ? "error" : "blue"
+          }`}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{strings["data-extraction.choose-params"]}</Typography>
-            <Select
-              error={errors?.type}
-              size={"small"}
-              value={config?.type || "scripts"}
-              onChange={({ target: { value } }) => {
-                setConfig({
-                  type: value as RandomForestInputConfig["params"]["type"],
-                  ...(value === "scripts" && {
-                    scripts: [],
-                  }),
-                  ...(value === "asset" && { path: "" }),
-                } as RandomForestInputConfig["params"]);
-              }}
-            >
-              {/*<MenuItem onClick={(e) => e.stopPropagation()} value={"asset"}>*/}
-              {/*  asset*/}
-              {/*</MenuItem>*/}
-              <MenuItem onClick={(e) => e.stopPropagation()} value={"scripts"}>
-                scripts
-              </MenuItem>
-            </Select>
+            <div className={"common__row"}>
+              <Typography>
+                {strings["data-extraction.choose-params"]}
+              </Typography>
+              <Select
+                error={errors?.type}
+                size={"small"}
+                value={config?.type || "scripts"}
+                onChange={({ target: { value } }) => {
+                  setConfig({
+                    type: value as RandomForestInputConfig["params"]["type"],
+                    ...(value === "scripts" && {
+                      scripts: [],
+                    }),
+                    ...(value === "asset" && { path: "" }),
+                  } as RandomForestInputConfig["params"]);
+                }}
+              >
+                {/*<MenuItem onClick={(e) => e.stopPropagation()} value={"asset"}>*/}
+                {/*  asset*/}
+                {/*</MenuItem>*/}
+                <MenuItem
+                  onClick={(e) => e.stopPropagation()}
+                  value={"scripts"}
+                >
+                  scripts
+                </MenuItem>
+              </Select>
+            </div>
           </AccordionSummary>
 
           <AccordionDetails>

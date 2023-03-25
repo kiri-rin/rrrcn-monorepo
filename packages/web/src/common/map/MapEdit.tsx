@@ -14,8 +14,8 @@ import React, {
 import { Libraries } from "@react-google-maps/api/dist/utils/make-load-script-url";
 
 const center = {
-  lat: -3.745,
-  lng: -38.523,
+  lat: 44.745,
+  lng: 68.523,
 };
 const styles = { width: "100%", height: 700 };
 const libraries: Libraries = ["drawing", "geometry"];
@@ -85,7 +85,7 @@ export const MapEdit = () => {
           setMap(map);
         }}
         center={center}
-        zoom={10}
+        zoom={5}
         mapContainerStyle={styles}
       >
         {drawing && (
@@ -107,8 +107,6 @@ export const MapEdit = () => {
             )}
           />
         )}
-
-        <Marker position={center} />
       </GoogleMap>
     </LoadScript>
   );

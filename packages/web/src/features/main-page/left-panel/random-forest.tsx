@@ -69,7 +69,7 @@ export const RandomForestConfigForm = ({
   onChange: (val: Partial<RandomForestInputConfig>) => any;
   name: string;
 }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, touched, submitCount } = useFormikContext<any>();
   const [
     { value: config = defaultRFConfig },
     fieldMeta,
@@ -80,13 +80,17 @@ export const RandomForestConfigForm = ({
   const strings = useTranslations();
   //TODO VALIDATE
   return (
-    <div>
-      <CommonPaper>
+    <div style={{ paddingBottom: 20 }}>
+      <CommonPaper
+        error={
+          (touched[`${name}.regionOfInterest`] || submitCount) &&
+          errors?.regionOfInterest
+        }
+      >
         <Typography sx={{ marginY: "10px" }}>
           {strings["random-forest.choose-region"]}
         </Typography>
         <GeometryInput
-          error={errors?.regionOfInterest}
           type={"polygon" as google.maps.drawing.OverlayType.POLYGON}
           value={config.regionOfInterest}
           onChange={(value) =>
@@ -95,46 +99,47 @@ export const RandomForestConfigForm = ({
         />
       </CommonPaper>
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <CommonPaper
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography sx={{ marginY: "10px" }}>
-          {strings["random-forest.choose-training-points"]}
-        </Typography>
-        <Select
-          size={"small"}
-          value={config.trainingPoints?.type}
-          onChange={({ target: { value } }) =>
-            setConfig({
-              ...config,
-              trainingPoints: {
-                type: value as "all-points" | "separate-points",
-              },
-            })
-          }
-        >
-          <MenuItem value={"all-points"}>
-            {strings["random-forest.all-training-points"]}
-          </MenuItem>
-          <MenuItem value={"separate-points"}>
-            {strings["random-forest.separate-training-points"]}
-          </MenuItem>
-        </Select>
+      <CommonPaper>
+        <div className={"common__row"}>
+          <Typography sx={{ marginY: "10px" }}>
+            {strings["random-forest.choose-training-points"]}
+          </Typography>
+          <Select
+            size={"small"}
+            value={config.trainingPoints?.type}
+            onChange={({ target: { value } }) =>
+              setConfig({
+                ...config,
+                trainingPoints: {
+                  type: value as "all-points" | "separate-points",
+                },
+              })
+            }
+          >
+            <MenuItem value={"all-points"}>
+              {strings["random-forest.all-training-points"]}
+            </MenuItem>
+            <MenuItem value={"separate-points"}>
+              {strings["random-forest.separate-training-points"]}
+            </MenuItem>
+          </Select>
+        </div>
       </CommonPaper>
       {(() => {
         switch (config.trainingPoints?.type) {
           case "all-points":
             return (
-              <CommonPaper>
+              <CommonPaper
+                error={
+                  (touched[`${name}.trainingPoints.allPoints.points`] ||
+                    submitCount) &&
+                  errors?.trainingPoints?.allPoints?.points
+                }
+              >
                 <Typography sx={{ marginY: "10px" }}>
                   {strings["random-forest.choose-all-training-points"]}
                 </Typography>
                 <GeometryInput
-                  error={errors?.trainingPoints?.allPoints?.points}
                   available={["csv", "shp"]}
                   type={"marker" as google.maps.drawing.OverlayType.MARKER}
                   value={config.trainingPoints?.allPoints?.points}
@@ -164,12 +169,17 @@ export const RandomForestConfigForm = ({
           case "separate-points":
             return (
               <>
-                <CommonPaper>
+                <CommonPaper
+                  error={
+                    (touched[`${name}.trainingPoints.presencePoints`] ||
+                      submitCount) &&
+                    errors?.trainingPoints?.presencePoints
+                  }
+                >
                   <Typography sx={{ marginY: "10px" }}>
                     {strings["random-forest.choose-presence"]}
                   </Typography>
                   <GeometryInput
-                    error={errors?.trainingPoints?.presencePoints}
                     type={"marker" as google.maps.drawing.OverlayType.MARKER}
                     value={config.trainingPoints.presencePoints}
                     onChange={(geometryConfig) =>
@@ -185,12 +195,17 @@ export const RandomForestConfigForm = ({
                     }
                   />
                 </CommonPaper>
-                <CommonPaper>
+                <CommonPaper
+                  error={
+                    (touched[`${name}.trainingPoints.absencePoints`] ||
+                      submitCount) &&
+                    errors?.trainingPoints?.absencePoints
+                  }
+                >
                   <Typography sx={{ marginY: "10px" }}>
                     {strings["random-forest.choose-absence"]}
                   </Typography>
                   <GeometryInput
-                    error={errors?.trainingPoints?.absencePoints}
                     type={"marker" as google.maps.drawing.OverlayType.MARKER}
                     value={config.trainingPoints.absencePoints}
                     onChange={(geometryConfig) =>

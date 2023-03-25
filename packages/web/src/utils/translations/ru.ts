@@ -12,9 +12,10 @@ export const ruTranslations = {
   "common.objects-plural": (number: number) =>
     getPluralRu({ number, key: "objects" }),
   "common.close": "Закрыть",
+  "geometry.input-at-map": "Отметьте геометрию на карте",
   "data-extraction.title": "Экспорт данных",
   "data-extraction.add-data": "Добавить данные",
-  "data-extraction.get-result": "Получить результат",
+  "data-extraction.get-result": "Пуск",
   "data-extraction.add-dates-to-result": "Добавить даты в результат",
   "data-extraction.choose-params": "Добавить параметры",
   "data-extraction.choose-points": "Добавить точки",

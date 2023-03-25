@@ -1,7 +1,7 @@
 import Drawer from "@mui/material/Drawer";
 import { Offset } from "../../../App";
 import { Button, Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   DataExtractionConfigForm,
   DataExtractionInput,
@@ -19,8 +19,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { api } from "../../../api";
 import { serializeRequestToForm } from "../../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
-import { Formik } from "formik";
+import { Formik, FormikProps } from "formik";
 import { getFormSchema } from "./schemas";
+import { useEffectNoOnMount } from "../../../utils/hooks";
 
 export const MainPageLeftPanel = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -68,18 +69,23 @@ export const MainPageLeftPanel = () => {
       }
     });
   };
+  const formikRef = useRef<FormikProps<any>>(null);
+  useEffectNoOnMount(() => {
+    formikRef.current?.validateForm();
+  }, [analysisIncluded]);
   return (
     <Formik<{
       data?: Partial<DataExtractionInput>;
       randomForest?: Partial<RandomForestInputConfig>;
     }>
+      innerRef={formikRef}
       validationSchema={getFormSchema(analysisIncluded)}
       initialValues={{ data: {}, randomForest: defaultRFConfig }}
       onSubmit={(data) => {
         onSend(data);
       }}
     >
-      {({ submitForm, errors }) => {
+      {({ submitForm, errors, touched, submitCount }) => {
         return (
           <Drawer
             style={{ resize: "horizontal" }}
@@ -95,12 +101,10 @@ export const MainPageLeftPanel = () => {
                 }}
               >
                 <Tab
-                  style={
-                    errors.data
-                      ? {
-                          backgroundColor: "rgba(255,0,0,0.2)",
-                        }
-                      : undefined
+                  className={
+                    (touched["data"] || submitCount) && errors.data
+                      ? "common__card_error"
+                      : ""
                   }
                   label={
                     <>
@@ -120,12 +124,11 @@ export const MainPageLeftPanel = () => {
                   }
                 />
                 <Tab
-                  style={
+                  className={
+                    (touched["randomForest"] || submitCount) &&
                     errors.randomForest
-                      ? {
-                          backgroundColor: "rgba(255,0,0,0.2)",
-                        }
-                      : undefined
+                      ? "common__card_error"
+                      : ""
                   }
                   label={
                     <>
@@ -142,6 +145,13 @@ export const MainPageLeftPanel = () => {
                     </>
                   }
                 />
+                <Button
+                  onClick={() => {
+                    submitForm();
+                  }}
+                >
+                  {strings["data-extraction.get-result"]}
+                </Button>
                 {/*<Tab label="Item Three" />*/}
               </Tabs>
               <div style={activeTab !== 0 ? { display: "none" } : undefined}>
@@ -157,13 +167,6 @@ export const MainPageLeftPanel = () => {
                 />
               </div>
             </div>
-            <Button
-              onClick={() => {
-                submitForm();
-              }}
-            >
-              {strings["data-extraction.get-result"]}
-            </Button>
           </Drawer>
         );
       }}

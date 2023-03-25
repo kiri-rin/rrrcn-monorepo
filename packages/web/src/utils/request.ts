@@ -29,7 +29,7 @@ export const serializeRequestToForm = (
       break;
     }
     default: {
-      form.append(prevKey, request);
+      request !== undefined && form.append(prevKey, request);
     }
   }
 };
