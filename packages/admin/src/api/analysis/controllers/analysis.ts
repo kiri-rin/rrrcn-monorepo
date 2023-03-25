@@ -66,48 +66,54 @@ async function processServiceAndStreamResults<
   resultId: string;
   stream;
 }) {
-  const resultService = strapi.service("api::result.result");
+  try {
+    const resultService = strapi.service("api::result.result");
 
-  const tempFolderPath = resultService.getResultFolder(resultId);
-  const output = fs.createWriteStream(tempFolderPath + `.zip`);
+    const tempFolderPath = resultService.getResultFolder(resultId);
 
-  const archive = archiver("zip", {
-    zlib: { level: 9 }, // Sets the compression level.
-  });
-
-  ctx.state.logger = (...args: any[]) => {
-    resultStreams[resultId].write(
-      //TODO find out how it works in strapi
-      "data: " + args.map((it) => it.toString()).join(" ") + "\n\n"
-    );
-  };
-  output.on("close", function () {
-    stream.end("id: success\ndata: success \n\n");
-  });
-  return await service({
-    ...config,
-    outputs: tempFolderPath,
-  })
-    .then((res) => {
-      archive.on("error", function (err) {
-        throw err;
-      });
-      archive.on("end", async () => {
-        fs.rmSync(tempFolderPath, { recursive: true });
-        await resultService.update(resultId, {
-          data: {
-            status: "completed",
-            finished_at: new Date().toISOString(),
-          },
-        });
-      });
-
-      archive.pipe(output);
-      archive.directory(tempFolderPath);
-      archive.finalize();
-      return res;
-    })
-    .catch((e) => {
-      stream.end(`id: error\ndata: ${e} \n\n`);
+    const archive = archiver("zip", {
+      zlib: { level: 9 }, // Sets the compression level.
     });
+
+    ctx.state.logger = (...args: any[]) => {
+      resultStreams[resultId].write(
+        //TODO find out how it works in strapi
+        "data: " + args.map((it) => it.toString()).join(" ") + "\n\n"
+      );
+    };
+
+    return await service({
+      ...config,
+      outputs: tempFolderPath,
+    })
+      .then((res) => {
+        const output = fs.createWriteStream(tempFolderPath + `.zip`);
+
+        output.on("close", function () {
+          stream.end("id: success\ndata: success \n\n");
+        });
+        archive.on("error", function (err) {
+          throw err;
+        });
+        archive.on("end", async () => {
+          fs.rmSync(tempFolderPath, { recursive: true });
+          await resultService.update(resultId, {
+            data: {
+              status: "completed",
+              finished_at: new Date().toISOString(),
+            },
+          });
+        });
+
+        archive.pipe(output);
+        archive.directory(tempFolderPath);
+        archive.finalize();
+        return res;
+      })
+      .catch((e) => {
+        stream.end(`id: error\ndata: ${e} \n\n`);
+      });
+  } catch (e) {
+    stream.end(`id: error\ndata: ${e} \n\n`);
+  }
 }
