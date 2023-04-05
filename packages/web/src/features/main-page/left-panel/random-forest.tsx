@@ -62,13 +62,7 @@ export const defaultRFConfig: Partial<RandomForestInputConfig> = {
   regionOfInterest: { type: "csv", path: undefined },
   outputMode: "PROBABILITY",
 };
-export const RandomForestConfigForm = ({
-  name,
-}: {
-  value: Partial<RandomForestInputConfig>;
-  onChange: (val: Partial<RandomForestInputConfig>) => any;
-  name: string;
-}) => {
+export const RandomForestConfigForm = ({ name }: { name: string }) => {
   const { setFieldValue, touched, submitCount } = useFormikContext<any>();
   const [
     { value: config = defaultRFConfig },

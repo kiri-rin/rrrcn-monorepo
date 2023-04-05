@@ -17,6 +17,7 @@ export default {
           });
         },
         (r: string) => {
+          console.log("REJECT IN AUTH GEE");
           reject(r);
         }
       );
@@ -33,20 +34,20 @@ export default {
   bootstrap(/*{ strapi }*/) {
     const globalLog = console.log;
     //@ts-ignore
-    console.globalLog = globalLog;
-    console.log = (...args: any[]) => {
-      try {
-        //@ts-ignore
-        const ctx = strapi.requestContext.get();
-
-        const logger = ctx?.state?.logger || globalLog;
-        const logGlobally = logger(...args);
-        logGlobally && globalLog(logGlobally);
-      } catch (e) {
-        globalLog(...args);
-        globalLog(e);
-      }
-    };
+    // console.globalLog = globalLog;
+    // console.log = (...args: any[]) => {
+    //   try {
+    //     //@ts-ignore
+    //     const ctx = strapi.requestContext.get();
+    //
+    //     const logger = ctx?.state?.logger || globalLog;
+    //     const logGlobally = logger(...args);
+    //     logGlobally && globalLog(logGlobally);
+    //   } catch (e) {
+    //     globalLog(...args);
+    //     globalLog(e);
+    //   }
+    // };
   },
 };
 declare global {

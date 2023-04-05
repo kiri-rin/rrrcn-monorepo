@@ -11,9 +11,11 @@ const cronLogic = async (strapi, fireDate) => {
   console.log("Cron activated on", currentDate, " Should be on ", fireDate);
   const expiredResults = await strapi.db.query("api::result.result").findMany({
     where: {
+      status: "completed",
       finished_at: { $lt: currentDate.toISOString() },
     },
   });
+  console.log(expiredResults);
   for (let { id } of expiredResults) {
     const folder = strapi.service("api::result.result").getResultFolder(id);
     try {
@@ -29,6 +31,8 @@ const cronLogic = async (strapi, fireDate) => {
   }
   await strapi.db.query("api::result.result").deleteMany({
     where: {
+      status: "completed",
+
       finished_at: { $lt: currentDate.toISOString() },
     },
   });

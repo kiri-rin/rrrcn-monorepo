@@ -31,4 +31,6 @@ export const enTranslations = {
   "script-input.scale": "scale",
   "script-input.buffer": "buffer",
   "script-input.filename": "filename",
+
+  "population.title": "Estimate population",
 };

@@ -29,6 +29,15 @@ module.exports = (config, { strapi }) => {
         objectPath.set(context.request.fullBody, key, value.path);
       }
     }
+    if (
+      Object.keys(context.request.fullBody).every((it) =>
+        Number.isInteger(Number(it))
+      )
+    ) {
+      context.request.fullBody = Object.entries(context.request.fullBody)
+        .sort(([key1], [key2]) => (key1 < key2 ? -1 : 1))
+        .map((it) => it[1]);
+    }
     await next();
   };
 };

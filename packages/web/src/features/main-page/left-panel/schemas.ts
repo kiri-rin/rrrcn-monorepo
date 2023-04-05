@@ -8,7 +8,13 @@ import {
 import { DatesConfig } from "@rrrcn/services/dist/src/services/utils/dates";
 import { RandomForestInputConfig } from "./random-forest";
 import { GeometryInputConfig } from "../../../common/geometry-input";
-import { SeparateTrainingPoints } from "@rrrcn/services/dist/src/analytics_config_types";
+import {
+  PopulationDistanceConfigType,
+  PopulationRandomGenerationConfigType,
+  SeparateTrainingPoints,
+} from "@rrrcn/services/dist/src/analytics_config_types";
+import { PopulationInputConfig } from "./population";
+import { FormType } from "./index";
 export const DateIntervalsSchema = lazy((value: DateIntervalsInputConfig) => {
   switch (value.type) {
     case "range": {
@@ -61,6 +67,11 @@ export const GeometryInputSchema: yup.Schema<GeometryInputConfig> = lazy(
         return yup.object({
           type: yup.string().required(),
           json: yup.object().required(),
+        });
+      }
+      case "computedObject": {
+        return yup.object({
+          type: yup.string().required(),
         });
       }
       default:
@@ -150,15 +161,71 @@ export const RandomForestInputSchema: yup.Schema<RandomForestInputConfig> =
       }
     }) as unknown as yup.Schema<RandomForestInputConfig["validation"]>,
   });
-
-export const getFormSchema = ({
-  data,
-  randomForest,
-}: {
-  data: boolean;
-  randomForest: boolean;
-}) =>
-  yup.object({
-    ...(data && { data: DataExtractionValidationSchema }),
-    ...(randomForest && { randomForest: RandomForestInputSchema }),
-  });
+export const PopulationSchema = yup.lazy((values: PopulationInputConfig) => {
+  switch (values.type) {
+    case "random-points": {
+      return yup.object({
+        type: yup.string().required(),
+        config: yup.object({
+          presenceArea: GeometryInputSchema,
+          areas: GeometryInputSchema,
+          points: GeometryInputSchema,
+        }) as yup.Schema<
+          Omit<
+            PopulationRandomGenerationConfigType<File>,
+            "outputs" | "regionOfInterest"
+          >
+        >,
+      });
+    }
+    case "distance": {
+      return yup.object({
+        type: yup.string().required(),
+        config: yup.object({
+          totalArea: yup.number().required(),
+          distanceFile: yup.mixed().required(),
+        }) as yup.Schema<PopulationDistanceConfigType<any>>,
+      });
+    }
+    default:
+      return yup.string();
+  }
+});
+export const FullSchema = yup.lazy(
+  (value: {
+    data?: Partial<DataExtractionInput>;
+    randomForest?: Partial<RandomForestInputConfig>;
+    population?: PopulationInputConfig;
+    analysisIncluded: {
+      data: boolean;
+      randomForest: boolean;
+      population: boolean;
+    };
+  }) => {
+    const schemaObject = {} as any;
+    if (value.analysisIncluded.data) {
+      schemaObject.data = DataExtractionValidationSchema;
+    }
+    if (
+      value.analysisIncluded.randomForest ||
+      isPopulationUseRandomForest(value)
+    ) {
+      schemaObject.randomForest = RandomForestInputSchema;
+    }
+    if (value.analysisIncluded.population) {
+      schemaObject.population = PopulationSchema;
+    }
+    return yup.object(schemaObject);
+  }
+);
+export const isPopulationUseRandomForest = (value: FormType) => {
+  console.log(
+    value.population?.type, //@ts-ignore
+    value.population
+  );
+  return (
+    value.analysisIncluded.population &&
+    value.population?.type === "random-points" &&
+    value.population.config?.presenceArea?.type === "computedObject"
+  );
+};
