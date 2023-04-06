@@ -1,5 +1,6 @@
 import Select from "@mui/material/Select";
 import {
+  PopulationConfig,
   PopulationDensityType,
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
@@ -24,6 +25,10 @@ export type PopulationInputConfig =
     }
   | { type: "distance"; config: Partial<PopulationDistanceConfigType<File>> }
   | { type: "density"; config: Partial<PopulationDensityType<File>> };
+export const defaultPopulationConfig: PopulationInputConfig = {
+  type: "random-points",
+  config: {},
+};
 export const PopulationForm = ({ name }: { name: string }) => {
   const strings = useTranslations();
   const { setFieldValue, touched, submitCount, errors } =
@@ -31,26 +36,33 @@ export const PopulationForm = ({ name }: { name: string }) => {
   const [{ value: config }, fieldMeta, { setValue: setConfig }] =
     useField<Partial<PopulationInputConfig>>(name);
   const Body = Components[config.type || "density"];
-  console.log({ errors });
   return (
     <>
       <CommonPaper>
-        {strings["population.choose-type"]}
-        <Select
-          value={config.type}
-          onChange={({ target: { value } }) => {
-            value &&
-              setConfig({ type: value as keyof typeof Components, config: {} });
-          }}
-        >
-          <MenuItem value={"random-points"}>
-            {strings["population.random-generation"]}
-          </MenuItem>
-          <MenuItem value={"distance"}>
-            {strings["population.distance"]}
-          </MenuItem>
-          <MenuItem value={"density"}>{strings["population.density"]}</MenuItem>
-        </Select>
+        <div className={"common__row"}>
+          {strings["population.choose-type"]}
+          <Select
+            size={"small"}
+            value={config.type}
+            onChange={({ target: { value } }) => {
+              value &&
+                setConfig({
+                  type: value as keyof typeof Components,
+                  config: {},
+                });
+            }}
+          >
+            <MenuItem value={"random-points"}>
+              {strings["population.random-generation"]}
+            </MenuItem>
+            <MenuItem value={"distance"}>
+              {strings["population.distance"]}
+            </MenuItem>
+            <MenuItem value={"density"}>
+              {strings["population.density"]}
+            </MenuItem>
+          </Select>
+        </div>
       </CommonPaper>
       <Body name={`${name}.config`} />
     </>

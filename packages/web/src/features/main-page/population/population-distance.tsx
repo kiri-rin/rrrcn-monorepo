@@ -26,11 +26,22 @@ export const PopulationDistanceForm = ({ name }: { name: string }) => {
 
   return (
     <>
-      <CommonPaper>
+      <CommonPaper
+        error={
+          (touched[`${name}.distanceFile`] ||
+            touched[`${name}.totalArea`] ||
+            submitCount) &&
+          errors
+        }
+      >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.distance-file"]}
         </Typography>
         <Input
+          error={
+            (touched[`${name}.distanceFile`] || submitCount) &&
+            errors?.distanceFile
+          }
           size={"small"}
           type={"file"}
           inputProps={{ accept: "text/csv" }}
@@ -45,6 +56,9 @@ export const PopulationDistanceForm = ({ name }: { name: string }) => {
           {strings["population.distance-total-area"]}
         </Typography>
         <Input
+          error={
+            (touched[`${name}.totalArea`] || submitCount) && errors?.totalArea
+          }
           onChange={({ target: { value } }) =>
             setFieldValue(`${name}.totalArea`, value)
           }

@@ -25,16 +25,21 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
 
   return (
     <>
-      <CommonPaper>
+      <CommonPaper
+        error={(touched[`${name}.areas`] || submitCount) && errors?.areas}
+      >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.observed-areas"]}
         </Typography>
         <GeometryInput
+          type={"polygon" as google.maps.drawing.OverlayType.POLYGON}
           onChange={(value) => setFieldValue(`${name}.areas`, value)}
           value={config.areas}
         />
       </CommonPaper>
-      <CommonPaper>
+      <CommonPaper
+        error={(touched[`${name}.points`] || submitCount) && errors?.points}
+      >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.presence-points"]}
         </Typography>
@@ -43,7 +48,12 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
           value={config.points}
         />
       </CommonPaper>
-      <CommonPaper>
+      <CommonPaper
+        error={
+          (touched[`${name}.presenceArea`] || submitCount) &&
+          errors?.presenceArea
+        }
+      >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.presence-area"]}
         </Typography>

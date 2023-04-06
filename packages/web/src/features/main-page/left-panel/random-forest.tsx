@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Button, MenuItem, Paper, Select, TextField } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Checkbox,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+} from "@mui/material";
 import {
   AssetImportConfig,
   CommonScriptParams,
@@ -23,6 +33,8 @@ import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
 import Typography from "@mui/material/Typography";
 import { CommonPaper } from "../../../common/common";
+import { scriptKey } from "@rrrcn/services/dist/src/services/ee-data";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export interface RandomForestInputConfig
   extends Omit<
@@ -77,6 +89,28 @@ export const RandomForestConfigForm = ({ name }: { name: string }) => {
     <div style={{ paddingBottom: 20 }}>
       <CommonPaper
         error={
+          (touched[`${name}.outputMode`] || submitCount) && errors?.outputMode
+        }
+      >
+        <div className={"common__row"}>
+          <Typography sx={{ marginY: "10px" }}>
+            {strings["random-forest.choose-output-mode"]}
+          </Typography>
+          <Select
+            size={"small"}
+            onChange={({ target: { value } }) => {
+              setFieldValue(`${name}.outputMode`, value);
+            }}
+            value={config.outputMode || "PROBABILITY"}
+          >
+            <MenuItem value={"PROBABILITY"}>PROBABILITY</MenuItem>
+            <MenuItem value={"REGRESSION"}>REGRESSION</MenuItem>
+            <MenuItem value={"CLASSIFICATION"}> CLASSIFICATION</MenuItem>
+          </Select>
+        </div>
+      </CommonPaper>
+      <CommonPaper
+        error={
           (touched[`${name}.regionOfInterest`] || submitCount) &&
           errors?.regionOfInterest
         }
@@ -93,20 +127,206 @@ export const RandomForestConfigForm = ({ name }: { name: string }) => {
         />
       </CommonPaper>
       <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <CommonPaper>
+
+      <TrainingPointsInput name={`${name}.trainingPoints`} />
+      <Accordion defaultExpanded={false} sx={{ boxShadow: "none" }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          sx={{
+            boxShadow:
+              "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+          }}
+          className={`common__card common__card_${
+            (touched[`${name}.validation`] || submitCount) && errors?.validation
+              ? "error"
+              : "blue"
+          }`}
+        >
+          <div className={"common__row"}>
+            <Typography>{strings["random-forest.validation"]}</Typography>
+            <Select
+              value={config?.validation?.type}
+              onChange={({ target: { value: _value } }) => {
+                setFieldValue(`${name}.validation`, {
+                  type: _value,
+                  ...(_value === "external" && {
+                    points: defaultRFConfig["trainingPoints"],
+                  }),
+                });
+              }}
+              size={"small"}
+            >
+              <MenuItem value={"split"}>
+                {strings["random-forest.validation.split-points"]}
+              </MenuItem>
+              <MenuItem value={"external"}>
+                {strings["random-forest.validation.external"]}
+              </MenuItem>
+            </Select>
+          </div>
+        </AccordionSummary>
+        <AccordionDetails sx={{}}>
+          {(() => {
+            switch (config.validation?.type) {
+              case "external": {
+                return (
+                  <>
+                    <TrainingPointsInput
+                      title={strings["random-forest.choose-validation-points"]}
+                      name={`${name}.validation.points`}
+                    />
+                  </>
+                );
+              }
+              case "split":
+                return (
+                  <CommonPaper
+                    error={
+                      !!(
+                        touched[`${name}.validation.split`] ||
+                        touched[`${name}.validation.seed`] ||
+                        submitCount
+                      ) &&
+                      (errors?.validation?.split || errors?.validation?.seed)
+                    }
+                  >
+                    <TextField
+                      margin={"dense"}
+                      size={"small"}
+                      label={strings["random-forest.validation.split"]}
+                      value={config.validation?.split}
+                      onChange={({ target: { value } }) =>
+                        setFieldValue(`${name}.validation.split`, value)
+                      }
+                    />
+                    <TextField
+                      margin={"dense"}
+                      size={"small"}
+                      label={strings["random-forest.validation.seed"]}
+                      value={config.validation?.seed}
+                      onChange={({ target: { value } }) =>
+                        setFieldValue(`${name}.validation.seed`, value)
+                      }
+                    />
+                    <TextField
+                      margin={"dense"}
+                      size={"small"}
+                      label={
+                        strings["random-forest.validation.cross_validation"]
+                      }
+                      value={config.validation?.cross_validation}
+                      onChange={({ target: { value } }) =>
+                        setFieldValue(
+                          `${name}.validation.cross_validation`,
+                          value
+                        )
+                      }
+                    />
+                    {config.validation?.cross_validation && (
+                      <div>
+                        <div
+                          onClick={() => {
+                            if (config.validation?.type === "split") {
+                              setFieldValue(
+                                `${name}.validation.render_mean`,
+                                !(config.validation.render_mean !== undefined
+                                  ? config.validation.render_mean
+                                  : true)
+                              );
+                            }
+                          }}
+                          className={"common__row"}
+                          style={{ width: "fit-content", cursor: "pointer" }}
+                        >
+                          <Checkbox
+                            checked={
+                              config.validation.render_mean !== undefined
+                                ? config.validation.render_mean
+                                : true
+                            }
+                          />
+                          <Typography>
+                            {strings["random-forest.validation.render_mean"]}
+                          </Typography>
+                        </div>
+                        <div
+                          onClick={() => {
+                            if (config.validation?.type === "split") {
+                              setFieldValue(
+                                `${name}.validation.render_best`,
+                                config.validation.render_best !== undefined
+                                  ? !config.validation.render_best
+                                  : false
+                              );
+                            }
+                          }}
+                          className={"common__row"}
+                          style={{ width: "fit-content", cursor: "pointer" }}
+                        >
+                          <Checkbox
+                            checked={
+                              config.validation.render_best !== undefined
+                                ? config.validation.render_best
+                                : true
+                            }
+                          />
+                          <Typography>
+                            {strings["random-forest.validation.render_best"]}
+                          </Typography>
+                        </div>
+                      </div>
+                    )}
+                  </CommonPaper>
+                );
+              default:
+                return <></>;
+            }
+          })()}
+        </AccordionDetails>
+      </Accordion>
+      <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
+      <ParamsImageInput name={`${name}.params`} />
+    </div>
+  );
+};
+const TrainingPointsInput = ({
+  name,
+  title,
+}: {
+  name: string;
+  title?: string;
+}) => {
+  const { setFieldValue, touched, submitCount } = useFormikContext<any>();
+  const [{ value: config }, fieldMeta, { setValue: setConfig }] =
+    useField<Partial<RandomForestInputConfig["trainingPoints"]>>(name);
+  const errors = fieldMeta.error as any;
+  const strings = useTranslations();
+
+  return (
+    <Accordion defaultExpanded={true} sx={{ boxShadow: "none" }}>
+      <AccordionSummary
+        sx={{
+          boxShadow:
+            "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+        }}
+        className={`common__card common__card_${
+          (touched[name] || submitCount) && errors ? "error" : "blue"
+        }`}
+        expandIcon={<ExpandMoreIcon />}
+      >
         <div className={"common__row"}>
           <Typography sx={{ marginY: "10px" }}>
-            {strings["random-forest.choose-training-points"]}
+            {title || strings["random-forest.choose-training-points"]}
           </Typography>
           <Select
+            onClick={(e) => e.stopPropagation()}
             size={"small"}
-            value={config.trainingPoints?.type}
+            value={config?.type}
             onChange={({ target: { value } }) =>
               setConfig({
                 ...config,
-                trainingPoints: {
-                  type: value as "all-points" | "separate-points",
-                },
+
+                type: value as "all-points" | "separate-points",
               })
             }
           >
@@ -118,109 +338,96 @@ export const RandomForestConfigForm = ({ name }: { name: string }) => {
             </MenuItem>
           </Select>
         </div>
-      </CommonPaper>
-      {(() => {
-        switch (config.trainingPoints?.type) {
-          case "all-points":
-            return (
-              <CommonPaper
-                error={
-                  (touched[`${name}.trainingPoints.allPoints.points`] ||
-                    submitCount) &&
-                  errors?.trainingPoints?.allPoints?.points
-                }
-              >
-                <Typography sx={{ marginY: "10px" }}>
-                  {strings["random-forest.choose-all-training-points"]}
-                </Typography>
-                <GeometryInput
-                  available={["csv", "shp"]}
-                  type={"marker" as google.maps.drawing.OverlayType.MARKER}
-                  value={config.trainingPoints?.allPoints?.points}
-                  onChange={(value) =>
-                    setConfig({
-                      ...config,
-                      trainingPoints: {
+      </AccordionSummary>
+      <AccordionDetails sx={{ padding: 0 }}>
+        {(() => {
+          switch (config.type) {
+            case "all-points":
+              return (
+                <CommonPaper
+                  error={
+                    (touched[`${name}.allPoints.points`] || submitCount) &&
+                    errors?.allPoints?.points
+                  }
+                >
+                  <Typography sx={{ marginY: "10px" }}>
+                    {strings["random-forest.choose-all-training-points"]}
+                  </Typography>
+                  <GeometryInput
+                    available={["csv", "shp"]}
+                    type={"marker" as google.maps.drawing.OverlayType.MARKER}
+                    value={config?.allPoints?.points}
+                    onChange={(value) =>
+                      setConfig({
+                        ...config,
                         type: "all-points",
                         allPoints: { points: value },
-                      },
-                    })
-                  }
-                />
-                <TextField
-                  size={"small"}
-                  value={config.trainingPoints?.allPoints?.presenceProperty}
-                  onChange={({ target: { value } }) =>
-                    setFieldValue(
-                      `${name}.trainingPoints.allPoints.presenceProperty`,
-                      value
-                    )
-                  }
-                  label={"presence key"}
-                />
-              </CommonPaper>
-            );
-          case "separate-points":
-            return (
-              <>
-                <CommonPaper
-                  error={
-                    (touched[`${name}.trainingPoints.presencePoints`] ||
-                      submitCount) &&
-                    errors?.trainingPoints?.presencePoints
-                  }
-                >
-                  <Typography sx={{ marginY: "10px" }}>
-                    {strings["random-forest.choose-presence"]}
-                  </Typography>
-                  <GeometryInput
-                    type={"marker" as google.maps.drawing.OverlayType.MARKER}
-                    value={config.trainingPoints.presencePoints}
-                    onChange={(geometryConfig) =>
-                      setConfig({
-                        ...config,
-                        trainingPoints: {
-                          ...(config.trainingPoints as SeparateTrainingPoints<
-                            File | undefined
-                          >),
+                      })
+                    }
+                  />
+                  <TextField
+                    margin={"dense"}
+                    size={"small"}
+                    value={config?.allPoints?.presenceProperty}
+                    onChange={({ target: { value } }) =>
+                      setFieldValue(`${name}.allPoints.presenceProperty`, value)
+                    }
+                    label={"presence key"}
+                  />
+                </CommonPaper>
+              );
+            case "separate-points":
+              return (
+                <>
+                  <CommonPaper
+                    error={
+                      (touched[`${name}.presencePoints`] || submitCount) &&
+                      errors?.presencePoints
+                    }
+                  >
+                    <Typography sx={{ marginY: "10px" }}>
+                      {strings["random-forest.choose-presence"]}
+                    </Typography>
+                    <GeometryInput
+                      type={"marker" as google.maps.drawing.OverlayType.MARKER}
+                      value={config?.presencePoints}
+                      onChange={(geometryConfig) =>
+                        setConfig({
+                          ...config,
+
                           presencePoints: geometryConfig,
-                        },
-                      })
+                        })
+                      }
+                    />
+                  </CommonPaper>
+                  <CommonPaper
+                    error={
+                      (touched[`${name}.absencePoints`] || submitCount) &&
+                      errors?.absencePoints
                     }
-                  />
-                </CommonPaper>
-                <CommonPaper
-                  error={
-                    (touched[`${name}.trainingPoints.absencePoints`] ||
-                      submitCount) &&
-                    errors?.trainingPoints?.absencePoints
-                  }
-                >
-                  <Typography sx={{ marginY: "10px" }}>
-                    {strings["random-forest.choose-absence"]}
-                  </Typography>
-                  <GeometryInput
-                    type={"marker" as google.maps.drawing.OverlayType.MARKER}
-                    value={config.trainingPoints.absencePoints}
-                    onChange={(geometryConfig) =>
-                      setConfig({
-                        ...config,
-                        trainingPoints: {
-                          ...(config.trainingPoints as SeparateTrainingPoints<
-                            File | undefined
-                          >),
+                  >
+                    <Typography sx={{ marginY: "10px" }}>
+                      {strings["random-forest.choose-absence"]}
+                    </Typography>
+                    <GeometryInput
+                      type={"marker" as google.maps.drawing.OverlayType.MARKER}
+                      value={config?.absencePoints}
+                      onChange={(geometryConfig) =>
+                        setConfig({
+                          ...config,
+
                           absencePoints: geometryConfig,
-                        },
-                      })
-                    }
-                  />
-                </CommonPaper>
-              </>
-            );
-        }
-      })()}
-      <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <ParamsImageInput name={`${name}.params`} />
-    </div>
+                        })
+                      }
+                    />
+                  </CommonPaper>
+                </>
+              );
+            default:
+              return <></>;
+          }
+        })()}
+      </AccordionDetails>
+    </Accordion>
   );
 };

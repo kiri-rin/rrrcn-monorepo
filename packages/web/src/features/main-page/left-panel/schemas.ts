@@ -98,6 +98,29 @@ export const DataExtractionValidationSchema: yup.Schema<DataExtractionInput> =
     scripts: yup.array(ScriptInputSchema).min(1).required(),
     points: GeometryInputSchema,
   });
+export const TrainingPointsSchema = lazy(
+  (value: RandomForestInputConfig["trainingPoints"]) => {
+    switch (value.type) {
+      case "all-points": {
+        return yup.object({
+          type: yup.string().required() as yup.Schema<"all-points">,
+          allPoints: yup.object({
+            points: GeometryInputSchema,
+            presenceProperty: yup.string(),
+          }),
+        });
+      }
+      default:
+      case "separate-points": {
+        return yup.object({
+          type: yup.string().required() as yup.Schema<"separate-points">,
+          absencePoints: GeometryInputSchema,
+          presencePoints: GeometryInputSchema,
+        }) as yup.Schema<SeparateTrainingPoints<File>>;
+      }
+    }
+  }
+) as unknown as yup.Schema<RandomForestInputConfig["trainingPoints"]>;
 export const RandomForestInputSchema: yup.Schema<RandomForestInputConfig> =
   yup.object({
     params: lazy((value: RandomForestInputConfig["params"]) => {
@@ -119,27 +142,7 @@ export const RandomForestInputSchema: yup.Schema<RandomForestInputConfig> =
       }
     }) as unknown as yup.Schema<RandomForestInputConfig["params"]>,
     regionOfInterest: GeometryInputSchema,
-    trainingPoints: lazy((value: RandomForestInputConfig["trainingPoints"]) => {
-      switch (value.type) {
-        case "all-points": {
-          return yup.object({
-            type: yup.string().required() as yup.Schema<"all-points">,
-            allPoints: yup.object({
-              points: GeometryInputSchema,
-              presenceProperty: yup.string(),
-            }),
-          });
-        }
-        default:
-        case "separate-points": {
-          return yup.object({
-            type: yup.string().required() as yup.Schema<"separate-points">,
-            absencePoints: GeometryInputSchema,
-            presencePoints: GeometryInputSchema,
-          }) as yup.Schema<SeparateTrainingPoints<File>>;
-        }
-      }
-    }) as unknown as yup.Schema<RandomForestInputConfig["trainingPoints"]>,
+    trainingPoints: TrainingPointsSchema,
     outputMode: yup.string().required() as yup.Schema<
       RandomForestInputConfig["outputMode"]
     >,
@@ -155,7 +158,7 @@ export const RandomForestInputSchema: yup.Schema<RandomForestInputConfig> =
         default: {
           return yup.object({
             type: yup.string() as yup.Schema<"external">,
-            points: GeometryInputSchema,
+            points: TrainingPointsSchema,
           });
         }
       }

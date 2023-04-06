@@ -22,7 +22,11 @@ import { mapScriptsConfigToRequest } from "./utils";
 import { Formik, FormikProps } from "formik";
 import { FullSchema, isPopulationUseRandomForest } from "./schemas";
 import { useEffectNoOnMount } from "../../../utils/hooks";
-import { PopulationForm, PopulationInputConfig } from "./population";
+import {
+  defaultPopulationConfig,
+  PopulationForm,
+  PopulationInputConfig,
+} from "./population";
 
 export type FormType = {
   data?: Partial<DataExtractionInput>;
@@ -49,9 +53,9 @@ export const MainPageLeftPanel = () => {
       },
     }
   );
-
   const onSend = (data: FormType) => {
     const { analysisIncluded } = data;
+    console.log(analysisIncluded);
     [
       analysisIncluded.data && {
         type: "data",
@@ -64,23 +68,24 @@ export const MainPageLeftPanel = () => {
             data.randomForest as RandomForestInputConfig
           ),
         },
-      analysisIncluded.population && isPopulationUseRandomForest(data)
-        ? [
-            {
-              type: "random-forest",
-              config: mapRFConfigToRequest(
-                data.randomForest as RandomForestInputConfig
-              ),
-            },
-            {
+      analysisIncluded.population &&
+        (isPopulationUseRandomForest(data)
+          ? [
+              {
+                type: "random-forest",
+                config: mapRFConfigToRequest(
+                  data.randomForest as RandomForestInputConfig
+                ),
+              },
+              {
+                type: "population",
+                config: data.population,
+              },
+            ]
+          : {
               type: "population",
               config: data.population,
-            },
-          ]
-        : {
-            type: "population",
-            config: data.population,
-          },
+            }),
     ].forEach((analysisConfig) => {
       if (analysisConfig) {
         const form = new FormData();
@@ -96,7 +101,7 @@ export const MainPageLeftPanel = () => {
       initialValues={{
         data: {},
         randomForest: defaultRFConfig,
-        population: {},
+        population: defaultPopulationConfig,
         analysisIncluded: {
           data: true,
           randomForest: false,

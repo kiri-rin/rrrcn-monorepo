@@ -10,12 +10,12 @@ export const mapDatesConfigToRequest = (
   dates: DatesInputConfig
 ): DatesConfig => {
   return dates.reduce((acc, it) => {
-    acc[it.key] = it.dateIntervals.map((interval) => {
+    acc[it.key] = it.dateIntervals.flatMap((interval) => {
       switch (interval.type) {
         case "date": //@ts-ignore
-          return [new Date(interval?.date), new Date(interval?.date)];
+          return [[new Date(interval?.date), new Date(interval?.date)]];
         case "range": //@ts-ignore
-          return interval?.dates.map((it) => new Date(it));
+          return [interval?.dates.map((it) => new Date(it))];
         case "repeated":
           return getDateIntervals(
             interval?.dates?.years || [],

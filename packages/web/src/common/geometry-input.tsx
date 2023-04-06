@@ -107,7 +107,7 @@ export const GeometryInput = ({
       {geometryConfig.type === "csv" && (
         <>
           <TextField
-            sx={{ marginTop: "2px" }}
+            margin={"dense"}
             size={"small"}
             label={"latitude_key"}
             onChange={({ target: { value } }) => {
@@ -116,7 +116,7 @@ export const GeometryInput = ({
             value={geometryConfig.latitude_key}
           />
           <TextField
-            sx={{ marginTop: "2px" }}
+            margin={"dense"}
             size={"small"}
             label={"longitude_key"}
             onChange={({ target: { value } }) => {
@@ -125,7 +125,7 @@ export const GeometryInput = ({
             value={geometryConfig.longitude_key}
           />
           <TextField
-            sx={{ marginTop: "2px" }}
+            margin={"dense"}
             size={"small"}
             label={"id_key"}
             onChange={({ target: { value } }) => {

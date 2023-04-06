@@ -18,6 +18,8 @@ function App() {
       <AppBar position="sticky" style={{ zIndex: 10000 }}>
         <Toolbar variant="dense">
           <Select
+            size={"small"}
+            style={{ backgroundColor: "white" }}
             value={lang}
             onChange={({ target: { value } }) => {
               dispatch(setLangAction(value as LangType));
