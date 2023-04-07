@@ -1,11 +1,13 @@
 services:
   api:
-    image: kiri909/rrrcn-api
+    image: ecf436eb22059f59b504ae8e32751cb2761ba759a744cfb45e2ba6c7668fce74
     ports:
       - "1337:1337"
     volumes:
-      - db:/app/packages/admin/.tmp
+      - ./db-data:/app/packages/admin/.tmp
+      - ./public:/app/packages/admin/public
   R:
-    image: kiri909/rrrcn-r-api
+    image: kiri909/rrrcn-r-api:0.0.1
     ports:
       - "8000:8000"
+
