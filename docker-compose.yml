@@ -1,0 +1,11 @@
+services:
+  api:
+    image: kiri909/rrrcn-api
+    ports:
+      - "1337:1337"
+    volumes:
+      - db:/app/packages/admin/.tmp
+  R:
+    image: kiri909/rrrcn-r-api
+    ports:
+      - "8000:8000"
