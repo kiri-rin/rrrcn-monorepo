@@ -70,6 +70,9 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
       });
       resultStreams[rfResultId] = new PassThrough();
       resultStreams[populationResultId] = new PassThrough();
+      resultStreams[populationResultId].write(
+        "data: waiting for random forest \n\n"
+      );
       ctx.body = [rfResultId, populationResultId];
       console.error(
         analysisServices["random-forest"],

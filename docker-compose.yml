@@ -1,6 +1,6 @@
 services:
   api:
-    image: ecf436eb22059f59b504ae8e32751cb2761ba759a744cfb45e2ba6c7668fce74
+    image: kiri909/rrrcn-api:0.0.4
     ports:
       - "1337:1337"
     volumes:

@@ -52,6 +52,8 @@ const EventSourceLogs = ({ resultId }: { resultId: number }) => {
       <div>{message}</div>
       {messageId === "success" && (
         <a
+          target="_blank"
+          rel="noopener noreferrer"
           href={`${BASE_PATH}/api/result/download/${resultId}`}
         >{`${BASE_PATH}/api/result/download/${resultId}`}</a>
       )}

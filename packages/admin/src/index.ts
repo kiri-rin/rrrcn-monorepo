@@ -1,5 +1,7 @@
 const eekey = require("../../ee-key.json");
-
+declare global {
+  let strapiLogger: (...log: any) => any | undefined;
+}
 export default {
   /**
    * An asynchronous register function that runs before
@@ -34,20 +36,21 @@ export default {
   bootstrap(/*{ strapi }*/) {
     const globalLog = console.log;
     //@ts-ignore
+    globalThis.strapiLogger = (...args: any[]) => {
+      try {
+        //@ts-ignore
+        const ctx = strapi.requestContext.get();
+
+        const logger = ctx?.state?.logger;
+        logger?.(...args);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    //@ts-ignore
     // console.globalLog = globalLog;
-    // console.log = (...args: any[]) => {
-    //   try {
-    //     //@ts-ignore
-    //     const ctx = strapi.requestContext.get();
-    //
-    //     const logger = ctx?.state?.logger || globalLog;
-    //     const logGlobally = logger(...args);
-    //     logGlobally && globalLog(logGlobally);
-    //   } catch (e) {
-    //     globalLog(...args);
-    //     globalLog(e);
-    //   }
-    // };
+    // console.log =
   },
 };
 declare global {

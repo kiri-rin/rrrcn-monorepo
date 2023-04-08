@@ -22,9 +22,7 @@ import { DatesInputConfig } from "../../../common/date-inputs/dates-input";
 import { useTranslations } from "../../../utils/translations";
 import { serializeRequestToForm } from "../../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
-import { useMutation, useQueryClient } from "react-query";
-import { api } from "../../../api";
-import Box from "@mui/material/Box";
+
 import Divider from "@mui/material/Divider";
 import { DataExtractionInput, ScriptInputConfig } from "./data-extraction";
 import { ParamsImageInput } from "../../../common/params-image-input";
@@ -273,6 +271,29 @@ export const RandomForestConfigForm = ({ name }: { name: string }) => {
                           <Typography>
                             {strings["random-forest.validation.render_best"]}
                           </Typography>
+                        </div>
+                        <div className={"common__row"}>
+                          <Typography>
+                            {strings["random-forest.validation.use-by-default"]}
+                          </Typography>
+                          <Select
+                            onChange={({ target: { value } }) =>
+                              setFieldValue(
+                                `${name}.validation.return_default`,
+                                value
+                              )
+                            }
+                            size={"small"}
+                            value={config.validation.return_default || "best"}
+                          >
+                            <MenuItem value={"best"}>
+                              {strings["random-forest.validation.best"]}
+                            </MenuItem>
+
+                            <MenuItem value={"mean"}>
+                              {strings["random-forest.validation.mean"]}
+                            </MenuItem>
+                          </Select>
                         </div>
                       </div>
                     )}

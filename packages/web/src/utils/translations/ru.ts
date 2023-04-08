@@ -51,4 +51,7 @@ export const ruTranslations = {
   "random-forest.validation.cross_validation": "Кросс валидация",
   "random-forest.validation.render_mean": "Вывести среднее",
   "random-forest.validation.render_best": "Вывести лучшее",
+  "random-forest.validation.use-by-default": "Использовать по умолочанию",
+  "random-forest.validation.best": "Лучшее",
+  "random-forest.validation.mean": "Среднее",
 };
