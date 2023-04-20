@@ -13,10 +13,11 @@ import { PopulationRandomPointsForm } from "../population/population-points-gene
 import { useField, useFormikContext } from "formik";
 import { defaultRFConfig } from "./random-forest";
 import { PopulationDistanceForm } from "../population/population-distance";
+import { PopulationDensityForm } from "../population/population-density";
 const Components = {
   "random-points": PopulationRandomPointsForm,
   distance: PopulationDistanceForm,
-  density: ({ name }: { name: string }) => <></>,
+  density: PopulationDensityForm,
 };
 export type PopulationInputConfig =
   | {

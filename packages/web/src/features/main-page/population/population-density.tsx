@@ -14,33 +14,30 @@ import {
 } from "../left-panel/random-forest";
 import React from "react";
 
-type PopulationRandomGenerationInputType =
-  PopulationRandomGenerationConfigType<File>;
-
-export const PopulationDistanceForm = ({ name }: { name: string }) => {
+export const PopulationDensityForm = ({ name }: { name: string }) => {
   const strings = useTranslations();
   const { setFieldValue, touched, submitCount } = useFormikContext<any>();
   const [{ value: config }, fieldMeta, { setValue: setConfig }] =
-    useField<Partial<PopulationDistanceConfigType>>(name);
+    useField<Partial<PopulationDensityType>>(name);
   const errors = fieldMeta.error as any;
 
   return (
     <>
       <CommonPaper
         error={
-          (touched[`${name}.distanceFile`] ||
+          (touched[`${name}.densityFile`] ||
             touched[`${name}.totalArea`] ||
             submitCount) &&
           errors
         }
       >
         <Typography sx={{ marginY: "10px" }}>
-          {strings["population.distance-file"]}
+          {strings["population.density-file"]}
         </Typography>
         <Input
           error={
-            (touched[`${name}.distanceFile`] || submitCount) &&
-            errors?.distanceFile
+            (touched[`${name}.densityFile`] || submitCount) &&
+            errors?.densityFile
           }
           size={"small"}
           type={"file"}
@@ -48,27 +45,22 @@ export const PopulationDistanceForm = ({ name }: { name: string }) => {
           onChange={({
             target: { files, form },
           }: React.ChangeEvent<HTMLInputElement>) => {
-            files?.[0] && setFieldValue(`${name}.distanceFile`, files[0]);
+            files?.[0] && setFieldValue(`${name}.densityFile`, files[0]);
           }}
         />
 
         <Typography sx={{ marginY: "10px" }}>
-          {strings["population.distance-function"]}
+          {strings["population.distance-total-area"]}
         </Typography>
-        <Select
-          size={"small"}
+        <Input
           error={
-            (touched[`${name}.densityFunction`] || submitCount) &&
-            errors?.distanceFunction
+            (touched[`${name}.totalArea`] || submitCount) && errors?.totalArea
           }
           onChange={({ target: { value } }) =>
-            setFieldValue(`${name}.densityFunction`, value)
+            setFieldValue(`${name}.totalArea`, value)
           }
-          value={config.densityFunction || "hn"}
-        >
-          <MenuItem value={"hn"}>half-normal</MenuItem>
-          <MenuItem value={"hr"}>hazard-rate</MenuItem>
-        </Select>
+          value={config.totalArea}
+        />
       </CommonPaper>
     </>
   );

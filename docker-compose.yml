@@ -1,13 +1,16 @@
 services:
   api:
-    image: kiri909/rrrcn-api:0.0.4
+    environment:
+      R_BASE_URL: "http://R:8000"
+    image: kiri909/rrrcn-api:0.0.3
     ports:
       - "1337:1337"
     volumes:
       - ./db-data:/app/packages/admin/.tmp
       - ./public:/app/packages/admin/public
   R:
-    image: kiri909/rrrcn-r-api:0.0.1
+    image: kiri909/rrrcn-r-api:0.0.2
     ports:
       - "8000:8000"
-
+    volumes:
+      - ./public:/api/public

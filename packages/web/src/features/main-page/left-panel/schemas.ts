@@ -9,6 +9,7 @@ import { DatesConfig } from "@rrrcn/services/dist/src/services/utils/dates";
 import { RandomForestInputConfig } from "./random-forest";
 import { GeometryInputConfig } from "../../../common/geometry-input";
 import {
+  PopulationDensityType,
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
   SeparateTrainingPoints,
@@ -185,9 +186,18 @@ export const PopulationSchema = yup.lazy((values: PopulationInputConfig) => {
       return yup.object({
         type: yup.string().required(),
         config: yup.object({
-          totalArea: yup.number().required(),
+          densityFunction: yup.string(),
           distanceFile: yup.mixed().required(),
         }) as yup.Schema<PopulationDistanceConfigType<any>>,
+      });
+    }
+    case "density": {
+      return yup.object({
+        type: yup.string().required(),
+        config: yup.object({
+          totalArea: yup.number().required(),
+          densityFile: yup.mixed().required(),
+        }) as yup.Schema<PopulationDensityType<any>>,
       });
     }
     default:
