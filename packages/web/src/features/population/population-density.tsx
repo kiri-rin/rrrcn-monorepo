@@ -3,15 +3,15 @@ import {
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { CommonPaper } from "../../../common/common";
-import { GeometryInput } from "../../../common/geometry-input";
+import { CommonPaper } from "../../common/common";
+import { GeometryInput } from "../../common/geometry-input";
 import { Checkbox, Input, MenuItem, Select, Typography } from "@mui/material";
-import { useTranslations } from "../../../utils/translations";
+import { useTranslations } from "../../utils/translations";
 import { useField, useFormikContext } from "formik";
 import {
   defaultRFConfig,
   RandomForestInputConfig,
-} from "../left-panel/random-forest";
+} from "../random-forest/random-forest";
 import React from "react";
 
 export const PopulationDensityForm = ({ name }: { name: string }) => {

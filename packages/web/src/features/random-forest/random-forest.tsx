@@ -17,20 +17,20 @@ import {
   RandomForestConfig,
   SeparateTrainingPoints,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { GeometryInput } from "../../../common/geometry-input";
-import { DatesInputConfig } from "../../../common/date-inputs/dates-input";
-import { useTranslations } from "../../../utils/translations";
-import { serializeRequestToForm } from "../../../utils/request";
+import { GeometryInput } from "../../common/geometry-input";
+import { DatesInputConfig } from "../../common/date-inputs/dates-input";
+import { useTranslations } from "../../utils/translations";
+import { serializeRequestToForm } from "../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
 
 import Divider from "@mui/material/Divider";
 import { DataExtractionInput, ScriptInputConfig } from "./data-extraction";
-import { ParamsImageInput } from "../../../common/params-image-input";
+import { ParamsImageInput } from "../../common/params-image-input";
 import { FormikErrors, useField, useFormikContext } from "formik";
 import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
 import Typography from "@mui/material/Typography";
-import { CommonPaper } from "../../../common/common";
+import { CommonPaper } from "../../common/common";
 import { scriptKey } from "@rrrcn/services/dist/src/services/ee-data";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 

@@ -14,7 +14,7 @@ import {
   DateIntervalsSchema,
   DatesInputItemSchema,
   DatesInputSchema,
-} from "../../features/main-page/left-panel/schemas";
+} from "../../features/validations/dates-schemas";
 export const InputDatesModal = ({
   onSave,
   value,

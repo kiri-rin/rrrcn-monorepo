@@ -1,6 +1,6 @@
-import { RandomForestInputConfig } from "../features/main-page/left-panel/random-forest";
+import { RandomForestInputConfig } from "../features/random-forest/random-forest";
 import { ScriptSelectInput } from "./script-input";
-import { ScriptInputConfig } from "../features/main-page/left-panel/data-extraction";
+import { ScriptInputConfig } from "../features/random-forest/data-extraction";
 import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary/AccordionSummary";

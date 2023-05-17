@@ -1,17 +1,9 @@
-import {
-  PopulationDensityType,
-  PopulationDistanceConfigType,
-  PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/dist/src/analytics_config_types";
-import { CommonPaper } from "../../../common/common";
-import { GeometryInput } from "../../../common/geometry-input";
+import { PopulationRandomGenerationConfigType } from "@rrrcn/services/dist/src/analytics_config_types";
+import { CommonPaper } from "../../common/common";
+import { GeometryInput } from "../../common/geometry-input";
 import { Checkbox, Typography } from "@mui/material";
-import { useTranslations } from "../../../utils/translations";
+import { useTranslations } from "../../utils/translations";
 import { useField, useFormikContext } from "formik";
-import {
-  defaultRFConfig,
-  RandomForestInputConfig,
-} from "../left-panel/random-forest";
 
 type PopulationRandomGenerationInputType =
   PopulationRandomGenerationConfigType<File>;
@@ -71,6 +63,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
 
         {config.presenceArea?.type !== "computedObject" && (
           <GeometryInput
+            type={"polygon" as google.maps.drawing.OverlayType.POLYGON}
             onChange={(value) => setFieldValue(`${name}.presenceArea`, value)}
             value={config.presenceArea}
           />

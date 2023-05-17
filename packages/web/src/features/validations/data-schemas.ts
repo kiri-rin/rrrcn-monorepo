@@ -1,0 +1,25 @@
+import {
+  DataExtractionInput,
+  ScriptInputConfig,
+} from "../random-forest/data-extraction";
+import * as yup from "yup";
+import { DatesInputSchema } from "./dates-schemas";
+import { GeometryInputSchema } from "./geometry-validations";
+
+export const ScriptInputSchema: yup.Schema<ScriptInputConfig> = yup.object({
+  key: yup.string<ScriptInputConfig["key"]>().min(1).required(),
+  dates: DatesInputSchema,
+});
+export const DefaultScriptParamsSchema = yup.object({
+  dates: DatesInputSchema,
+  buffer: yup.number(),
+  outputs: yup.string(),
+  mode: yup.string<"MEAN" | "SUM">(),
+  scale: yup.number(),
+});
+export const DataExtractionValidationSchema: yup.Schema<DataExtractionInput> =
+  yup.object({
+    defaultScriptParams: DefaultScriptParamsSchema,
+    scripts: yup.array(ScriptInputSchema).min(1).required(),
+    points: GeometryInputSchema(),
+  });

@@ -8,7 +8,7 @@ import {
   ScriptDatesInput,
 } from "./date-inputs/dates-input";
 import { useEffectNoOnMount } from "../utils/hooks";
-import { ScriptInputConfig } from "../features/main-page/left-panel/data-extraction";
+import { ScriptInputConfig } from "../features/random-forest/data-extraction";
 import { useTranslations } from "../utils/translations";
 import "./script-input.scss";
 

@@ -5,14 +5,14 @@ import {
   DataExtractionConfig,
   ScriptConfig,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { GeometryInput } from "../../../common/geometry-input";
-import { ScriptSelectInput } from "../../../common/script-input";
-import { DatesInputConfig } from "../../../common/date-inputs/dates-input";
-import { useTranslations } from "../../../utils/translations";
-import { serializeRequestToForm } from "../../../utils/request";
+import { GeometryInput } from "../../common/geometry-input";
+import { ScriptSelectInput } from "../../common/script-input";
+import { DatesInputConfig } from "../../common/date-inputs/dates-input";
+import { useTranslations } from "../../utils/translations";
+import { serializeRequestToForm } from "../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { api } from "../../../api";
+import { api } from "../../api";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import {
@@ -24,7 +24,7 @@ import {
   FieldArray,
   FormikErrors,
 } from "formik";
-import { CommonPaper } from "../../../common/common";
+import { CommonPaper } from "../../common/common";
 import Typography from "@mui/material/Typography";
 
 export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {

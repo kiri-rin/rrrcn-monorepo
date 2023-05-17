@@ -1,10 +1,10 @@
-import { Offset } from "../../../App";
-import { BASE_PATH } from "../../../api/constants";
+import { Offset } from "../../App";
+import { BASE_PATH } from "../../api/constants";
 import Drawer from "@mui/material/Drawer";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { api } from "../../../api";
-import { useEventSource } from "../../../utils/hooks";
+import { api } from "../../api";
+import { useEventSource } from "../../utils/hooks";
 import { LinearProgress } from "@mui/material";
 
 export const AnalysisRightPanel = () => {
@@ -14,11 +14,7 @@ export const AnalysisRightPanel = () => {
     api.analysis.postApiAnalysisProcess,
     { enabled: false }
   );
-  const { data: scriptsList } = useQuery(
-    "analysis-scripts",
-    (opt) => api.analysis.getApiAnalysisScripts(),
-    { refetchOnWindowFocus: false }
-  );
+
   useEffect(() => {
     setResults((prev) => [
       ...prev,

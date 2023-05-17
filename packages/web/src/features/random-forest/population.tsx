@@ -5,8 +5,8 @@ import {
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { CommonPaper } from "../../../common/common";
-import { useTranslations } from "../../../utils/translations";
+import { CommonPaper } from "../../common/common";
+import { useTranslations } from "../../utils/translations";
 import React from "react";
 import MenuItem from "@mui/material/MenuItem";
 import { PopulationRandomPointsForm } from "../population/population-points-generate";

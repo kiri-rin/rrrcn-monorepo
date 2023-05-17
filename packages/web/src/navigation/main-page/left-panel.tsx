@@ -1,32 +1,34 @@
 import Drawer from "@mui/material/Drawer";
-import { Offset } from "../../../App";
-import { Button, Tab, Tabs } from "@mui/material";
+import { Offset } from "../../App";
+import { Button, Tab, TabProps, Tabs } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import {
   DataExtractionConfigForm,
   DataExtractionInput,
-} from "./data-extraction";
+} from "../../features/random-forest/data-extraction";
 import {
   defaultRFConfig,
   mapRFConfigToRequest,
   RandomForestConfigForm,
   RandomForestInputConfig,
-} from "./random-forest";
-import { useTranslations } from "../../../utils/translations";
+} from "../../features/random-forest/random-forest";
+import { useTranslations } from "../../utils/translations";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
-import { useMutation, useQueryClient } from "react-query";
-import { api } from "../../../api";
-import { serializeRequestToForm } from "../../../utils/request";
-import { mapScriptsConfigToRequest } from "./utils";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { api } from "../../api";
+import { serializeRequestToForm } from "../../utils/request";
+import { mapScriptsConfigToRequest } from "../../features/random-forest/utils";
 import { Formik, FormikProps } from "formik";
-import { FullSchema, isPopulationUseRandomForest } from "./schemas";
-import { useEffectNoOnMount } from "../../../utils/hooks";
 import {
   defaultPopulationConfig,
   PopulationForm,
   PopulationInputConfig,
-} from "./population";
+} from "../../features/random-forest/population";
+import {
+  FullSchema,
+  isPopulationUseRandomForest,
+} from "../../features/validations/main-schemas";
 
 export type FormType = {
   data?: Partial<DataExtractionInput>;
@@ -42,7 +44,11 @@ export type FormType = {
 export const MainPageLeftPanel = () => {
   const [activeTab, setActiveTab] = useState(0);
   const strings = useTranslations();
-
+  const { data: scriptsList } = useQuery(
+    "analysis-scripts",
+    (opt) => api.analysis.getApiAnalysisScripts(),
+    { refetchOnWindowFocus: false }
+  );
   const queryClient = useQueryClient();
   const { data: analysisState, mutateAsync: postAnalysis } = useMutation(
     "analysis-results",
@@ -136,79 +142,47 @@ export const MainPageLeftPanel = () => {
                   setActiveTab(newValue);
                 }}
               >
-                <Tab
-                  className={
-                    (touched["data"] || submitCount) && errors.data
-                      ? "common__card_error"
-                      : ""
-                  }
-                  label={
-                    <>
-                      <Checkbox
-                        checked={values.analysisIncluded.data}
-                        onChange={({ target: { value } }) => {
-                          setFieldValue(
-                            "analysisIncluded.data",
-                            !values.analysisIncluded.data
-                          );
-                        }}
-                      />
-                      <Typography>
-                        {strings["data-extraction.title"]}
-                      </Typography>
-                    </>
-                  }
+                <TabWithCheckbox
+                  error={(touched["data"] || submitCount) && errors.data}
+                  checked={values.analysisIncluded.data}
+                  onChange={() => {
+                    setFieldValue(
+                      "analysisIncluded.data",
+                      !values.analysisIncluded.data
+                    );
+                  }}
+                  label={strings["data-extraction.title"]}
                 />
-                <Tab
-                  className={
+                <TabWithCheckbox
+                  error={
                     (touched["randomForest"] || submitCount) &&
                     errors.randomForest
-                      ? "common__card_error"
-                      : ""
                   }
-                  label={
-                    <>
-                      <Checkbox
-                        checked={
-                          isPopulationUseRandomForest(values) ||
-                          values.analysisIncluded.randomForest
-                        }
-                        onChange={({ target: { value } }) => {
-                          !isPopulationUseRandomForest(values) &&
-                            setFieldValue(
-                              "analysisIncluded.randomForest",
-                              !values.analysisIncluded.randomForest
-                            );
-                        }}
-                      />
-                      <Typography>{strings["random-forest.title"]}</Typography>
-                    </>
+                  checked={
+                    isPopulationUseRandomForest(values) ||
+                    values.analysisIncluded.randomForest
                   }
+                  onChange={() => {
+                    !isPopulationUseRandomForest(values) &&
+                      setFieldValue(
+                        "analysisIncluded.randomForest",
+                        !values.analysisIncluded.randomForest
+                      );
+                  }}
+                  label={strings["random-forest.title"]}
                 />
-                <Tab
-                  className={
+                <TabWithCheckbox
+                  error={
                     (touched["population"] || submitCount) && errors.population
-                      ? "common__card_error"
-                      : ""
                   }
-                  label={
-                    <>
-                      <Checkbox
-                        checked={values.analysisIncluded.population}
-                        onChange={({ target: { value } }) => {
-                          console.log(
-                            "USE RF",
-                            isPopulationUseRandomForest(values)
-                          );
-                          setFieldValue(
-                            "analysisIncluded.population",
-                            !values.analysisIncluded.population
-                          );
-                        }}
-                      />
-                      <Typography>{strings["population.title"]}</Typography>
-                    </>
-                  }
+                  checked={values.analysisIncluded.population}
+                  onChange={() => {
+                    setFieldValue(
+                      "analysisIncluded.population",
+                      !values.analysisIncluded.population
+                    );
+                  }}
+                  label={strings["population.title"]}
                 />
               </Tabs>
               <Button
@@ -234,3 +208,21 @@ export const MainPageLeftPanel = () => {
     </Formik>
   );
 };
+const TabWithCheckbox = (
+  props: Omit<TabProps, "onChange"> & {
+    checked?: boolean;
+    error?: boolean | string | number;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  }
+) => (
+  <Tab
+    className={props.error ? "common__card_error" : ""}
+    {...props}
+    label={
+      <>
+        <Checkbox checked={props.checked} onChange={props.onChange} />
+        <Typography>{props.label}</Typography>
+      </>
+    }
+  />
+);

@@ -17,7 +17,7 @@ import "../modal.scss";
 import { DatesRepeatedInput } from "./repeated-dates";
 import { InputDatesModal } from "./input-dates-modal";
 import { FormikErrors, useField, useFormikContext } from "formik";
-import { ScriptInputConfig } from "../../features/main-page/left-panel/data-extraction";
+import { ScriptInputConfig } from "../../features/random-forest/data-extraction";
 import { getIdGetter } from "../../utils/id";
 
 const currentYear = new Date().getFullYear();

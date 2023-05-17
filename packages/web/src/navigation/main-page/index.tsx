@@ -1,25 +1,13 @@
-import {
-  DrawingManager,
-  GoogleMap,
-  LoadScript,
-  Marker,
-} from "@react-google-maps/api";
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 
-import Drawer from "@mui/material/Drawer";
-import { BASE_PATH } from "../../api/constants";
-import { Offset } from "../../App";
-import "./left-panel/data-extraction.scss";
-import { useEventSource } from "../../utils/hooks";
-import { MainPageLeftPanel } from "./left-panel";
+import "../../features/random-forest/data-extraction.scss";
+import { MainPageLeftPanel } from "../../navigation/main-page/left-panel";
 import {
   MapDrawingContext,
   MapDrawingShape,
   MapEdit,
 } from "../../common/map/MapEdit";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { api } from "../../api";
-import { AnalysisRightPanel } from "./right-panel";
+import { AnalysisRightPanel } from "../../navigation/main-page/right-panel";
 
 export const MainPage = () => {
   const [drawing, setDrawing] = useState<

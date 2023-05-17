@@ -13,7 +13,7 @@ import { MapDrawingContext, MapDrawingShape } from "./map/MapEdit";
 import {
   pointsToGeojson,
   polygonsToGeojson,
-} from "../utils/map/map-geojson-utils";
+} from "../utils/geometry/map/map-geojson-utils";
 import { useTranslations } from "../utils/translations";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -52,6 +52,7 @@ export const GeometryInput = ({
   type?: google.maps.drawing.OverlayType;
   error?: boolean;
 }) => {
+  const onShowOnMap = () => {};
   return (
     <>
       <div className={(error && "common__error-container") || ""}>
@@ -74,7 +75,7 @@ export const GeometryInput = ({
                   ? { ...prev, path: files?.[0] }
                   : prev
               );
-            }}
+            }} // TODO add show/hide button
           />
         ) : (
           <MapGeometryInput

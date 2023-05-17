@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { MapDrawingContext } from "../../common/map/MapEdit";
+import { MapDrawingContext } from "../../../common/map/MapEdit";
 import { Geojson } from "@rrrcn/services/dist/src/types";
 import { GeoJSON } from "geojson";
 
