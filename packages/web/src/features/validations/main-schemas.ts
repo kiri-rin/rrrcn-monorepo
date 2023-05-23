@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import { DataExtractionInput } from "../random-forest/data-extraction";
 import { RandomForestInputConfig } from "../random-forest/random-forest";
-import { PopulationInputConfig } from "../random-forest/population";
+import { PopulationInputConfig } from "../population/population";
 import { RandomForestInputSchema } from "./rf-schemas";
 import { PopulationSchema } from "./population-schemas";
 import { DataExtractionValidationSchema } from "./data-schemas";

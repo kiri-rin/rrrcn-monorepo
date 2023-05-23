@@ -56,24 +56,25 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
     if (Array.isArray(ctx.request.fullBody)) {
       const [randomForestConfigBody, estimatePopulationConfigBody] =
         ctx.request.fullBody;
-      const { id: rfResultId } = await resultService.create({
+      const { id: rfResultId, uid: rfResultUID } = await resultService.create({
         data: {
           status: "processing",
           type: "random-forest",
         },
       });
-      const { id: populationResultId } = await resultService.create({
-        data: {
-          status: "processing",
-          type: "population",
-        },
-      });
+      const { id: populationResultId, uid: populationResultUID } =
+        await resultService.create({
+          data: {
+            status: "processing",
+            type: "population",
+          },
+        });
       resultStreams[rfResultId] = new PassThrough();
       resultStreams[populationResultId] = new PassThrough();
       resultStreams[populationResultId].write(
         "data: waiting for random forest \n\n"
       );
-      ctx.body = [rfResultId, populationResultId];
+      ctx.body = [rfResultUID, populationResultUID];
       console.error(
         analysisServices["random-forest"],
         analysisServices["population"]
@@ -115,13 +116,13 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
       });
     } else {
       const { config, type } = ctx.request.fullBody;
-      const { id: resultId } = await resultService.create({
+      const { id: resultId, uid: resultUID } = await resultService.create({
         data: {
           status: "processing",
           type,
         },
       });
-      ctx.body = [resultId];
+      ctx.body = [resultUID];
       resultStreams[resultId] = new PassThrough();
       processServiceAndStreamResults({
         service: analysisServices[type],
@@ -154,10 +155,13 @@ async function processServiceAndStreamResults<
   resultId: string;
   stream;
 }): Promise<Awaited<ReturnType<T>>> {
-  try {
-    const resultService = strapi.service("api::result.result");
+  const resultService = strapi.service("api::result.result");
+  let logs = "";
+  const tempFolderPath = resultService.getResultFolder(resultId);
 
-    const tempFolderPath = resultService.getResultFolder(resultId);
+  try {
+    const logsFileStream = fs.createWriteStream(tempFolderPath + "/logs.txt");
+    stream.pipe(logsFileStream);
     fs.mkdirSync(tempFolderPath, { recursive: true });
     const archive = archiver("zip", {
       zlib: { level: 9 }, // Sets the compression level.
@@ -168,15 +172,14 @@ async function processServiceAndStreamResults<
         //TODO find out how it works in strapi
         "data: " + args.map((it) => it.toString()).join(" ") + "\n\n"
       );
+      logs += args.map((it) => it.toString()).join(" ") + "\n\n";
     };
-
     return await service({
       ...config,
       outputs: tempFolderPath,
     })
       .then((res) => {
         const output = fs.createWriteStream(tempFolderPath + `.zip`);
-
         output.on("close", function () {
           stream.end("id: success\ndata: success \n\n");
         });
@@ -200,13 +203,28 @@ async function processServiceAndStreamResults<
         archive.finalize();
         return res;
       })
-      .catch((e) => {
+      .catch(async (e) => {
         console.log(e);
+        logs += e;
+        const updated = await resultService.update(resultId, {
+          data: {
+            status: "error",
+            finished_at: new Date().toISOString(),
+            logs,
+          },
+        });
         stream.end(`id: error\ndata: ${e} \n\n`);
       });
   } catch (e) {
-    console.log(e);
-
+    fs.rmSync(tempFolderPath, { recursive: true });
+    logs += e;
+    await resultService.update(resultId, {
+      data: {
+        status: "error",
+        finished_at: new Date().toISOString(),
+        logs,
+      },
+    });
     stream.end(`id: error\ndata: ${e} \n\n`);
   }
 }

@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { PopulationInputConfig } from "../random-forest/population";
+import { PopulationInputConfig } from "../population/population";
 import {
   PopulationDensityType,
   PopulationDistanceConfigType,

@@ -9,11 +9,11 @@ import { CommonPaper } from "../../common/common";
 import { useTranslations } from "../../utils/translations";
 import React from "react";
 import MenuItem from "@mui/material/MenuItem";
-import { PopulationRandomPointsForm } from "../population/population-points-generate";
+import { PopulationRandomPointsForm } from "./population-points-generate";
 import { useField, useFormikContext } from "formik";
-import { defaultRFConfig } from "./random-forest";
-import { PopulationDistanceForm } from "../population/population-distance";
-import { PopulationDensityForm } from "../population/population-density";
+import { defaultRFConfig } from "../random-forest/random-forest";
+import { PopulationDistanceForm } from "./population-distance";
+import { PopulationDensityForm } from "./population-density";
 const Components = {
   "random-points": PopulationRandomPointsForm,
   distance: PopulationDistanceForm,

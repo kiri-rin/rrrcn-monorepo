@@ -24,7 +24,7 @@ import {
   defaultPopulationConfig,
   PopulationForm,
   PopulationInputConfig,
-} from "../../features/random-forest/population";
+} from "../../features/population/population";
 import {
   FullSchema,
   isPopulationUseRandomForest,

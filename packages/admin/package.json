@@ -13,7 +13,9 @@
     "hoistingLimits": "workspaces"
   },
   "workspaces": {
-    "nohoist": ["**"]
+    "nohoist": [
+      "**"
+    ]
   },
   "devDependencies": {
     "@types/koa": "^2.13.5"
@@ -37,7 +39,8 @@
     "node-tar": "^1.0.0",
     "object-path": "^0.11.8",
     "regression": "^2.0.1",
-    "shpjs": "^4.0.4"
+    "shpjs": "^4.0.4",
+    "uuidv4": "^6.2.13"
   },
   "author": {
     "name": "A Strapi developer"
