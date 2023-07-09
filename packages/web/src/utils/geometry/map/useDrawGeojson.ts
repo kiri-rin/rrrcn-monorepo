@@ -1,10 +1,124 @@
 import { useContext, useEffect, useRef } from "react";
 import { MapDrawingContext } from "../../../common/map/MapEdit";
-import { Geojson } from "@rrrcn/services/dist/src/types";
-import { GeoJSON } from "geojson";
+import { GeoJSON, GeoJsonProperties, Geometry } from "geojson";
+export type GoogleMapObject =
+  | google.maps.Polygon
+  | google.maps.Rectangle
+  | google.maps.Marker
+  | google.maps.Circle
+  | google.maps.Polyline;
+export const useDrawGeojson = (geojsons?: GeoJSON[], deps: any[] = []) => {
+  const { map } = useContext(MapDrawingContext);
+  const mapObjectsRef = useRef<GoogleMapObject[]>([]);
+  useEffect(() => {
+    if (!map || !geojsons) {
+      return;
+    }
+    for (let geojson of geojsons) {
+      // TODO optimize
+      mapObjectsRef.current.push(...drawGeojson(map, geojson));
+    }
+    return () => {
+      mapObjectsRef.current.forEach((shape) => {
+        shape.setMap(null);
+      });
+    };
+  }, [...deps, map]);
+};
+export const drawGeojson = (
+  map: google.maps.Map,
+  geojson: GeoJSON
+): GoogleMapObject[] => {
+  const mapObjects = parseGeojson(geojson);
+  mapObjects.forEach((shape) => {
+    shape.setMap(map);
+  });
+  return mapObjects;
+};
+export const parseGeojson = (geojson: GeoJSON): GoogleMapObject[] => {
+  switch (geojson.type) {
+    case "Feature": {
+      return parseGeojsonGeometry(geojson.geometry, geojson.properties);
+    }
+    case "FeatureCollection": {
+      return geojson.features.flatMap((feature) =>
+        parseGeojsonGeometry(feature.geometry, feature.properties)
+      );
+    }
+    default: {
+      return parseGeojsonGeometry(geojson);
+    }
+  }
+};
+const parseGeojsonGeometry = (
+  geometry: Geometry,
+  properties?: GeoJsonProperties
+): GoogleMapObject[] => {
+  switch (geometry.type) {
+    case "GeometryCollection": {
+      return geometry.geometries.flatMap((g) =>
+        parseGeojsonGeometry(g, properties)
+      );
+    }
 
-export const useDrawGeojson = (geojson: GeoJSON, deps: any[]) => {
-  const { drawingManager } = useContext(MapDrawingContext);
-  const mapObjectsRef = useRef<any[]>([]);
-  useEffect(() => {}, deps);
+    case "Polygon": {
+      return [
+        new google.maps.Polygon({
+          paths: geometry.coordinates.map((coord) => ({
+            lat: coord[1],
+            lng: coord[0],
+          })),
+        }),
+      ];
+      break;
+    }
+    case "Point": {
+      return [
+        new google.maps.Marker({
+          title: properties?.name,
+          icon: {
+            url: "https://cdn.iconscout.com/icon/free/png-256/free-dot-22-433567.png?f=webp",
+            size: new google.maps.Size(6, 6),
+            anchor: new google.maps.Point(3, 3),
+            origin: new google.maps.Point(120, 120),
+          },
+          position: {
+            lat: geometry.coordinates[1],
+            lng: geometry.coordinates[0],
+          },
+        }),
+      ];
+    }
+    case "LineString": {
+      return [
+        new google.maps.Polyline({
+          path: geometry.coordinates.map((coord) => ({
+            lat: coord[1],
+            lng: coord[0],
+          })),
+        }),
+      ];
+      break;
+    }
+    default: {
+      return [
+        new google.maps.Marker({
+          position: {
+            lat: 0,
+            lng: 0,
+          },
+        }),
+      ];
+    }
+
+    // case "MultiLineString": {
+    //   break;
+    // }
+    // case "MultiPoint": {
+    //   break;
+    // }
+    // case "MultiPolygon": {
+    //   break;
+    // }
+  }
 };

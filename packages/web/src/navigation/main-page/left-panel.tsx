@@ -29,15 +29,18 @@ import {
   FullSchema,
   isPopulationUseRandomForest,
 } from "../../features/validations/main-schemas";
+import { MigrationsForm } from "../../features/migrations/migrations";
 
 export type FormType = {
   data?: Partial<DataExtractionInput>;
   randomForest?: Partial<RandomForestInputConfig>;
   population?: Partial<PopulationInputConfig>;
+  migrations: any;
   analysisIncluded: {
     data: boolean;
     randomForest: boolean;
     population: boolean;
+    migrations: any;
   };
 };
 
@@ -112,7 +115,9 @@ export const MainPageLeftPanel = () => {
           data: true,
           randomForest: false,
           population: false,
+          migrations: false,
         },
+        migrations: {},
       }}
       onSubmit={(data) => {
         onSend(data);
@@ -139,13 +144,14 @@ export const MainPageLeftPanel = () => {
                 scrollButtons={true}
                 value={activeTab}
                 onChange={(e, newValue) => {
+                  console.log({ newValue });
                   setActiveTab(newValue);
                 }}
               >
                 <TabWithCheckbox
                   error={(touched["data"] || submitCount) && errors.data}
                   checked={values.analysisIncluded.data}
-                  onChange={() => {
+                  onChangeCheckbox={() => {
                     setFieldValue(
                       "analysisIncluded.data",
                       !values.analysisIncluded.data
@@ -162,7 +168,7 @@ export const MainPageLeftPanel = () => {
                     isPopulationUseRandomForest(values) ||
                     values.analysisIncluded.randomForest
                   }
-                  onChange={() => {
+                  onChangeCheckbox={() => {
                     !isPopulationUseRandomForest(values) &&
                       setFieldValue(
                         "analysisIncluded.randomForest",
@@ -176,10 +182,24 @@ export const MainPageLeftPanel = () => {
                     (touched["population"] || submitCount) && errors.population
                   }
                   checked={values.analysisIncluded.population}
-                  onChange={() => {
+                  onChangeCheckbox={() => {
                     setFieldValue(
                       "analysisIncluded.population",
                       !values.analysisIncluded.population
+                    );
+                  }}
+                  label={strings["population.title"]}
+                />
+                <TabWithCheckbox
+                  error={
+                    (touched["migrations"] || submitCount) &&
+                    (errors.migrations as string)
+                  }
+                  checked={values.analysisIncluded.migrations}
+                  onChangeCheckbox={() => {
+                    setFieldValue(
+                      "analysisIncluded.migrations",
+                      !values.analysisIncluded.migrations
                     );
                   }}
                   label={strings["population.title"]}
@@ -201,6 +221,9 @@ export const MainPageLeftPanel = () => {
               <div style={activeTab !== 2 ? { display: "none" } : undefined}>
                 <PopulationForm name={"population"} />
               </div>
+              <div style={activeTab !== 3 ? { display: "none" } : undefined}>
+                <MigrationsForm />
+              </div>
             </div>
           </Drawer>
         );
@@ -208,20 +231,24 @@ export const MainPageLeftPanel = () => {
     </Formik>
   );
 };
-const TabWithCheckbox = (
-  props: Omit<TabProps, "onChange"> & {
-    checked?: boolean;
-    error?: boolean | string | number;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any;
-  }
-) => (
+const TabWithCheckbox = ({
+  checked,
+  onChangeCheckbox,
+  label,
+  error,
+  ...props
+}: TabProps & {
+  checked?: boolean;
+  error?: boolean | string | number;
+  onChangeCheckbox?: (e: React.ChangeEvent<HTMLInputElement>) => any;
+}) => (
   <Tab
-    className={props.error ? "common__card_error" : ""}
+    className={error ? "common__card_error" : ""}
     {...props}
     label={
       <>
-        <Checkbox checked={props.checked} onChange={props.onChange} />
-        <Typography>{props.label}</Typography>
+        <Checkbox checked={checked} onChange={onChangeCheckbox} />
+        <Typography>{label}</Typography>
       </>
     }
   />
