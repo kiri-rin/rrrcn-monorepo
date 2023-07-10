@@ -75,7 +75,6 @@ const parseGeojsonGeometry = (
     case "Point": {
       return [
         new google.maps.Marker({
-          title: properties?.name,
           icon: {
             url: "https://cdn.iconscout.com/icon/free/png-256/free-dot-22-433567.png?f=webp",
             size: new google.maps.Size(6, 6),

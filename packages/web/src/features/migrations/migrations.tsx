@@ -18,7 +18,7 @@ import { MapDrawingContext } from "../../common/map/MapEdit";
 import { BirdMigrationInfo } from "./components/BirdMigrationInfo";
 import { parse } from "date-fns";
 const DATE_PROP = "name";
-const DATE_FORMAT = "dd.MM.YYYY hh:mm:ss";
+const DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 type MigrationMapObjects = {
   mapObjects: GoogleMapObject[];
 };
@@ -57,8 +57,8 @@ export const MigrationsForm = () => {
           }}
           migration={migr}
           isEdit={currentEdit === index}
-          onShowOnMap={showMapObjects}
-          onHideOnMap={hideMapObjects}
+          showOnMap={showMapObjects}
+          hideOnMap={hideMapObjects}
           onEditEnd={(result) => {
             setMigrations((prev) => {
               if (!prev) {
@@ -104,7 +104,10 @@ const onFilesChange =
           geojson: geojson as IndexedMigration["geojson"],
           title: file.name,
           years: [],
-          mapObjects: parseGeojson(geojson),
+          mapObjects: parseGeojson(geojson).map((it, index) => {
+            it.set("title", geojson.features[index].properties?.date);
+            return it;
+          }),
         });
         if (res.length === files?.length) {
           onParseEnd(res);
