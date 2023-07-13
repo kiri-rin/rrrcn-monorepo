@@ -327,6 +327,44 @@ export class Api {
   };
 
   contentTypeBuilder = {
+    getApiContentTypeBuilderContentTypes: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypes"]["output"]
+        >
+      >(`/api/content-type-builder/content-types`, options),
+
+    getApiContentTypeBuilderContentTypesUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypesUid"]["output"]
+        >
+      >(`/api/content-type-builder/content-types/${uid}`, options),
+
+    getApiContentTypeBuilderComponents: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponents"]["output"]
+        >
+      >(`/api/content-type-builder/components`, options),
+
+    getApiContentTypeBuilderComponentsUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponentsUid"]["output"]
+        >
+      >(`/api/content-type-builder/components/${uid}`, options),
+
     getContentTypeBuilderReservedNames: (options?: AxiosRequestConfig) =>
       this.axiosInstance.get<
         any,
@@ -463,44 +501,6 @@ export class Api {
           Types["contentTypeBuilder"]["deleteContentTypeBuilderComponentCategoriesName"]["output"]
         >
       >(`/content-type-builder/component-categories/${name}`, options),
-
-    getApiContentTypeBuilderContentTypes: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypes"]["output"]
-        >
-      >(`/api/content-type-builder/content-types`, options),
-
-    getApiContentTypeBuilderContentTypesUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypesUid"]["output"]
-        >
-      >(`/api/content-type-builder/content-types/${uid}`, options),
-
-    getApiContentTypeBuilderComponents: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponents"]["output"]
-        >
-      >(`/api/content-type-builder/components`, options),
-
-    getApiContentTypeBuilderComponentsUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponentsUid"]["output"]
-        >
-      >(`/api/content-type-builder/components/${uid}`, options),
   };
 
   email = {
@@ -1085,6 +1085,36 @@ export class Api {
       >(`/api/analysis/scripts`, options),
   };
 
+  classifiers = {
+    postApiClassifiersRandomForest: (
+      data: Types["classifiers"]["postApiClassifiersRandomForest"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["classifiers"]["postApiClassifiersRandomForest"]["output"]
+        >
+      >(`/api/classifiers/randomForest`, data, options),
+  };
+
+  eeData = {
+    postApiEeDataExtract: (
+      data: Types["eeData"]["postApiEeDataExtract"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<Types["eeData"]["postApiEeDataExtract"]["output"]>
+      >(`/api/ee-data/extract`, data, options),
+
+    getApiEeDataScripts: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["eeData"]["getApiEeDataScripts"]["output"]>
+      >(`/api/ee-data/scripts`, options),
+  };
+
   result = {
     getApiResultDownloadResultId: (
       resultId: string,
@@ -1140,6 +1170,17 @@ export class Api {
         any,
         AxiosResponse<Types["result"]["deleteApiResultsId"]["output"]>
       >(`/api/results/${id}`, options),
+  };
+
+  migration = {
+    postApiMigrationSplitArea: (
+      data: Types["migration"]["postApiMigrationSplitArea"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<Types["migration"]["postApiMigrationSplitArea"]["output"]>
+      >(`/api/migration/split-area`, data, options),
   };
 
   constructor(instance: AxiosInstance = axios.create()) {

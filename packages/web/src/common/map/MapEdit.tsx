@@ -12,6 +12,7 @@ import React, {
   useContext,
 } from "react";
 import { Libraries } from "@react-google-maps/api/dist/utils/make-load-script-url";
+import { GoogleMapObject } from "../../utils/geometry/map/useDrawGeojson";
 
 const center = {
   lat: 44.745,
@@ -34,6 +35,8 @@ export const MapDrawingContext = createContext<{
   setDrawingManager: Dispatch<
     SetStateAction<google.maps.drawing.DrawingManager | undefined>
   >;
+  showMapObjects: (shapes: GoogleMapObject[]) => any;
+  hideMapObjects: (shapes: GoogleMapObject[]) => any;
 }>({
   onShapeReady: (shape: MapDrawingShape) => {},
   setOnShapeReady: () => {},
@@ -41,6 +44,8 @@ export const MapDrawingContext = createContext<{
   setDrawing: () => {},
   setMap: () => {},
   setDrawingManager: () => {},
+  showMapObjects: () => {},
+  hideMapObjects: () => {},
 });
 type ShapeKeys = "overlay" | "circle" | "marker" | "polygon" | "rectangle";
 

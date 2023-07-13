@@ -22,4 +22,16 @@
     flex-direction: row;
     justify-content: space-between;
   }
+  &__accordion-row-summary{
+    .MuiAccordionSummary-content{
+      width:100%;
+    }
+  }
+  &__ellipsis-text{
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+  }
 }

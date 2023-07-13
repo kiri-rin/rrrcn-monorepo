@@ -132,6 +132,26 @@ type Types = {
     };
   };
   contentTypeBuilder: {
+    getApiContentTypeBuilderContentTypes: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderContentTypesUid: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderComponents: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderComponentsUid: {
+      input: any;
+
+      output: any;
+    };
     getContentTypeBuilderReservedNames: {
       input: any;
 
@@ -193,26 +213,6 @@ type Types = {
       output: any;
     };
     deleteContentTypeBuilderComponentCategoriesName: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderContentTypes: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderContentTypesUid: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderComponents: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderComponentsUid: {
       input: any;
 
       output: any;
@@ -568,6 +568,25 @@ type Types = {
       output: any;
     };
   };
+  classifiers: {
+    postApiClassifiersRandomForest: {
+      input: any;
+
+      output: any;
+    };
+  };
+  eeData: {
+    postApiEeDataExtract: {
+      input: any;
+
+      output: any;
+    };
+    getApiEeDataScripts: {
+      input: any;
+
+      output: any;
+    };
+  };
   result: {
     getApiResultDownloadResultId: {
       input: any;
@@ -605,20 +624,8 @@ type Types = {
       output: any;
     };
   };
-  classifiers: {
-    postApiClassifiersRandomForest: {
-      input: any;
-
-      output: any;
-    };
-  };
-  eeData: {
-    postApiEeDataExtract: {
-      input: any;
-
-      output: any;
-    };
-    getApiEeDataScripts: {
+  migration: {
+    postApiMigrationSplitArea: {
       input: any;
 
       output: any;

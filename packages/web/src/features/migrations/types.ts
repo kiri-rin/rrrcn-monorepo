@@ -1,11 +1,19 @@
-import { GeoJSON, GeoJsonProperties, Geometry } from "geojson";
+import { GeoJSON, Geometry } from "geojson";
+export enum SEASONS {
+  SPRING = "spring",
+  SUMMER = "summer",
+  AUTUMN = "autumn",
+  WINTER = "winter",
+}
+
 export type MigrationYear = {
   meta?: any;
   title?: string;
-  summer?: [number, number];
-  autumn?: [number, number];
-  winter?: [number, number];
-  spring?: [number, number];
+
+  [SEASONS.SUMMER]?: [number, number];
+  [SEASONS.AUTUMN]?: [number, number];
+  [SEASONS.WINTER]?: [number, number];
+  [SEASONS.SPRING]?: [number, number];
 };
 export type Migration = {
   meta?: {};

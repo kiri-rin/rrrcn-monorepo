@@ -8,6 +8,7 @@ import {
   MapEdit,
 } from "../../common/map/MapEdit";
 import { AnalysisRightPanel } from "../../navigation/main-page/right-panel";
+import { GoogleMapObject } from "../../utils/geometry/map/useDrawGeojson";
 
 export const MainPage = () => {
   const [drawing, setDrawing] = useState<
@@ -18,6 +19,18 @@ export const MainPage = () => {
   const [map, setMap] = useState<google.maps.Map>();
   const [onShapeReady, setOnShapeReady] = useState(
     useCallback(() => (shape: MapDrawingShape) => {}, [])
+  );
+  const showMapObjects = useCallback(
+    (shapes: GoogleMapObject[]) => {
+      shapes.forEach((shape) => shape.setMap(map || null));
+    },
+    [map]
+  );
+  const hideMapObjects = useCallback(
+    (shapes: GoogleMapObject[]) => {
+      shapes.forEach((shape) => shape.setMap(null));
+    },
+    [map]
   );
   return (
     <MapDrawingContext.Provider
@@ -30,6 +43,8 @@ export const MainPage = () => {
         setDrawingManager,
         map,
         setMap,
+        showMapObjects,
+        hideMapObjects,
       }}
     >
       <div>
