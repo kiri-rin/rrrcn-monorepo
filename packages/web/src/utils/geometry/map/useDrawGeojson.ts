@@ -64,9 +64,9 @@ const parseGeojsonGeometry = (
     case "Polygon": {
       return [
         new google.maps.Polygon({
-          paths: geometry.coordinates.map((coord) => ({
-            lat: coord[1],
-            lng: coord[0],
+          paths: geometry.coordinates[0].map((coord) => ({
+            lat: Number(coord[1]),
+            lng: Number(coord[0]),
           })),
         }),
       ];
@@ -82,8 +82,8 @@ const parseGeojsonGeometry = (
             origin: new google.maps.Point(120, 120),
           },
           position: {
-            lat: geometry.coordinates[1],
-            lng: geometry.coordinates[0],
+            lat: Number(geometry.coordinates[1]),
+            lng: Number(geometry.coordinates[0]),
           },
         }),
       ];

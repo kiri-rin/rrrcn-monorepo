@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../migrations-choose-tracks";
+import { IndexedMigration } from "../migrations";
 import React, { useContext } from "react";
 import { MapDrawingContext } from "../../../common/map/MapEdit";
 import { Button, Typography } from "@mui/material";

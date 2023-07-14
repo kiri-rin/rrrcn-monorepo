@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../migrations-choose-tracks";
+import { IndexedMigration } from "../migrations";
 import { SEASONS } from "../types";
 import React, { useMemo } from "react";
 import Modal from "@mui/material/Modal";

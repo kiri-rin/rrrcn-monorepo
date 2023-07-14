@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../migrations-choose-tracks";
+import { IndexedMigration } from "../migrations";
 import {
   Accordion,
   AccordionDetails,

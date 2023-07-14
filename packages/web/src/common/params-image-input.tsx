@@ -29,7 +29,6 @@ export const ParamsImageInput = ({ name }: { name: string }) => {
     { enabled: false, refetchOnWindowFocus: false }
   );
   const strings = useTranslations();
-  console.log({ config });
 
   switch (config?.type) {
     case "scripts":

@@ -19,5 +19,5 @@ export type Migration = {
   meta?: {};
   title: string;
   geojson: GeoJSON.FeatureCollection<Geometry, { date: Date }>;
-  years: { [year: number]: MigrationYear };
+  years: { [year: string]: MigrationYear };
 };

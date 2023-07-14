@@ -1,43 +1,87 @@
-import React, { useState } from "react";
-import { Tabs } from "@mui/material";
-import Tab from "@mui/material/Tab";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Input } from "@mui/material";
+import {
+  GoogleMapObject,
+  parseGeojson,
+} from "../../utils/geometry/map/useDrawGeojson";
+import { Migration, SEASONS } from "./types";
+import { MigrationInfo } from "./components/migration-info";
+import { parseMigrationsKml } from "./utils";
 import { MigrationsChooseAreas } from "./migrations-choose-areas";
-import { MigrationsChooseTracks } from "./migrations-choose-tracks";
-import { useMutation, useQuery } from "react-query";
-const STEPS = [
-  { label: "Index tracks", Component: MigrationsChooseTracks },
-  { label: "Choose RF areas", Component: MigrationsChooseAreas },
-];
-export const MigrationsForm = () => {
-  const [step, setStep] = useState(0);
 
-  const { data: migrationSplitAreaState } = useQuery("migration-split-area");
-  const isStepAvailable = (step: number) => {
-    if (!step) {
-      return true;
-    } else {
-      return migrationSplitAreaState;
-    }
-  };
+type MigrationMapObjects = {
+  mapObjects: GoogleMapObject[];
+};
+export type SelectedSeasonsType = {
+  [year: string]: { [season in SEASONS]: boolean };
+};
+export type IndexedMigration = Migration & MigrationMapObjects;
+export const MigrationsForm = () => {
+  const [worker, setWorker] = useState<Worker | undefined>();
+  const [migrations, setMigrations] = useState<
+    IndexedMigration[] | undefined
+  >();
+  const [currentEdit, setCurrentEdit] = useState<number | null>(null);
+
+  useEffect(() => {
+    setWorker(
+      new Worker(new URL("./workers/index_tracks.ts", import.meta.url))
+    );
+  }, []);
+
   return (
-    <>
-      <Tabs
-        variant={"scrollable"}
-        scrollButtons={true}
-        value={step}
-        onChange={(e, newValue) => {
-          isStepAvailable(newValue) && setStep(newValue);
-        }}
-      >
-        {STEPS.map(({ label }) => (
-          <Tab label={label} />
-        ))}
-      </Tabs>
-      {STEPS.map(({ Component }, index) => (
-        <div style={step !== index ? { display: "none" } : undefined}>
-          <Component />
-        </div>
+    <div>
+      <Input
+        inputProps={{ multiple: true }}
+        size={"small"}
+        type={"file"}
+        onChange={({
+          target: { files },
+        }: React.ChangeEvent<HTMLInputElement>) => {
+          worker &&
+            parseMigrationsKml(worker, files).then((res: any) =>
+              setMigrations(
+                res.map((it: any) => {
+                  it.mapObjects = parseGeojson(it.geojson).map((_it, index) => {
+                    _it.set(
+                      "title",
+                      it.geojson.features[index].properties?.name +
+                        " || " +
+                        it.geojson.features[index].properties?.date
+                    );
+                    return _it;
+                  });
+                  return it;
+                })
+              )
+            );
+        }} // TODO add show/hide button
+      />
+      {migrations?.map((migr, index) => (
+        <MigrationInfo
+          setIsEdit={(edit) => {
+            setCurrentEdit((curEdit) => {
+              if (curEdit === index && !edit) {
+                return null;
+              } else {
+                return index;
+              }
+            });
+          }}
+          migration={migr}
+          isEdit={currentEdit === index}
+          onEditEnd={(result) => {
+            setMigrations((prev) => {
+              if (!prev) {
+                prev = [];
+              }
+              prev[index] = result;
+              return prev;
+            });
+          }}
+        />
       ))}
-    </>
+      <MigrationsChooseAreas migrations={migrations || []} />
+    </div>
   );
 };
