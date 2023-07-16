@@ -1,4 +1,4 @@
-import { GeoJSON, Geometry } from "geojson";
+import { GeoJSON, Geometry, Point } from "geojson";
 export enum SEASONS {
   SPRING = "spring",
   SUMMER = "summer",
@@ -18,6 +18,6 @@ export type MigrationYear = {
 export type Migration = {
   meta?: {};
   title: string;
-  geojson: GeoJSON.FeatureCollection<Geometry, { date: Date }>;
+  geojson: GeoJSON.FeatureCollection<Point, { date: Date }>;
   years: { [year: string]: MigrationYear };
 };

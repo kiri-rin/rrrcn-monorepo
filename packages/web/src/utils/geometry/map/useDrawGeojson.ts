@@ -77,8 +77,8 @@ const parseGeojsonGeometry = (
         new google.maps.Marker({
           icon: {
             url: "https://cdn.iconscout.com/icon/free/png-256/free-dot-22-433567.png?f=webp",
-            size: new google.maps.Size(6, 6),
-            anchor: new google.maps.Point(3, 3),
+            size: new google.maps.Size(12, 12),
+            anchor: new google.maps.Point(6, 6),
             origin: new google.maps.Point(120, 120),
           },
           position: {

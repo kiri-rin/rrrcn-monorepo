@@ -10,7 +10,7 @@ import { parseMigrationsKml } from "./utils";
 import { MigrationsChooseAreas } from "./migrations-choose-areas";
 
 type MigrationMapObjects = {
-  mapObjects: GoogleMapObject[];
+  mapObjects: google.maps.Marker[];
 };
 export type SelectedSeasonsType = {
   [year: string]: { [season in SEASONS]: boolean };
@@ -40,22 +40,9 @@ export const MigrationsForm = () => {
         }: React.ChangeEvent<HTMLInputElement>) => {
           worker &&
             parseMigrationsKml(worker, files).then((res: any) =>
-              setMigrations(
-                res.map((it: any) => {
-                  it.mapObjects = parseGeojson(it.geojson).map((_it, index) => {
-                    _it.set(
-                      "title",
-                      it.geojson.features[index].properties?.name +
-                        " || " +
-                        it.geojson.features[index].properties?.date
-                    );
-                    return _it;
-                  });
-                  return it;
-                })
-              )
+              setMigrations(addMigrationsMarkers(res))
             );
-        }} // TODO add show/hide button
+        }}
       />
       {migrations?.map((migr, index) => (
         <MigrationInfo
@@ -84,4 +71,15 @@ export const MigrationsForm = () => {
       <MigrationsChooseAreas migrations={migrations || []} />
     </div>
   );
+};
+const addMigrationsMarkers = (migrations: Partial<IndexedMigration>[]) => {
+  return migrations.map((it: any) => {
+    it.mapObjects = parseGeojson(it.geojson).map((_it, index) => {
+      (_it as google.maps.Marker).setTitle(
+        String(it.geojson.features[index].properties?.date)
+      );
+      return _it;
+    });
+    return it;
+  });
 };
