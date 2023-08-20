@@ -1,10 +1,7 @@
-import {
-  DataExtractionInput,
-  ScriptInputConfig,
-} from "../random-forest/data-extraction";
+import { DataExtractionInput, ScriptInputConfig } from "./data-extraction";
 import * as yup from "yup";
-import { DatesInputSchema } from "./dates-schemas";
-import { GeometryInputSchema } from "./geometry-validations";
+import { DatesInputSchema } from "../common/dates-schemas";
+import { GeometryInputSchema } from "../common/geometry-validations";
 
 export const ScriptInputSchema: yup.Schema<ScriptInputConfig> = yup.object({
   key: yup.string<ScriptInputConfig["key"]>().min(1).required(),

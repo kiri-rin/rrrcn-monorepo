@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 import { MigrationYear, SEASONS } from "../types";
-import { MapDrawingContext } from "../../../common/map/MapEdit";
+import { MapDrawingContext } from "../../../components/map/MapEdit";
 import { BirdMigrationYear } from "./migration-year";
 import { BirdMigrationSelectSeasonModal } from "./migration-select-season";
 import {

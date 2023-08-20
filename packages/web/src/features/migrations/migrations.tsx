@@ -7,8 +7,8 @@ import {
 import { Migration, SEASONS } from "./types";
 import { MigrationInfo } from "./components/migration-info";
 import { parseMigrationsKml } from "./utils";
-import { MigrationsChooseAreas } from "./migrations-choose-areas";
-import { MigrationsGeneratedTracks } from "./migrations-generated-tracks";
+import { MigrationsChooseAreas } from "./components/migrations-choose-areas";
+import { MigrationsGeneratedTracks } from "./components/migrations-generated-tracks";
 
 type MigrationMapObjects = {
   mapObjects: google.maps.Marker[];

@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { lazy } from "yup";
-import { GeometryInputConfig } from "../../common/geometry-input";
+import { GeometryInputConfig } from "../../components/geometry-input";
 import { DataExtractionInput } from "../random-forest/data-extraction";
 
 export const GeometryInputSchema: (

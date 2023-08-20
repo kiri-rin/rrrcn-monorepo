@@ -6,7 +6,7 @@ import { AppBar, MenuItem, Select, styled, Toolbar } from "@mui/material";
 import { LangType, setLangAction } from "./store/store/lang/actions";
 import { RootState } from "./store/store/root-reducer";
 import { MainPage } from "./navigation/main-page";
-import "./common/common.scss";
+import "./components/common.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
 export const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const queryClient = new QueryClient();

@@ -1,4 +1,4 @@
-import { DatesInputConfig } from "../../common/date-inputs/dates-input";
+import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import {
   DatesConfig,
   getDateIntervals,

@@ -3,22 +3,22 @@ import { Button, Select } from "@mui/material";
 import {
   GoogleMapObject,
   parseGeojson,
-} from "../../utils/geometry/map/useDrawGeojson";
+} from "../../../utils/geometry/map/useDrawGeojson";
 import { GeoJSON } from "geojson";
-import { Migration, SEASONS } from "./types";
-import { MapDrawingContext } from "../../common/map/MapEdit";
-import { ParamsImageInput } from "../../common/params-image-input";
+import { Migration, SEASONS } from "../types";
+import { MapDrawingContext } from "../../../components/map/MapEdit";
+import { ParamsImageInput } from "../../../components/params-image-input";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
-import { api } from "../../api";
-import { SelectedSeasonsType } from "./migrations";
+import { api } from "../../../api";
+import { SelectedSeasonsType } from "../migrations";
 import { GeneratedTrack } from "@rrrcn/services/dist/src/controllers/migrations/types";
 import {
   getFeaturesPolyline,
   getMigrationPathsPolylines,
-} from "./utils/map-objects";
+} from "../utils/map-objects";
 
 type MigrationMapObjects = {
   mapObjects: GoogleMapObject[];

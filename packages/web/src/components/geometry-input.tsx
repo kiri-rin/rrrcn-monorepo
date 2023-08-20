@@ -20,12 +20,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 type InputModesType = "csv" | "geojson" | "geojson_file" | "shp";
 
-const inputModes: InputModesType[] = [
-  "csv",
-  "geojson",
-  // "geojson_file",
-  "shp",
-];
+const inputModes: InputModesType[] = ["csv", "geojson", "geojson_file", "shp"];
 const typeTitles: any = {
   geojson: "map",
 };
@@ -35,6 +30,12 @@ const inputTypesPlaceholders = {
   asset: "Загруззите shp файл",
   geojson: "",
   map: "Выберите точки на карте",
+};
+const mimeTypes: { [p in InputModesType | string]: string } = {
+  geojson: "",
+  csv: "text/csv",
+  geojson_file: "",
+  shp: "application/zip",
 };
 export type GeometryInputConfig = GeometriesImportConfig<File | undefined>;
 export const GeometryInput = ({
@@ -60,8 +61,7 @@ export const GeometryInput = ({
         {geometryConfig?.type !== "geojson" ? (
           <Input
             inputProps={{
-              accept:
-                geometryConfig?.type === "shp" ? "application/zip" : "text/csv",
+              accept: mimeTypes[geometryConfig?.type!],
             }}
             size={"small"}
             type={"file"}

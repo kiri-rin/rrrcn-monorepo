@@ -17,22 +17,31 @@ import {
   RandomForestConfig,
   SeparateTrainingPoints,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { GeometryInput } from "../../common/geometry-input";
-import { DatesInputConfig } from "../../common/date-inputs/dates-input";
+import { GeometryInput } from "../../components/geometry-input";
+import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import { useTranslations } from "../../utils/translations";
 import { serializeRequestToForm } from "../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
 
 import Divider from "@mui/material/Divider";
 import { DataExtractionInput, ScriptInputConfig } from "./data-extraction";
-import { ParamsImageInput } from "../../common/params-image-input";
-import { FormikErrors, useField, useFormikContext } from "formik";
+import { ParamsImageInput } from "../../components/params-image-input";
+import {
+  FormikContext,
+  FormikErrors,
+  useField,
+  useFormik,
+  useFormikContext,
+} from "formik";
 import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
 import Typography from "@mui/material/Typography";
-import { CommonPaper } from "../../common/common";
+import { CommonPaper } from "../../components/common";
 import { scriptKey } from "@rrrcn/services/dist/src/services/ee-data";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useSendAnalysis } from "../common/utils";
+import { DataExtractionValidationSchema } from "./data-schemas";
+import { RandomForestInputSchema } from "./rf-schemas";
 
 export interface RandomForestInputConfig
   extends Omit<
@@ -72,242 +81,262 @@ export const defaultRFConfig: Partial<RandomForestInputConfig> = {
   regionOfInterest: { type: "csv", path: undefined },
   outputMode: "PROBABILITY",
 };
-export const RandomForestConfigForm = ({ name }: { name: string }) => {
-  const { setFieldValue, touched, submitCount } = useFormikContext<any>();
-  const [
-    { value: config = defaultRFConfig },
-    fieldMeta,
-    { setValue: setConfig },
-  ] = useField<Partial<RandomForestInputConfig>>(name);
-  const errors = fieldMeta.error as any;
-
+export const RandomForestConfigForm = () => {
+  const { onSend } = useSendAnalysis("random-forest");
+  const formik = useFormik<Partial<RandomForestInputConfig>>({
+    initialValues: defaultRFConfig,
+    validationSchema: RandomForestInputSchema,
+    onSubmit: (data) => {
+      onSend(data);
+    },
+  });
+  const {
+    submitCount,
+    touched,
+    values: config,
+    errors,
+    submitForm,
+    setFieldValue,
+    setValues: setConfig,
+  } = formik;
   const strings = useTranslations();
   //TODO VALIDATE
   return (
-    <div style={{ paddingBottom: 20 }}>
-      <CommonPaper
-        error={
-          (touched[`${name}.outputMode`] || submitCount) && errors?.outputMode
-        }
-      >
-        <div className={"common__row"}>
-          <Typography sx={{ marginY: "10px" }}>
-            {strings["random-forest.choose-output-mode"]}
-          </Typography>
-          <Select
-            size={"small"}
-            onChange={({ target: { value } }) => {
-              setFieldValue(`${name}.outputMode`, value);
-            }}
-            value={config.outputMode || "PROBABILITY"}
-          >
-            <MenuItem value={"PROBABILITY"}>PROBABILITY</MenuItem>
-            <MenuItem value={"REGRESSION"}>REGRESSION</MenuItem>
-            <MenuItem value={"CLASSIFICATION"}> CLASSIFICATION</MenuItem>
-          </Select>
-        </div>
-      </CommonPaper>
-      <CommonPaper
-        error={
-          (touched[`${name}.regionOfInterest`] || submitCount) &&
-          errors?.regionOfInterest
-        }
-      >
-        <Typography sx={{ marginY: "10px" }}>
-          {strings["random-forest.choose-region"]}
-        </Typography>
-        <GeometryInput
-          type={"polygon" as google.maps.drawing.OverlayType.POLYGON}
-          value={config.regionOfInterest}
-          onChange={(value) =>
-            setConfig({ ...config, regionOfInterest: value })
-          }
-        />
-      </CommonPaper>
-      <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-
-      <TrainingPointsInput name={`${name}.trainingPoints`} />
-      <Accordion defaultExpanded={false} sx={{ boxShadow: "none" }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          sx={{
-            boxShadow:
-              "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
-          }}
-          className={`common__card common__card_${
-            (touched[`${name}.validation`] || submitCount) && errors?.validation
-              ? "error"
-              : "blue"
-          }`}
+    <FormikContext.Provider value={formik}>
+      <div style={{ paddingBottom: 20 }}>
+        <CommonPaper
+          error={(touched[`outputMode`] || submitCount) && errors?.outputMode}
         >
           <div className={"common__row"}>
-            <Typography>{strings["random-forest.validation"]}</Typography>
+            <Typography sx={{ marginY: "10px" }}>
+              {strings["random-forest.choose-output-mode"]}
+            </Typography>
             <Select
-              value={config?.validation?.type}
-              onChange={({ target: { value: _value } }) => {
-                setFieldValue(`${name}.validation`, {
-                  type: _value,
-                  ...(_value === "external" && {
-                    points: defaultRFConfig["trainingPoints"],
-                  }),
-                });
-              }}
               size={"small"}
+              onChange={({ target: { value } }) => {
+                setFieldValue(`outputMode`, value);
+              }}
+              value={config.outputMode || "PROBABILITY"}
             >
-              <MenuItem value={"split"}>
-                {strings["random-forest.validation.split-points"]}
-              </MenuItem>
-              <MenuItem value={"external"}>
-                {strings["random-forest.validation.external"]}
-              </MenuItem>
+              <MenuItem value={"PROBABILITY"}>PROBABILITY</MenuItem>
+              <MenuItem value={"REGRESSION"}>REGRESSION</MenuItem>
+              <MenuItem value={"CLASSIFICATION"}> CLASSIFICATION</MenuItem>
             </Select>
           </div>
-        </AccordionSummary>
-        <AccordionDetails sx={{}}>
-          {(() => {
-            switch (config.validation?.type) {
-              case "external": {
-                return (
-                  <>
-                    <TrainingPointsInput
-                      title={strings["random-forest.choose-validation-points"]}
-                      name={`${name}.validation.points`}
-                    />
-                  </>
-                );
-              }
-              case "split":
-                return (
-                  <CommonPaper
-                    error={
-                      !!(
-                        touched[`${name}.validation.split`] ||
-                        touched[`${name}.validation.seed`] ||
-                        submitCount
-                      ) &&
-                      (errors?.validation?.split || errors?.validation?.seed)
-                    }
-                  >
-                    <TextField
-                      margin={"dense"}
-                      size={"small"}
-                      label={strings["random-forest.validation.split"]}
-                      value={config.validation?.split}
-                      onChange={({ target: { value } }) =>
-                        setFieldValue(`${name}.validation.split`, value)
-                      }
-                    />
-                    <TextField
-                      margin={"dense"}
-                      size={"small"}
-                      label={strings["random-forest.validation.seed"]}
-                      value={config.validation?.seed}
-                      onChange={({ target: { value } }) =>
-                        setFieldValue(`${name}.validation.seed`, value)
-                      }
-                    />
-                    <TextField
-                      margin={"dense"}
-                      size={"small"}
-                      label={
-                        strings["random-forest.validation.cross_validation"]
-                      }
-                      value={config.validation?.cross_validation}
-                      onChange={({ target: { value } }) =>
-                        setFieldValue(
-                          `${name}.validation.cross_validation`,
-                          value
-                        )
-                      }
-                    />
-                    {config.validation?.cross_validation && (
-                      <div>
-                        <div
-                          onClick={() => {
-                            if (config.validation?.type === "split") {
-                              setFieldValue(
-                                `${name}.validation.render_mean`,
-                                !(config.validation.render_mean !== undefined
-                                  ? config.validation.render_mean
-                                  : true)
-                              );
-                            }
-                          }}
-                          className={"common__row"}
-                          style={{ width: "fit-content", cursor: "pointer" }}
-                        >
-                          <Checkbox
-                            checked={
-                              config.validation.render_mean !== undefined
-                                ? config.validation.render_mean
-                                : true
-                            }
-                          />
-                          <Typography>
-                            {strings["random-forest.validation.render_mean"]}
-                          </Typography>
-                        </div>
-                        <div
-                          onClick={() => {
-                            if (config.validation?.type === "split") {
-                              setFieldValue(
-                                `${name}.validation.render_best`,
-                                config.validation.render_best !== undefined
-                                  ? !config.validation.render_best
-                                  : false
-                              );
-                            }
-                          }}
-                          className={"common__row"}
-                          style={{ width: "fit-content", cursor: "pointer" }}
-                        >
-                          <Checkbox
-                            checked={
-                              config.validation.render_best !== undefined
-                                ? config.validation.render_best
-                                : true
-                            }
-                          />
-                          <Typography>
-                            {strings["random-forest.validation.render_best"]}
-                          </Typography>
-                        </div>
-                        <div className={"common__row"}>
-                          <Typography>
-                            {strings["random-forest.validation.use-by-default"]}
-                          </Typography>
-                          <Select
-                            onChange={({ target: { value } }) =>
-                              setFieldValue(
-                                `${name}.validation.return_default`,
-                                value
-                              )
-                            }
-                            size={"small"}
-                            value={config.validation.return_default || "best"}
-                          >
-                            <MenuItem value={"best"}>
-                              {strings["random-forest.validation.best"]}
-                            </MenuItem>
-
-                            <MenuItem value={"mean"}>
-                              {strings["random-forest.validation.mean"]}
-                            </MenuItem>
-                          </Select>
-                        </div>
-                      </div>
-                    )}
-                  </CommonPaper>
-                );
-              default:
-                return <></>;
+        </CommonPaper>
+        <CommonPaper
+          error={
+            (touched[`regionOfInterest`] || submitCount) &&
+            errors?.regionOfInterest
+          }
+        >
+          <Typography sx={{ marginY: "10px" }}>
+            {strings["random-forest.choose-region"]}
+          </Typography>
+          <GeometryInput
+            type={"polygon" as google.maps.drawing.OverlayType.POLYGON}
+            value={config.regionOfInterest}
+            onChange={(value) =>
+              setConfig({ ...config, regionOfInterest: value })
             }
-          })()}
-        </AccordionDetails>
-      </Accordion>
-      <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <ParamsImageInput name={`${name}.params`} />
-    </div>
+          />
+        </CommonPaper>
+        <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
+
+        <TrainingPointsInput name={`trainingPoints`} />
+        <Accordion defaultExpanded={false} sx={{ boxShadow: "none" }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            sx={{
+              boxShadow:
+                "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+            }}
+            className={`common__card common__card_${
+              (touched[`validation`] || submitCount) && errors?.validation
+                ? "error"
+                : "blue"
+            }`}
+          >
+            <div className={"common__row"}>
+              <Typography>{strings["random-forest.validation"]}</Typography>
+              <Select
+                value={config?.validation?.type}
+                onChange={({ target: { value: _value } }) => {
+                  setFieldValue(`validation`, {
+                    type: _value,
+                    ...(_value === "external" && {
+                      points: defaultRFConfig["trainingPoints"],
+                    }),
+                  });
+                }}
+                size={"small"}
+              >
+                <MenuItem value={"split"}>
+                  {strings["random-forest.validation.split-points"]}
+                </MenuItem>
+                <MenuItem value={"external"}>
+                  {strings["random-forest.validation.external"]}
+                </MenuItem>
+              </Select>
+            </div>
+          </AccordionSummary>
+          <AccordionDetails sx={{}}>
+            {(() => {
+              switch (config.validation?.type) {
+                case "external": {
+                  return (
+                    <>
+                      <TrainingPointsInput
+                        title={
+                          strings["random-forest.choose-validation-points"]
+                        }
+                        name={`validation.points`}
+                      />
+                    </>
+                  );
+                }
+                case "split":
+                  return (
+                    <CommonPaper
+                      error={
+                        !!(
+                          (touched as any)[`validation.split`] ||
+                          (touched as any)[`validation.seed`] ||
+                          submitCount
+                        ) &&
+                        ((errors?.validation as any)?.split ||
+                          (errors?.validation as any)?.seed)
+                      }
+                    >
+                      <TextField
+                        margin={"dense"}
+                        size={"small"}
+                        label={strings["random-forest.validation.split"]}
+                        value={config.validation?.split}
+                        onChange={({ target: { value } }) =>
+                          setFieldValue(`validation.split`, value)
+                        }
+                      />
+                      <TextField
+                        margin={"dense"}
+                        size={"small"}
+                        label={strings["random-forest.validation.seed"]}
+                        value={config.validation?.seed}
+                        onChange={({ target: { value } }) =>
+                          setFieldValue(`validation.seed`, value)
+                        }
+                      />
+                      <TextField
+                        margin={"dense"}
+                        size={"small"}
+                        label={
+                          strings["random-forest.validation.cross_validation"]
+                        }
+                        value={config.validation?.cross_validation}
+                        onChange={({ target: { value } }) =>
+                          setFieldValue(`validation.cross_validation`, value)
+                        }
+                      />
+                      {config.validation?.cross_validation && (
+                        <div>
+                          <div
+                            onClick={() => {
+                              if (config.validation?.type === "split") {
+                                setFieldValue(
+                                  `validation.render_mean`,
+                                  !(config.validation.render_mean !== undefined
+                                    ? config.validation.render_mean
+                                    : true)
+                                );
+                              }
+                            }}
+                            className={"common__row"}
+                            style={{ width: "fit-content", cursor: "pointer" }}
+                          >
+                            <Checkbox
+                              checked={
+                                config.validation.render_mean !== undefined
+                                  ? config.validation.render_mean
+                                  : true
+                              }
+                            />
+                            <Typography>
+                              {strings["random-forest.validation.render_mean"]}
+                            </Typography>
+                          </div>
+                          <div
+                            onClick={() => {
+                              if (config.validation?.type === "split") {
+                                setFieldValue(
+                                  `validation.render_best`,
+                                  config.validation.render_best !== undefined
+                                    ? !config.validation.render_best
+                                    : false
+                                );
+                              }
+                            }}
+                            className={"common__row"}
+                            style={{ width: "fit-content", cursor: "pointer" }}
+                          >
+                            <Checkbox
+                              checked={
+                                config.validation.render_best !== undefined
+                                  ? config.validation.render_best
+                                  : true
+                              }
+                            />
+                            <Typography>
+                              {strings["random-forest.validation.render_best"]}
+                            </Typography>
+                          </div>
+                          <div className={"common__row"}>
+                            <Typography>
+                              {
+                                strings[
+                                  "random-forest.validation.use-by-default"
+                                ]
+                              }
+                            </Typography>
+                            <Select
+                              onChange={({ target: { value } }) =>
+                                setFieldValue(
+                                  `validation.return_default`,
+                                  value
+                                )
+                              }
+                              size={"small"}
+                              value={config.validation.return_default || "best"}
+                            >
+                              <MenuItem value={"best"}>
+                                {strings["random-forest.validation.best"]}
+                              </MenuItem>
+
+                              <MenuItem value={"mean"}>
+                                {strings["random-forest.validation.mean"]}
+                              </MenuItem>
+                            </Select>
+                          </div>
+                        </div>
+                      )}
+                    </CommonPaper>
+                  );
+                default:
+                  return <></>;
+              }
+            })()}
+          </AccordionDetails>
+        </Accordion>
+        <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
+        <ParamsImageInput name={`params`} />
+      </div>
+      <Button
+        onClick={() => {
+          submitForm();
+        }}
+      >
+        {strings["data-extraction.get-result"]}
+      </Button>
+    </FormikContext.Provider>
   );
 };
 const TrainingPointsInput = ({
@@ -367,7 +396,7 @@ const TrainingPointsInput = ({
               return (
                 <CommonPaper
                   error={
-                    (touched[`${name}.allPoints.points`] || submitCount) &&
+                    (touched[`allPoints.points`] || submitCount) &&
                     errors?.allPoints?.points
                   }
                 >

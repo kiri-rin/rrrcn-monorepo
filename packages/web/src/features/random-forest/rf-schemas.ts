@@ -1,9 +1,9 @@
 import * as yup from "yup";
 import { lazy } from "yup";
-import { RandomForestInputConfig } from "../random-forest/random-forest";
+import { RandomForestInputConfig } from "./random-forest";
 import { SeparateTrainingPoints } from "@rrrcn/services/dist/src/analytics_config_types";
 import { DefaultScriptParamsSchema, ScriptInputSchema } from "./data-schemas";
-import { GeometryInputSchema } from "./geometry-validations";
+import { GeometryInputSchema } from "../common/geometry-validations";
 
 export const TrainingPointsSchema = lazy(
   (value: RandomForestInputConfig["trainingPoints"]) => {

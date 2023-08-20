@@ -5,15 +5,22 @@ import {
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { CommonPaper } from "../../common/common";
+import { CommonPaper } from "../../components/common";
 import { useTranslations } from "../../utils/translations";
 import React from "react";
 import MenuItem from "@mui/material/MenuItem";
 import { PopulationRandomPointsForm } from "./population-points-generate";
-import { useField, useFormikContext } from "formik";
-import { defaultRFConfig } from "../random-forest/random-forest";
+import { FormikContext, useField, useFormik, useFormikContext } from "formik";
+import {
+  defaultRFConfig,
+  RandomForestInputConfig,
+} from "../random-forest/random-forest";
 import { PopulationDistanceForm } from "./population-distance";
 import { PopulationDensityForm } from "./population-density";
+import { useSendAnalysis } from "../common/utils";
+import { RandomForestInputSchema } from "../random-forest/rf-schemas";
+import { PopulationSchema } from "./population-schemas";
+import { Button } from "@mui/material";
 const Components = {
   "random-points": PopulationRandomPointsForm,
   distance: PopulationDistanceForm,
@@ -30,15 +37,29 @@ export const defaultPopulationConfig: PopulationInputConfig = {
   type: "random-points",
   config: {},
 };
-export const PopulationForm = ({ name }: { name: string }) => {
+export const PopulationForm = () => {
+  const { onSend } = useSendAnalysis("population");
+  const formik = useFormik<Partial<PopulationInputConfig>>({
+    initialValues: defaultPopulationConfig,
+    validationSchema: PopulationSchema,
+    onSubmit: (data) => {
+      onSend(data);
+    },
+  });
+  const {
+    submitCount,
+    touched,
+    values: config,
+    errors,
+    submitForm,
+    setFieldValue,
+    setValues: setConfig,
+  } = formik;
   const strings = useTranslations();
-  const { setFieldValue, touched, submitCount, errors } =
-    useFormikContext<any>();
-  const [{ value: config }, fieldMeta, { setValue: setConfig }] =
-    useField<Partial<PopulationInputConfig>>(name);
+
   const Body = Components[config.type || "density"];
   return (
-    <>
+    <FormikContext.Provider value={formik}>
       <CommonPaper>
         <div className={"common__row"}>
           {strings["population.choose-type"]}
@@ -65,7 +86,14 @@ export const PopulationForm = ({ name }: { name: string }) => {
           </Select>
         </div>
       </CommonPaper>
-      <Body name={`${name}.config`} />
-    </>
+      <Body name={`config`} />
+      <Button
+        onClick={() => {
+          submitForm();
+        }}
+      >
+        {strings["data-extraction.get-result"]}
+      </Button>
+    </FormikContext.Provider>
   );
 };

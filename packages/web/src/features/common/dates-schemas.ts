@@ -3,7 +3,7 @@ import { lazy } from "yup";
 import {
   DateIntervalsInputConfig,
   DatesInputConfig,
-} from "../../common/date-inputs/dates-input";
+} from "../../components/date-inputs/dates-input";
 
 export const DateIntervalsSchema = lazy((value: DateIntervalsInputConfig) => {
   switch (value.type) {

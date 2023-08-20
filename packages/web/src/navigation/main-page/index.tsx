@@ -6,7 +6,7 @@ import {
   MapDrawingContext,
   MapDrawingShape,
   MapEdit,
-} from "../../common/map/MapEdit";
+} from "../../components/map/MapEdit";
 import { AnalysisRightPanel } from "../../navigation/main-page/right-panel";
 import { GoogleMapObject } from "../../utils/geometry/map/useDrawGeojson";
 

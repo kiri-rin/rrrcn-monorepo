@@ -1,6 +1,6 @@
 import { IndexedMigration } from "../migrations";
 import React, { useContext } from "react";
-import { MapDrawingContext } from "../../../common/map/MapEdit";
+import { MapDrawingContext } from "../../../components/map/MapEdit";
 import { Button, Typography } from "@mui/material";
 import { SEASONS } from "../types";
 

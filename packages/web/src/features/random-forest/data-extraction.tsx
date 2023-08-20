@@ -5,27 +5,19 @@ import {
   DataExtractionConfig,
   ScriptConfig,
 } from "@rrrcn/services/dist/src/analytics_config_types";
-import { GeometryInput } from "../../common/geometry-input";
-import { ScriptSelectInput } from "../../common/script-input";
-import { DatesInputConfig } from "../../common/date-inputs/dates-input";
+import { GeometryInput } from "../../components/geometry-input";
+import { ScriptSelectInput } from "../../components/script-input";
+import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import { useTranslations } from "../../utils/translations";
-import { serializeRequestToForm } from "../../utils/request";
-import { mapScriptsConfigToRequest } from "./utils";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../api";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import {
-  useFormikContext,
-  Formik,
-  Form,
-  Field,
-  useField,
-  FieldArray,
-  FormikErrors,
-} from "formik";
-import { CommonPaper } from "../../common/common";
+import { FieldArray, useFormik, FormikContext } from "formik";
+import { CommonPaper } from "../../components/common";
 import Typography from "@mui/material/Typography";
+import { useSendAnalysis } from "../common/utils";
+import { DataExtractionValidationSchema } from "./data-schemas";
 
 export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
   dates?: DatesInputConfig;
@@ -40,65 +32,84 @@ export interface DataExtractionInput
   };
   scripts: ScriptInputConfig[];
 }
-
-export const DataExtractionConfigForm = ({ name }: { name: string }) => {
+export const DataExtractionConfigForm = () => {
   const strings = useTranslations();
-  const { touched, submitCount } = useFormikContext<any>();
-  const [{ value: config = {} }, fieldMeta, { setValue: setConfig }] =
-    useField<Partial<DataExtractionInput>>(name);
+  const { onSend } = useSendAnalysis("data");
+  const formik = useFormik<Partial<DataExtractionInput>>({
+    initialValues: {},
+    validationSchema: DataExtractionValidationSchema,
+    onSubmit: (data) => {
+      onSend(data);
+    },
+  });
+  const {
+    submitCount,
+    touched,
+    values: config,
+    errors,
+    submitForm,
+    setValues: setConfig,
+  } = formik;
   const { data: scriptsList } = useQuery(
     "analysis-scripts",
     (opt) => api.analysis.getApiAnalysisScripts(),
     { enabled: false, refetchOnWindowFocus: false }
   );
-  const errors = fieldMeta.error as FormikErrors<Partial<DataExtractionInput>>;
-  console.log(touched);
   //TODO VALIDATE
   return (
-    <div>
-      <CommonPaper
-        error={(touched?.[`${name}.points`] || submitCount) && errors?.points}
-      >
-        {" "}
-        <Box sx={{ marginY: "10px" }}>
-          {strings["data-extraction.choose-points"]}
-        </Box>
-        <GeometryInput
-          value={config.points}
-          onChange={(value) => setConfig({ ...config, points: value })}
-        />
-      </CommonPaper>
+    <FormikContext.Provider value={formik}>
+      <div>
+        <CommonPaper
+          error={(touched?.[`points`] || submitCount) && errors?.points}
+        >
+          {" "}
+          <Box sx={{ marginY: "10px" }}>
+            {strings["data-extraction.choose-points"]}
+          </Box>
+          <GeometryInput
+            value={config.points}
+            onChange={(value) => setConfig({ ...config, points: value })}
+          />
+        </CommonPaper>
 
-      <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
-      <CommonPaper
-        error={(touched?.[`${name}.scripts`] || submitCount) && errors?.scripts}
-      >
-        <Typography sx={{ marginY: "10px" }}>
-          {strings["data-extraction.choose-params"]}
-        </Typography>
-        <FieldArray name={`${name}.scripts`}>
-          {({ push, remove, name: _name }) => (
-            <>
-              {config?.scripts?.map((it: any, index: number) => (
-                <ScriptSelectInput
-                  key={it.id}
-                  name={`${_name}.${index}`}
-                  onDelete={() => {
-                    remove(index);
+        <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
+        <CommonPaper
+          error={(touched?.[`scripts`] || submitCount) && errors?.scripts}
+        >
+          <Typography sx={{ marginY: "10px" }}>
+            {strings["data-extraction.choose-params"]}
+          </Typography>
+          <FieldArray name={`scripts`}>
+            {({ push, remove, name: _name }) => (
+              <>
+                {config?.scripts?.map((it: any, index: number) => (
+                  <ScriptSelectInput
+                    key={it.id}
+                    name={`${_name}.${index}`}
+                    onDelete={() => {
+                      remove(index);
+                    }}
+                  />
+                ))}
+                <Button
+                  onClick={() => {
+                    push({ id: Math.random(), key: scriptsList?.data?.[0] }); //TODO create new id getter
                   }}
-                />
-              ))}
-              <Button
-                onClick={() => {
-                  push({ id: Math.random(), key: scriptsList?.data?.[0] }); //TODO create new id getter
-                }}
-              >
-                {strings["data-extraction.add-data"]}
-              </Button>
-            </>
-          )}
-        </FieldArray>
-      </CommonPaper>
-    </div>
+                >
+                  {strings["data-extraction.add-data"]}
+                </Button>
+              </>
+            )}
+          </FieldArray>
+        </CommonPaper>
+        <Button
+          onClick={() => {
+            submitForm();
+          }}
+        >
+          {strings["data-extraction.get-result"]}
+        </Button>
+      </div>
+    </FormikContext.Provider>
   );
 };
