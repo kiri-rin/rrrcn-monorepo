@@ -1,4 +1,91 @@
 type Types = {
+  contentTypeBuilder: {
+    getContentTypeBuilderReservedNames: {
+      input: any;
+
+      output: any;
+    };
+    getContentTypeBuilderContentTypes: {
+      input: any;
+
+      output: any;
+    };
+    getContentTypeBuilderContentTypesUid: {
+      input: any;
+
+      output: any;
+    };
+    postContentTypeBuilderContentTypes: {
+      input: any;
+
+      output: any;
+    };
+    putContentTypeBuilderContentTypesUid: {
+      input: any;
+
+      output: any;
+    };
+    deleteContentTypeBuilderContentTypesUid: {
+      input: any;
+
+      output: any;
+    };
+    getContentTypeBuilderComponents: {
+      input: any;
+
+      output: any;
+    };
+    getContentTypeBuilderComponentsUid: {
+      input: any;
+
+      output: any;
+    };
+    postContentTypeBuilderComponents: {
+      input: any;
+
+      output: any;
+    };
+    putContentTypeBuilderComponentsUid: {
+      input: any;
+
+      output: any;
+    };
+    deleteContentTypeBuilderComponentsUid: {
+      input: any;
+
+      output: any;
+    };
+    putContentTypeBuilderComponentCategoriesName: {
+      input: any;
+
+      output: any;
+    };
+    deleteContentTypeBuilderComponentCategoriesName: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderContentTypes: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderContentTypesUid: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderComponents: {
+      input: any;
+
+      output: any;
+    };
+    getApiContentTypeBuilderComponentsUid: {
+      input: any;
+
+      output: any;
+    };
+  };
   contentManager: {
     getContentManagerContentTypes: {
       input: any;
@@ -126,93 +213,6 @@ type Types = {
       output: any;
     };
     getContentManagerCollectionTypesModelIdActionsNumberOfDraftRelations: {
-      input: any;
-
-      output: any;
-    };
-  };
-  contentTypeBuilder: {
-    getApiContentTypeBuilderContentTypes: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderContentTypesUid: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderComponents: {
-      input: any;
-
-      output: any;
-    };
-    getApiContentTypeBuilderComponentsUid: {
-      input: any;
-
-      output: any;
-    };
-    getContentTypeBuilderReservedNames: {
-      input: any;
-
-      output: any;
-    };
-    getContentTypeBuilderContentTypes: {
-      input: any;
-
-      output: any;
-    };
-    getContentTypeBuilderContentTypesUid: {
-      input: any;
-
-      output: any;
-    };
-    postContentTypeBuilderContentTypes: {
-      input: any;
-
-      output: any;
-    };
-    putContentTypeBuilderContentTypesUid: {
-      input: any;
-
-      output: any;
-    };
-    deleteContentTypeBuilderContentTypesUid: {
-      input: any;
-
-      output: any;
-    };
-    getContentTypeBuilderComponents: {
-      input: any;
-
-      output: any;
-    };
-    getContentTypeBuilderComponentsUid: {
-      input: any;
-
-      output: any;
-    };
-    postContentTypeBuilderComponents: {
-      input: any;
-
-      output: any;
-    };
-    putContentTypeBuilderComponentsUid: {
-      input: any;
-
-      output: any;
-    };
-    deleteContentTypeBuilderComponentsUid: {
-      input: any;
-
-      output: any;
-    };
-    putContentTypeBuilderComponentCategoriesName: {
-      input: any;
-
-      output: any;
-    };
-    deleteContentTypeBuilderComponentCategoriesName: {
       input: any;
 
       output: any;
@@ -587,6 +587,18 @@ type Types = {
       output: any;
     };
   };
+  migration: {
+    postApiMigrationSplitArea: {
+      input: any;
+
+      output: any;
+    };
+    postApiMigrationGenerateTracks: {
+      input: any;
+
+      output: any;
+    };
+  };
   result: {
     getApiResultDownloadResultId: {
       input: any;
@@ -619,13 +631,6 @@ type Types = {
       output: any;
     };
     deleteApiResultsId: {
-      input: any;
-
-      output: any;
-    };
-  };
-  migration: {
-    postApiMigrationSplitArea: {
       input: any;
 
       output: any;

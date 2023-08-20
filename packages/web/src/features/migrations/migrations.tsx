@@ -8,6 +8,7 @@ import { Migration, SEASONS } from "./types";
 import { MigrationInfo } from "./components/migration-info";
 import { parseMigrationsKml } from "./utils";
 import { MigrationsChooseAreas } from "./migrations-choose-areas";
+import { MigrationsGeneratedTracks } from "./migrations-generated-tracks";
 
 type MigrationMapObjects = {
   mapObjects: google.maps.Marker[];
@@ -69,6 +70,7 @@ export const MigrationsForm = () => {
         />
       ))}
       <MigrationsChooseAreas migrations={migrations || []} />
+      <MigrationsGeneratedTracks />
     </div>
   );
 };

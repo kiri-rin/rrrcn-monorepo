@@ -4,7 +4,7 @@ import {
   DataExtractionConfig,
   PopulationConfig,
   PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/src/analytics_config_types";
+} from "@rrrcn/services/dist/src/analytics_config_types";
 
 import fs from "fs";
 import { extractData } from "@rrrcn/services/dist/src/controllers/extract-data/extract-data";

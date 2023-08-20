@@ -233,7 +233,8 @@ export const MigrationInfo = ({
             {!isEdit && (
               <>
                 <Button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     fullPathRef.current &&
                       showMapObjects([fullPathRef.current]);
                   }}
@@ -241,7 +242,8 @@ export const MigrationInfo = ({
                   Show
                 </Button>
                 <Button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     hideMapObjects(migration.mapObjects);
                     fullPathRef.current &&
                       hideMapObjects([fullPathRef.current]);

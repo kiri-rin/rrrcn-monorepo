@@ -2,6 +2,183 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import Types from "./types/types";
 export class Api {
   axiosInstance: AxiosInstance;
+  contentTypeBuilder = {
+    getContentTypeBuilderReservedNames: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getContentTypeBuilderReservedNames"]["output"]
+        >
+      >(`/content-type-builder/reserved-names`, options),
+
+    getContentTypeBuilderContentTypes: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getContentTypeBuilderContentTypes"]["output"]
+        >
+      >(`/content-type-builder/content-types`, options),
+
+    getContentTypeBuilderContentTypesUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getContentTypeBuilderContentTypesUid"]["output"]
+        >
+      >(`/content-type-builder/content-types/${uid}`, options),
+
+    postContentTypeBuilderContentTypes: (
+      data: Types["contentTypeBuilder"]["postContentTypeBuilderContentTypes"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["postContentTypeBuilderContentTypes"]["output"]
+        >
+      >(`/content-type-builder/content-types`, data, options),
+
+    putContentTypeBuilderContentTypesUid: (
+      uid: string,
+      data: Types["contentTypeBuilder"]["putContentTypeBuilderContentTypesUid"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.put<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["putContentTypeBuilderContentTypesUid"]["output"]
+        >
+      >(`/content-type-builder/content-types/${uid}`, data, options),
+
+    deleteContentTypeBuilderContentTypesUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.delete<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["deleteContentTypeBuilderContentTypesUid"]["output"]
+        >
+      >(`/content-type-builder/content-types/${uid}`, options),
+
+    getContentTypeBuilderComponents: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getContentTypeBuilderComponents"]["output"]
+        >
+      >(`/content-type-builder/components`, options),
+
+    getContentTypeBuilderComponentsUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getContentTypeBuilderComponentsUid"]["output"]
+        >
+      >(`/content-type-builder/components/${uid}`, options),
+
+    postContentTypeBuilderComponents: (
+      data: Types["contentTypeBuilder"]["postContentTypeBuilderComponents"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["postContentTypeBuilderComponents"]["output"]
+        >
+      >(`/content-type-builder/components`, data, options),
+
+    putContentTypeBuilderComponentsUid: (
+      uid: string,
+      data: Types["contentTypeBuilder"]["putContentTypeBuilderComponentsUid"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.put<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["putContentTypeBuilderComponentsUid"]["output"]
+        >
+      >(`/content-type-builder/components/${uid}`, data, options),
+
+    deleteContentTypeBuilderComponentsUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.delete<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["deleteContentTypeBuilderComponentsUid"]["output"]
+        >
+      >(`/content-type-builder/components/${uid}`, options),
+
+    putContentTypeBuilderComponentCategoriesName: (
+      name: string,
+      data: Types["contentTypeBuilder"]["putContentTypeBuilderComponentCategoriesName"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.put<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["putContentTypeBuilderComponentCategoriesName"]["output"]
+        >
+      >(`/content-type-builder/component-categories/${name}`, data, options),
+
+    deleteContentTypeBuilderComponentCategoriesName: (
+      name: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.delete<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["deleteContentTypeBuilderComponentCategoriesName"]["output"]
+        >
+      >(`/content-type-builder/component-categories/${name}`, options),
+
+    getApiContentTypeBuilderContentTypes: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypes"]["output"]
+        >
+      >(`/api/content-type-builder/content-types`, options),
+
+    getApiContentTypeBuilderContentTypesUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypesUid"]["output"]
+        >
+      >(`/api/content-type-builder/content-types/${uid}`, options),
+
+    getApiContentTypeBuilderComponents: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponents"]["output"]
+        >
+      >(`/api/content-type-builder/components`, options),
+
+    getApiContentTypeBuilderComponentsUid: (
+      uid: string,
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponentsUid"]["output"]
+        >
+      >(`/api/content-type-builder/components/${uid}`, options),
+  };
+
   contentManager = {
     getContentManagerContentTypes: (options?: AxiosRequestConfig) =>
       this.axiosInstance.get<
@@ -324,183 +501,6 @@ export class Api {
         `/content-manager/collection-types/${model}/${id}/actions/numberOfDraftRelations`,
         options
       ),
-  };
-
-  contentTypeBuilder = {
-    getApiContentTypeBuilderContentTypes: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypes"]["output"]
-        >
-      >(`/api/content-type-builder/content-types`, options),
-
-    getApiContentTypeBuilderContentTypesUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderContentTypesUid"]["output"]
-        >
-      >(`/api/content-type-builder/content-types/${uid}`, options),
-
-    getApiContentTypeBuilderComponents: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponents"]["output"]
-        >
-      >(`/api/content-type-builder/components`, options),
-
-    getApiContentTypeBuilderComponentsUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getApiContentTypeBuilderComponentsUid"]["output"]
-        >
-      >(`/api/content-type-builder/components/${uid}`, options),
-
-    getContentTypeBuilderReservedNames: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getContentTypeBuilderReservedNames"]["output"]
-        >
-      >(`/content-type-builder/reserved-names`, options),
-
-    getContentTypeBuilderContentTypes: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getContentTypeBuilderContentTypes"]["output"]
-        >
-      >(`/content-type-builder/content-types`, options),
-
-    getContentTypeBuilderContentTypesUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getContentTypeBuilderContentTypesUid"]["output"]
-        >
-      >(`/content-type-builder/content-types/${uid}`, options),
-
-    postContentTypeBuilderContentTypes: (
-      data: Types["contentTypeBuilder"]["postContentTypeBuilderContentTypes"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.post<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["postContentTypeBuilderContentTypes"]["output"]
-        >
-      >(`/content-type-builder/content-types`, data, options),
-
-    putContentTypeBuilderContentTypesUid: (
-      uid: string,
-      data: Types["contentTypeBuilder"]["putContentTypeBuilderContentTypesUid"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.put<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["putContentTypeBuilderContentTypesUid"]["output"]
-        >
-      >(`/content-type-builder/content-types/${uid}`, data, options),
-
-    deleteContentTypeBuilderContentTypesUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.delete<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["deleteContentTypeBuilderContentTypesUid"]["output"]
-        >
-      >(`/content-type-builder/content-types/${uid}`, options),
-
-    getContentTypeBuilderComponents: (options?: AxiosRequestConfig) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getContentTypeBuilderComponents"]["output"]
-        >
-      >(`/content-type-builder/components`, options),
-
-    getContentTypeBuilderComponentsUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.get<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["getContentTypeBuilderComponentsUid"]["output"]
-        >
-      >(`/content-type-builder/components/${uid}`, options),
-
-    postContentTypeBuilderComponents: (
-      data: Types["contentTypeBuilder"]["postContentTypeBuilderComponents"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.post<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["postContentTypeBuilderComponents"]["output"]
-        >
-      >(`/content-type-builder/components`, data, options),
-
-    putContentTypeBuilderComponentsUid: (
-      uid: string,
-      data: Types["contentTypeBuilder"]["putContentTypeBuilderComponentsUid"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.put<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["putContentTypeBuilderComponentsUid"]["output"]
-        >
-      >(`/content-type-builder/components/${uid}`, data, options),
-
-    deleteContentTypeBuilderComponentsUid: (
-      uid: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.delete<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["deleteContentTypeBuilderComponentsUid"]["output"]
-        >
-      >(`/content-type-builder/components/${uid}`, options),
-
-    putContentTypeBuilderComponentCategoriesName: (
-      name: string,
-      data: Types["contentTypeBuilder"]["putContentTypeBuilderComponentCategoriesName"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.put<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["putContentTypeBuilderComponentCategoriesName"]["output"]
-        >
-      >(`/content-type-builder/component-categories/${name}`, data, options),
-
-    deleteContentTypeBuilderComponentCategoriesName: (
-      name: string,
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.delete<
-        any,
-        AxiosResponse<
-          Types["contentTypeBuilder"]["deleteContentTypeBuilderComponentCategoriesName"]["output"]
-        >
-      >(`/content-type-builder/component-categories/${name}`, options),
   };
 
   email = {
@@ -1115,6 +1115,28 @@ export class Api {
       >(`/api/ee-data/scripts`, options),
   };
 
+  migration = {
+    postApiMigrationSplitArea: (
+      data: Types["migration"]["postApiMigrationSplitArea"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<Types["migration"]["postApiMigrationSplitArea"]["output"]>
+      >(`/api/migration/split-area`, data, options),
+
+    postApiMigrationGenerateTracks: (
+      data: Types["migration"]["postApiMigrationGenerateTracks"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["migration"]["postApiMigrationGenerateTracks"]["output"]
+        >
+      >(`/api/migration/generate-tracks`, data, options),
+  };
+
   result = {
     getApiResultDownloadResultId: (
       resultId: string,
@@ -1170,17 +1192,6 @@ export class Api {
         any,
         AxiosResponse<Types["result"]["deleteApiResultsId"]["output"]>
       >(`/api/results/${id}`, options),
-  };
-
-  migration = {
-    postApiMigrationSplitArea: (
-      data: Types["migration"]["postApiMigrationSplitArea"]["input"],
-      options?: AxiosRequestConfig
-    ) =>
-      this.axiosInstance.post<
-        any,
-        AxiosResponse<Types["migration"]["postApiMigrationSplitArea"]["output"]>
-      >(`/api/migration/split-area`, data, options),
   };
 
   constructor(instance: AxiosInstance = axios.create()) {

@@ -41,6 +41,17 @@ export const MigrationsChooseAreas = ({
         },
       }
     );
+  const { data: generatedMigrations, mutateAsync: generateTracks } =
+    useMutation(
+      "migration-generated-tracks",
+      api.migration.postApiMigrationGenerateTracks,
+      {
+        onSuccess({ data }) {
+          console.log("SUCCESS");
+          queryClient.setQueriesData("migration-generated-tracks", data);
+        },
+      }
+    );
   useEffect(() => {
     selectedPolygons.forEach((value) => {
       mapObjectsRef.current[value]?.setOptions({ fillColor: "red" });
@@ -161,6 +172,19 @@ export const MigrationsChooseAreas = ({
         <div>
           <Button
             onClick={() => {
+              generateTracks(
+                prepareGenerateRequest(
+                  migrations || [],
+                  selectedSeasons,
+                  migrationSplitAreaState?.data.grid
+                )
+              );
+            }}
+          >
+            Generate
+          </Button>
+          <Button
+            onClick={() => {
               showMapObjects(mapObjectsRef.current);
             }}
           >
@@ -227,5 +251,18 @@ const prepareSeasonsRequest = (
       }
     });
   });
+  res.migrations = res.migrations.filter((it) => it);
+  return res;
+};
+export const prepareGenerateRequest = (
+  migrations: IndexedMigration[],
+  selectedSeasons: any,
+  grid: any
+) => {
+  const res = prepareSeasonsRequest(migrations, selectedSeasons);
+  //@ts-ignore
+  res.allAreas = grid;
+  //@ts-ignore
+  res.migrations = res.migrations.map((it) => it.geojson);
   return res;
 };
