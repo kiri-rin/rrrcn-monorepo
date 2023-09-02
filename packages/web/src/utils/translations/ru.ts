@@ -56,4 +56,7 @@ export const ruTranslations = {
   "random-forest.validation.use-by-default": "Использовать по умолочанию",
   "random-forest.validation.best": "Лучшее",
   "random-forest.validation.mean": "Среднее",
+  "survival.title": "Выживаемость",
+  "maxent.title": "Maxent",
+  "migrations.title": "Миграции",
 };

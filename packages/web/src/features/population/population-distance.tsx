@@ -1,21 +1,9 @@
-import {
-  PopulationDensityType,
-  PopulationDistanceConfigType,
-  PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+import { PopulationDistanceConfigType } from "@rrrcn/services/dist/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
-import { GeometryInput } from "../../components/geometry-input";
 import { Checkbox, Input, MenuItem, Select, Typography } from "@mui/material";
 import { useTranslations } from "../../utils/translations";
 import { useField, useFormikContext } from "formik";
-import {
-  defaultRFConfig,
-  RandomForestInputConfig,
-} from "../random-forest/random-forest";
 import React from "react";
-
-type PopulationRandomGenerationInputType =
-  PopulationRandomGenerationConfigType<File>;
 
 export const PopulationDistanceForm = ({ name }: { name: string }) => {
   const strings = useTranslations();

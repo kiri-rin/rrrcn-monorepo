@@ -1,7 +1,7 @@
 import Drawer from "@mui/material/Drawer";
 import { Offset } from "../../App";
 import { Button, Tab, TabProps, Tabs } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ComponentType, useEffect, useRef, useState } from "react";
 import {
   DataExtractionConfigForm,
   DataExtractionInput,
@@ -12,7 +12,7 @@ import {
   RandomForestConfigForm,
   RandomForestInputConfig,
 } from "../../features/random-forest/random-forest";
-import { useTranslations } from "../../utils/translations";
+import { Strings, useTranslations } from "../../utils/translations";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -26,6 +26,8 @@ import {
   PopulationInputConfig,
 } from "../../features/population/population";
 import { MigrationsForm } from "../../features/migrations/migrations";
+import { SurvivalForm } from "../../features/survival/survival";
+import { MaxentConfigForm } from "../../features/maxent/maxent";
 
 export type FormType = {
   data?: Partial<DataExtractionInput>;
@@ -39,7 +41,33 @@ export type FormType = {
     migrations: any;
   };
 };
+const TABS: { label: keyof Strings; Component: ComponentType }[] = [
+  {
+    label: "data-extraction.title",
+    Component: DataExtractionConfigForm,
+  },
+  {
+    label: "random-forest.title",
+    Component: RandomForestConfigForm,
+  },
 
+  {
+    label: "maxent.title",
+    Component: MaxentConfigForm,
+  },
+  {
+    label: "population.title",
+    Component: PopulationForm,
+  },
+  {
+    label: "survival.title",
+    Component: SurvivalForm,
+  },
+  {
+    label: "migrations.title",
+    Component: MigrationsForm,
+  },
+];
 export const MainPageLeftPanel = () => {
   const [activeTab, setActiveTab] = useState(0);
   const strings = useTranslations();
@@ -61,23 +89,18 @@ export const MainPageLeftPanel = () => {
             setActiveTab(newValue);
           }}
         >
-          <Tab label={strings["data-extraction.title"]} />
-          <Tab label={strings["random-forest.title"]} />
-          <Tab label={strings["population.title"]} />
-          <Tab label={strings["population.title"]} />
+          {TABS.map(({ label }, index) => (
+            <Tab key={index} label={strings[label] as string} />
+          ))}
         </Tabs>
-        <div style={activeTab !== 0 ? { display: "none" } : undefined}>
-          <DataExtractionConfigForm />
-        </div>
-        <div style={activeTab !== 1 ? { display: "none" } : undefined}>
-          <RandomForestConfigForm />
-        </div>
-        <div style={activeTab !== 2 ? { display: "none" } : undefined}>
-          <PopulationForm />
-        </div>
-        <div style={activeTab !== 3 ? { display: "none" } : undefined}>
-          <MigrationsForm />
-        </div>
+        {TABS.map(({ Component }, index) => (
+          <div
+            key={index}
+            style={activeTab !== index ? { display: "none" } : undefined}
+          >
+            <Component />
+          </div>
+        ))}
       </div>
     </Drawer>
   );

@@ -14,7 +14,9 @@ import {
   DataExtractionConfig,
   PopulationConfig,
   RandomForestConfig,
+  SurvivalNestConfig,
 } from "@rrrcn/services/dist/src/analytics_config_types";
+import { MaxentBodyType } from "admin/src/api/analysis/models";
 
 export type GetDataBodyType = { type: "data"; config: DataExtractionConfig };
 export type RandomForestBodyType = {
@@ -25,10 +27,16 @@ export type PopulationEstimateBodyType = {
   type: "population";
   config: PopulationConfig;
 };
+export type SurvivalBodyType = {
+  type: "survival";
+  config: SurvivalNestConfig;
+};
 export type AnalysisBodyType =
   | GetDataBodyType
   | RandomForestBodyType
-  | PopulationEstimateBodyType;
+  | PopulationEstimateBodyType
+  | SurvivalBodyType
+  | MaxentBodyType;
 
 export const useSendAnalysis = (analysisType: AnalysisBodyType["type"]) => {
   const queryClient = useQueryClient();
@@ -43,7 +51,11 @@ export const useSendAnalysis = (analysisType: AnalysisBodyType["type"]) => {
   );
   const onSend = useCallback(
     (
-      data: FormType["data"] | FormType["randomForest"] | FormType["population"]
+      data:
+        | FormType["data"]
+        | FormType["randomForest"]
+        | FormType["population"]
+        | Partial<SurvivalNestConfig>
     ) => {
       let config: AnalysisBodyType | undefined;
       switch (analysisType) {
@@ -66,6 +78,20 @@ export const useSendAnalysis = (analysisType: AnalysisBodyType["type"]) => {
             type: "random-forest",
             config: mapRFConfigToRequest(data as RandomForestInputConfig),
           } as RandomForestBodyType;
+          break;
+        }
+        case "maxent": {
+          config = {
+            type: "maxent",
+            config: mapRFConfigToRequest(data as RandomForestInputConfig),
+          } as MaxentBodyType;
+          break;
+        }
+        case "survival": {
+          config = {
+            type: "survival",
+            config: data,
+          } as SurvivalBodyType;
           break;
         }
       }

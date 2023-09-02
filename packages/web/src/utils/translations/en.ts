@@ -57,4 +57,7 @@ export const enTranslations = {
   "random-forest.validation.use-by-default": "Use by default",
   "random-forest.validation.best": "Best",
   "random-forest.validation.mean": "Mean",
+  "survival.title": "Survival",
+  "maxent.title": "Maxent",
+  "migrations.title": "Migrations",
 };

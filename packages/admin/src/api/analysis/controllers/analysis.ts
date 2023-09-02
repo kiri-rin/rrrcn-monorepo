@@ -3,7 +3,7 @@ import { Context, Request } from "koa";
 import {
   DataExtractionConfig,
   PopulationConfig,
-  PopulationRandomGenerationConfigType,
+  SurvivalNestConfig,
 } from "@rrrcn/services/dist/src/analytics_config_types";
 
 import fs from "fs";
@@ -13,6 +13,8 @@ import util from "util";
 import { randomForest } from "@rrrcn/services/dist/src/controllers/random-forest/random-forest";
 import { RandomForestConfig } from "@rrrcn/services/dist/src/analytics_config_types";
 import { populationEstimation } from "@rrrcn/services/dist/src/controllers/population-estimation";
+import { estimateNestSurvival } from "@rrrcn/services/dist/src/controllers/survival/survival-nest-mark";
+import { maxent } from "@rrrcn/services/dist/src/controllers/maxent/maxent";
 const archiver = require("archiver");
 const { PassThrough } = require("stream");
 export type GetDataBodyType = { type: "data"; config: DataExtractionConfig };
@@ -24,17 +26,28 @@ export type PopulationEstimateBodyType = {
   type: "population";
   config: PopulationConfig;
 };
+export type SurvivalBodyType = {
+  type: "survival";
+  config: SurvivalNestConfig;
+};
+export type MaxentBodyType = {
+  type: "survival";
+  config: SurvivalNestConfig;
+};
 export type AnalysisBodyType =
   | GetDataBodyType
   | RandomForestBodyType
-  | PopulationEstimateBodyType;
+  | PopulationEstimateBodyType
+  | SurvivalBodyType
+  | MaxentBodyType;
 
 const analysisServices = {
   data: extractData,
   "random-forest": randomForest,
   population: populationEstimation,
   migrations: "",
-  survival: "",
+  survival: estimateNestSurvival,
+  maxent: maxent,
 };
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
   async processAnalysis(
