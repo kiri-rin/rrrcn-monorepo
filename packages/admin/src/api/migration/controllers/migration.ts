@@ -9,6 +9,9 @@ import {
   MigrationGenerationConfigType,
 } from "@rrrcn/services/dist/src/controllers/migrations/types";
 import { generateMigrationTracks } from "@rrrcn/services/dist/src/controllers/migrations/generate-tracks";
+
+const { PassThrough } = require("stream");
+
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
   async splitArea(
     ctx: Context & {
@@ -22,6 +25,25 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
       request: Request & { body: MigrationGenerationConfigType };
     }
   ) {
-    return generateMigrationTracks(ctx.request.body);
+    const resultService = strapi.service("api::result.result");
+
+    const config = ctx.request.body;
+    const { id: resultId, uid: resultUID } = await resultService.create({
+      data: {
+        status: "processing",
+        type: "migrations",
+      },
+    });
+    resultStreams[resultId] = new PassThrough();
+    return strapi
+      .service("api::analysis.results")
+      .processServiceAndStreamResults({
+        service: generateMigrationTracks,
+        strapi,
+        config,
+        stream: resultStreams[resultId],
+        ctx,
+        resultId,
+      });
   },
 });

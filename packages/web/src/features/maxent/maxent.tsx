@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Button,
   Checkbox,
+  Input,
   MenuItem,
   Paper,
   Select,
@@ -34,7 +35,7 @@ import Typography from "@mui/material/Typography";
 import { CommonPaper } from "../../components/common";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSendAnalysis } from "../common/utils";
-import { RandomForestInputSchema } from "./rf-schemas";
+import { MaxentInputSchema } from "./rf-schemas";
 import { ScriptInputConfig } from "../random-forest/data-extraction";
 
 export interface MaxentInputConfig
@@ -74,7 +75,7 @@ export const MaxentConfigForm = () => {
   const { onSend } = useSendAnalysis("maxent");
   const formik = useFormik<Partial<MaxentInputConfig>>({
     initialValues: defaultRFConfig,
-    validationSchema: RandomForestInputSchema,
+    validationSchema: MaxentInputSchema,
     onSubmit: (data) => {
       onSend(data);
     },
@@ -89,29 +90,45 @@ export const MaxentConfigForm = () => {
     setValues: setConfig,
   } = formik;
   const strings = useTranslations();
+  const [generateBackgroundPoints, setGenerateBackgroundPoints] =
+    useState(true);
+  useEffect(() => {
+    !generateBackgroundPoints && setFieldValue("backgroundCount", undefined);
+  }, [generateBackgroundPoints]);
   //TODO VALIDATE
   return (
     <FormikContext.Provider value={formik}>
       <div style={{ paddingBottom: 20 }}>
         <CommonPaper
-          error={(touched[`outputMode`] || submitCount) && errors?.outputMode}
+          error={
+            (touched[`backgroundCount`] || submitCount) &&
+            errors?.backgroundCount
+          }
         >
+          <Typography sx={{ marginY: "10px" }}>
+            {strings["random-forest.choose-output-mode"]}
+          </Typography>
           <div className={"common__row"}>
-            <Typography sx={{ marginY: "10px" }}>
-              {strings["random-forest.choose-output-mode"]}
-            </Typography>
-            <Select
-              size={"small"}
-              onChange={({ target: { value } }) => {
-                setFieldValue(`outputMode`, value);
-              }}
-              value={config.outputMode || "PROBABILITY"}
-            >
-              <MenuItem value={"PROBABILITY"}>PROBABILITY</MenuItem>
-              <MenuItem value={"REGRESSION"}>REGRESSION</MenuItem>
-              <MenuItem value={"CLASSIFICATION"}> CLASSIFICATION</MenuItem>
-            </Select>
+            <div className={"common__row"}>
+              <Checkbox
+                checked={generateBackgroundPoints}
+                onChange={() => setGenerateBackgroundPoints((prev) => !prev)}
+              />
+              <Typography>
+                {strings["random-forest.validation.render_mean"]}
+              </Typography>
+            </div>
           </div>
+
+          <TextField
+            margin={"dense"}
+            size={"small"}
+            label={strings["random-forest.validation.cross_validation"]}
+            value={config.backgroundCount}
+            onChange={({ target: { value } }) =>
+              setFieldValue(`backgroundCount`, Number(value))
+            }
+          />
         </CommonPaper>
         <CommonPaper
           error={

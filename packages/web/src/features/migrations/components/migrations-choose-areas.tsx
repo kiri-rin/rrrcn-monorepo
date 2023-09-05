@@ -14,6 +14,8 @@ import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 import { api } from "../../../api";
 import { SelectedSeasonsType } from "../migrations";
+import { FormikContext, useFormik } from "formik";
+import { mapScriptsConfigToRequest } from "../../random-forest/utils";
 
 type MigrationMapObjects = {
   mapObjects: GoogleMapObject[];
@@ -116,6 +118,10 @@ export const MigrationsChooseAreas = ({
     {}
   );
   const indexedSeasons = reduceMigrations(migrations || []);
+  const paramsForm = useFormik({
+    onSubmit: () => {},
+    initialValues: { params: { type: "scripts", scripts: [] } },
+  });
 
   const queryClient = useQueryClient();
 
@@ -129,7 +135,7 @@ export const MigrationsChooseAreas = ({
         .map((season) => ({ year, season }))
     );
   return (
-    <>
+    <FormikContext.Provider value={paramsForm}>
       <Select
         multiple={true}
         onChange={({ target: { value } }) => {
@@ -176,7 +182,9 @@ export const MigrationsChooseAreas = ({
                 prepareGenerateRequest(
                   migrations || [],
                   selectedSeasons,
-                  migrationSplitAreaState?.data.grid
+                  migrationSplitAreaState?.data.grid,
+                  paramsForm.values.params,
+                  selectedPolygons
                 )
               );
             }}
@@ -206,8 +214,8 @@ export const MigrationsChooseAreas = ({
           </Button>
         </div>
       )}
-      {/*<ParamsImageInput name={"params"} />*/}
-    </>
+      <ParamsImageInput name={"params"} />
+    </FormikContext.Provider>
   );
 };
 const reduceMigrations = (migrations: IndexedMigration[]) => {
@@ -257,11 +265,17 @@ const prepareSeasonsRequest = (
 export const prepareGenerateRequest = (
   migrations: IndexedMigration[],
   selectedSeasons: any,
-  grid: any
+  grid: any,
+  params: any,
+  selectedPolygons: Set<number>
 ) => {
   const res = prepareSeasonsRequest(migrations, selectedSeasons);
   //@ts-ignore
   res.allAreas = grid;
+  //@ts-ignore
+  res.params = mapScriptsConfigToRequest(params);
+  //@ts-ignore
+  res.selectedAreasIndices = Array.from(selectedPolygons);
   //@ts-ignore
   res.migrations = res.migrations.map((it) => it.geojson);
   return res;
