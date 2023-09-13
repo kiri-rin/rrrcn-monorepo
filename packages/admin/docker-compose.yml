@@ -2,7 +2,7 @@ services:
   api:
     environment:
       R_BASE_URL: "http://R:8000"
-    image: kiri909/rrrcn-api:0.0.3
+    image: kiri909/rrrcn-api:0.0.4
     ports:
       - "1337:1337"
     volumes:
