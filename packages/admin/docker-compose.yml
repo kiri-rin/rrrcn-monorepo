@@ -6,11 +6,11 @@ services:
     ports:
       - "1337:1337"
     volumes:
-      - ./db-data:/app/packages/admin/.tmp
+      - ./.tmp:/app/packages/admin/.tmp
       - ./public:/app/packages/admin/public
   R:
-    image: kiri909/rrrcn-r-api:0.0.2
+    image: kiri909/rrrcn-r-api:0.0.3
     ports:
       - "8000:8000"
     volumes:
-      - ./public:/api/public
+      - ./public:/app/api/public

@@ -60,6 +60,7 @@ export const mapRFConfigToRequest = (config: MaxentInputConfig) => {
   }
 };
 export const defaultRFConfig: Partial<MaxentInputConfig> = {
+  backgroundCount: 1000,
   params: { type: "scripts", scripts: [] },
   trainingPoints: {
     type: "all-points",
@@ -92,10 +93,19 @@ export const MaxentConfigForm = () => {
   const strings = useTranslations();
   const [generateBackgroundPoints, setGenerateBackgroundPoints] =
     useState(true);
+  const [prevBackgroundCount, setPrevBackgroundCount] = useState(
+    config.backgroundCount
+  );
   useEffect(() => {
-    !generateBackgroundPoints && setFieldValue("backgroundCount", undefined);
+    if (!generateBackgroundPoints) {
+      setPrevBackgroundCount(config.backgroundCount);
+    }
+    setFieldValue(
+      "backgroundCount",
+      generateBackgroundPoints ? prevBackgroundCount : undefined
+    );
   }, [generateBackgroundPoints]);
-  //TODO VALIDATE
+
   return (
     <FormikContext.Provider value={formik}>
       <div style={{ paddingBottom: 20 }}>
@@ -106,16 +116,19 @@ export const MaxentConfigForm = () => {
           }
         >
           <Typography sx={{ marginY: "10px" }}>
-            {strings["random-forest.choose-output-mode"]}
+            {strings["maxent.background_points"]}
           </Typography>
           <div className={"common__row"}>
-            <div className={"common__row"}>
+            <div
+              className={"common__row"}
+              style={{ justifyContent: "flex-start" }}
+            >
               <Checkbox
                 checked={generateBackgroundPoints}
                 onChange={() => setGenerateBackgroundPoints((prev) => !prev)}
               />
               <Typography>
-                {strings["random-forest.validation.render_mean"]}
+                {strings["maxent.generate_background_points"]}
               </Typography>
             </div>
           </div>
@@ -123,8 +136,10 @@ export const MaxentConfigForm = () => {
           <TextField
             margin={"dense"}
             size={"small"}
-            label={strings["random-forest.validation.cross_validation"]}
-            value={config.backgroundCount}
+            type={"number"}
+            disabled={!generateBackgroundPoints}
+            label={strings["maxent.background_points_count"]}
+            value={config.backgroundCount || null}
             onChange={({ target: { value } }) =>
               setFieldValue(`backgroundCount`, Number(value))
             }

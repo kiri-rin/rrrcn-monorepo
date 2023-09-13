@@ -57,6 +57,11 @@ export const ruTranslations = {
   "random-forest.validation.best": "Лучшее",
   "random-forest.validation.mean": "Среднее",
   "survival.title": "Выживаемость",
+  "survival.file": "Файл для MARK",
+  "survival.nocc": "Количество дней наблюдений",
   "maxent.title": "Maxent",
+  "maxent.background_points": "Фоновые точки",
+  "maxent.generate_background_points": "Генерировать фоновые точки",
+  "maxent.background_points_count": "Количество фоновых точек",
   "migrations.title": "Миграции",
 };

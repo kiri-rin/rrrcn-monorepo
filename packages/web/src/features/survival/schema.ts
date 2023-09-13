@@ -4,4 +4,5 @@ import { SurvivalNestConfig } from "@rrrcn/services/dist/src/analytics_config_ty
 export const SurvivalValidationSchema: yup.Schema<SurvivalNestConfig<any>> =
   yup.object({
     survivalFile: yup.mixed().required(),
+    nocc: yup.number().required(),
   });

@@ -58,6 +58,11 @@ export const enTranslations = {
   "random-forest.validation.best": "Best",
   "random-forest.validation.mean": "Mean",
   "survival.title": "Survival",
+  "survival.file": "File for MARK nest survival",
+  "survival.nocc": "Number of occasions",
   "maxent.title": "Maxent",
+  "maxent.background_points": "Background points",
+  "maxent.generate_background_points": "Generate background points",
+  "maxent.background_points_count": "Background points count",
   "migrations.title": "Migrations",
 };

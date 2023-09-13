@@ -1,11 +1,9 @@
 import { useTranslations } from "../../utils/translations";
 import { useSendAnalysis } from "../common/utils";
-import { FieldArray, FormikContext, useFormik } from "formik";
-import { useQuery } from "react-query";
-import { api } from "../../api";
+import { FormikContext, useFormik } from "formik";
 import { CommonPaper } from "../../components/common";
 import Typography from "@mui/material/Typography";
-import { Button, Input, MenuItem, Select } from "@mui/material";
+import { Button, Input, TextField } from "@mui/material";
 import React from "react";
 import { SurvivalValidationSchema } from "./schema";
 import { SurvivalNestConfig } from "@rrrcn/services/dist/src/analytics_config_types";
@@ -29,16 +27,12 @@ export const SurvivalForm = () => {
     setValues: setConfig,
     setFieldValue,
   } = formik;
-  const { data: scriptsList } = useQuery(
-    "analysis-scripts",
-    (opt) => api.analysis.getApiAnalysisScripts(),
-    { enabled: false, refetchOnWindowFocus: false }
-  );
+
   return (
     <FormikContext.Provider value={formik}>
       <CommonPaper error={false}>
         <Typography sx={{ marginY: "10px" }}>
-          {strings["population.distance-file"]}
+          {strings["survival.file"]}
         </Typography>
         <Input
           error={
@@ -55,8 +49,14 @@ export const SurvivalForm = () => {
         />
 
         <Typography sx={{ marginY: "10px" }}>
-          {strings["population.distance-function"]}
+          {strings["survival.nocc"]}
         </Typography>
+        <TextField
+          size={"small"}
+          type={"number"}
+          onChange={({ target: { value } }) => setFieldValue("nocc", value)}
+          value={config.nocc}
+        />
       </CommonPaper>
       <Button
         onClick={() => {
