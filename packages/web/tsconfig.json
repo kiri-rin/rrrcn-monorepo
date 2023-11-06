@@ -6,6 +6,10 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@rrrcn/services/dist": ["../rrrcn-services"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,4 +28,5 @@
   "include": [
     "src"
   ]
+
 }

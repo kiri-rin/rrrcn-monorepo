@@ -17,7 +17,9 @@
     "**/admin/**/*"
   ],
   "scripts": {
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "start-admin": "tsc --build ./packages/rrrcn-services && yarn workspace admin develop",
+    "start-web": "tsc --build ./packages/rrrcn-services && yarn workspace web start"
   },
   "dependencies": {
     "patch-package": "^6.5.0",

@@ -70,7 +70,6 @@ export const defaultRFConfig: Partial<MaxentInputConfig> = {
   },
   validation: { type: "split", split: 0.2 },
   regionOfInterest: { type: "csv", path: undefined },
-  outputMode: "PROBABILITY",
 };
 export const MaxentConfigForm = () => {
   const { onSend } = useSendAnalysis("maxent");

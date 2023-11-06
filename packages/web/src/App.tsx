@@ -8,32 +8,36 @@ import { RootState } from "./store/store/root-reducer";
 import { MainPage } from "./navigation/main-page";
 import "./components/common.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 export const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const queryClient = new QueryClient();
 function App() {
   const dispatch = useDispatch();
   const lang = useSelector((state: RootState) => state.lang);
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppBar position="sticky" style={{ zIndex: 10000 }}>
-        <Toolbar variant="dense">
-          <Select
-            size={"small"}
-            style={{ backgroundColor: "white" }}
-            value={lang}
-            onChange={({ target: { value } }) => {
-              dispatch(setLangAction(value as LangType));
-            }}
-          >
-            <MenuItem value={"en"}>en</MenuItem>
-            <MenuItem value={"ru"}>ru</MenuItem>
-          </Select>
-        </Toolbar>
-      </AppBar>
-      <div>
-        <MainPage />
-      </div>
-    </QueryClientProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <QueryClientProvider client={queryClient}>
+        <AppBar position="sticky" style={{ zIndex: 10000 }}>
+          <Toolbar variant="dense">
+            <Select
+              size={"small"}
+              style={{ backgroundColor: "white" }}
+              value={lang}
+              onChange={({ target: { value } }) => {
+                dispatch(setLangAction(value as LangType));
+              }}
+            >
+              <MenuItem value={"en"}>en</MenuItem>
+              <MenuItem value={"ru"}>ru</MenuItem>
+            </Select>
+          </Toolbar>
+        </AppBar>
+        <div>
+          <MainPage />
+        </div>
+      </QueryClientProvider>
+    </LocalizationProvider>
   );
 }
 const Wrapper = () => (

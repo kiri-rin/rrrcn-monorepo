@@ -25,8 +25,7 @@ export const BirdMigrationSelectSeasonModal = ({
       migration.geojson.features[startIndex].properties.date.getFullYear();
     const endYear =
       migration.geojson.features[endIndex].properties.date.getFullYear();
-
-    return new Array(startYear - endYear + 1)
+    return new Array(endYear - startYear + 1)
       .fill(0)
       .map((it, index) => startYear + index);
   }, [selectedMigration]);

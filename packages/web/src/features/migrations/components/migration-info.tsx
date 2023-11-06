@@ -35,15 +35,16 @@ function getRandomColor() {
 
 export const MigrationInfo = ({
   migration,
-
   onEditEnd,
   isEdit,
-  setIsEdit,
+  filteredMigration,
+  onChangeEditState,
 }: {
+  filteredMigration: IndexedMigration;
   migration: IndexedMigration;
   onEditEnd: (migration: IndexedMigration) => any;
   isEdit?: boolean;
-  setIsEdit: (arg: boolean) => any;
+  onChangeEditState: (arg: boolean) => any;
 }) => {
   const [newSeasonMigration, setNewSeasonMigration] = useState<
     [number, number | null] | undefined
@@ -98,7 +99,7 @@ export const MigrationInfo = ({
   const cancelEdit = useCallback(() => {
     setNewSeasonMigration(undefined);
     setShowSeasonModal(false);
-    setIsEdit(false);
+    onChangeEditState(false);
   }, []);
   const finishEdit = useCallback(
     (year: number, season: SEASONS) => {
@@ -112,10 +113,18 @@ export const MigrationInfo = ({
       onEditEnd(newMigration);
       setShowSeasonModal(false);
       setNewSeasonMigration(undefined);
-      setIsEdit(false);
+      onChangeEditState(false);
     },
-    [migration, onEditEnd, setIsEdit, newSeasonMigration]
+    [migration, onEditEnd, onChangeEditState, newSeasonMigration]
   );
+  const onDeleteMigration = (year: number, season: SEASONS) => {
+    const newMigration = { ...migration };
+    newMigration.years = { ...newMigration.years };
+    newMigration.years[year] = { ...newMigration.years[year] };
+    delete newMigration.years[year][season];
+
+    onEditEnd(newMigration);
+  };
 
   const setSelectedMarkersOpacity = useCallback(
     (path?: [number, number | null]) => {
@@ -126,7 +135,6 @@ export const MigrationInfo = ({
         freeMarkers.forEach((it) => it.setOpacity(isEdit ? 0.5 : 1));
       } else {
         if (!path[1]) {
-          // /          console.log(path[0], "PATH0");
           migration.mapObjects[path[0]].setOpacity(1);
           migration.mapObjects
             .slice(0, path[0])
@@ -142,7 +150,6 @@ export const MigrationInfo = ({
           selectedPathPolyline.setOptions({ strokeColor: "red", zIndex: 1000 });
           selectedPathPolyline.setMap(map || null);
           selectedPathRef.current = selectedPathPolyline;
-          console.log("showPath");
         }
       }
     },
@@ -161,11 +168,9 @@ export const MigrationInfo = ({
   );
   useEffect(() => {
     if (isEdit) {
-      console.log(pathsToShow, freePolylinesRef);
       showMapObjects(freePolylinesRef.current);
       // showFreePaths()
       fullPathRef.current && hideMapObjects([fullPathRef.current]);
-      console.log(freeMarkers);
       showMapObjects(freeMarkers);
       addMarkersClickListeners(freeMarkers);
     } else {
@@ -257,12 +262,16 @@ export const MigrationInfo = ({
         </AccordionSummary>
         <AccordionDetails>
           {Object.entries(migration.years).map(([year, yearInfo]) => (
-            <BirdMigrationYear migration={migration} year={Number(year)} />
+            <BirdMigrationYear
+              migration={migration}
+              year={Number(year)}
+              onDeleteMigration={onDeleteMigration}
+            />
           ))}
           {!isEdit ? (
             <Button
               onClick={() => {
-                setIsEdit(true);
+                onChangeEditState(true);
               }}
             >
               Add migration

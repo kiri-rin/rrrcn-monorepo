@@ -7,9 +7,11 @@ import { SEASONS } from "../types";
 export const BirdMigrationYear = ({
   migration,
   year,
+  onDeleteMigration,
 }: {
   migration: IndexedMigration;
   year: number;
+  onDeleteMigration: (year: number, season: SEASONS) => any;
 }) => {
   const yearInfo = migration.years[year] || {};
   return (
@@ -21,6 +23,7 @@ export const BirdMigrationYear = ({
           <>
             <Typography variant={"h6"}>{season}</Typography>
             <BirdMigrationSeason
+              onDeleteMigration={() => onDeleteMigration(year, season)}
               year={year}
               season={season}
               migration={migration}
@@ -34,10 +37,12 @@ export const BirdMigrationSeason = ({
   migration,
   year,
   season,
+  onDeleteMigration,
 }: {
   migration: IndexedMigration;
   year: number;
   season: SEASONS;
+  onDeleteMigration: () => any;
 }) => {
   const { map, showMapObjects, hideMapObjects } = useContext(MapDrawingContext);
 
@@ -68,6 +73,13 @@ export const BirdMigrationSeason = ({
         }}
       >
         Hide
+      </Button>
+      <Button
+        onClick={(e) => {
+          onDeleteMigration();
+        }}
+      >
+        Delete
       </Button>
     </div>
   );

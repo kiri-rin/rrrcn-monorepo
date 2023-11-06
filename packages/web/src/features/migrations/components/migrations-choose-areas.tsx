@@ -136,85 +136,87 @@ export const MigrationsChooseAreas = ({
     );
   return (
     <FormikContext.Provider value={paramsForm}>
-      <Select
-        multiple={true}
-        onChange={({ target: { value } }) => {
-          setSelectedSeasons((prev: any) => {
-            const newState: any = {};
-            (value as string[]).forEach((val: any) => {
-              const [year, season] = val.split(" ");
-              if (!newState[year]) {
-                newState[year] = {};
-              }
-              newState[year][season] = true;
+      <div>
+        <Select
+          multiple={true}
+          onChange={({ target: { value } }) => {
+            setSelectedSeasons((prev: any) => {
+              const newState: any = {};
+              (value as string[]).forEach((val: any) => {
+                const [year, season] = val.split(" ");
+                if (!newState[year]) {
+                  newState[year] = {};
+                }
+                newState[year][season] = true;
+              });
+              return newState;
             });
-            return newState;
-          });
-        }}
-        renderValue={(selected) => selected.join(", ")}
-        value={seasonsArray
-          .filter(({ year, season }) => selectedSeasons[year]?.[season])
-          .map(({ year, season }) => `${year} ${season}`)}
-      >
-        {seasonsArray.map(({ year, season }) => (
-          <MenuItem key={`${year} ${season}`} value={`${year} ${season}`}>
-            <Checkbox checked={selectedSeasons[year]?.[season]} />
-            <ListItemText
-              primary={`${year} ${season} (${indexedSeasons[year]?.[season]})`}
-            />
-          </MenuItem>
-        ))}
-      </Select>
-      <Button
-        onClick={() => {
-          postSplitArea(
-            prepareSeasonsRequest(migrations || [], selectedSeasons)
-          );
-        }}
-      >
-        Send
-      </Button>
-      {migrationSplitAreaState && (
-        <div>
-          <Button
-            onClick={() => {
-              generateTracks(
-                prepareGenerateRequest(
-                  migrations || [],
-                  selectedSeasons,
-                  migrationSplitAreaState?.data.grid,
-                  paramsForm.values.params,
-                  selectedPolygons
-                )
-              );
-            }}
-          >
-            Generate
-          </Button>
-          <Button
-            onClick={() => {
-              showMapObjects(mapObjectsRef.current);
-            }}
-          >
-            Show
-          </Button>
-          <Button
-            onClick={() => {
-              hideMapObjects(mapObjectsRef.current);
-            }}
-          >
-            Hide
-          </Button>
-          <Button
-            onClick={() => {
-              setSelectedPolygons(new Set());
-            }}
-          >
-            Clear selection
-          </Button>
-        </div>
-      )}
-      <ParamsImageInput name={"params"} />
+          }}
+          renderValue={(selected) => selected.join(", ")}
+          value={seasonsArray
+            .filter(({ year, season }) => selectedSeasons[year]?.[season])
+            .map(({ year, season }) => `${year} ${season}`)}
+        >
+          {seasonsArray.map(({ year, season }) => (
+            <MenuItem key={`${year} ${season}`} value={`${year} ${season}`}>
+              <Checkbox checked={selectedSeasons[year]?.[season]} />
+              <ListItemText
+                primary={`${year} ${season} (${indexedSeasons[year]?.[season]})`}
+              />
+            </MenuItem>
+          ))}
+        </Select>
+        <Button
+          onClick={() => {
+            postSplitArea(
+              prepareSeasonsRequest(migrations || [], selectedSeasons)
+            );
+          }}
+        >
+          Send
+        </Button>
+        {migrationSplitAreaState && (
+          <div>
+            <Button
+              onClick={() => {
+                generateTracks(
+                  prepareGenerateRequest(
+                    migrations || [],
+                    selectedSeasons,
+                    migrationSplitAreaState?.data.grid,
+                    paramsForm.values.params,
+                    selectedPolygons
+                  )
+                );
+              }}
+            >
+              Generate
+            </Button>
+            <Button
+              onClick={() => {
+                showMapObjects(mapObjectsRef.current);
+              }}
+            >
+              Show
+            </Button>
+            <Button
+              onClick={() => {
+                hideMapObjects(mapObjectsRef.current);
+              }}
+            >
+              Hide
+            </Button>
+            <Button
+              onClick={() => {
+                setSelectedPolygons(new Set());
+              }}
+            >
+              Clear selection
+            </Button>
+          </div>
+        )}
+        <ParamsImageInput name={"params"} />
+      </div>
     </FormikContext.Provider>
   );
 };
