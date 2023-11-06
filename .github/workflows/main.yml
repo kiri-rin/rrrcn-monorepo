@@ -22,5 +22,5 @@ jobs:
          with:
            submodules: true
        - name: docker-compose
-         run: docker compose -p rrrcn-backend-${{inputs.staging}} up -f ./packages/admin/docker-compose.yml
+         run: docker compose -p rrrcn-backend-${{inputs.staging}} -f ./packages/admin/docker-compose.yml up
            
