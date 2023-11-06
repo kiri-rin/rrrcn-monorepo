@@ -20,8 +20,7 @@ jobs:
        - name: Checkout
          uses: actions/checkout@v4
          with:
-           ref: "monorepo/develop"
            submodules: true
        - name: docker-compose
-         run: docker compose up -p rrrcn-backend-${{inputs.staging}} -f ./packages/admin/docker-compose.yml
+         run: docker compose -p rrrcn-backend-${{inputs.staging}} up -f ./packages/admin/docker-compose.yml
            
