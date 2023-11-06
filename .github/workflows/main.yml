@@ -1,0 +1,27 @@
+on:
+#  push:
+#   branches:
+#    - main
+  workflow_dispatch:
+    inputs:
+      staging:
+        description: 'Staging'
+        required: true
+        default: 'develop'
+        type: choice
+        options:
+          - "develop"
+          - "production"
+jobs:
+   # build_admin: 
+   deploy_admin:
+     runs-on: [self-hosted, "${{ inputs.staging }}"]
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           ref: "monorepo/develop"
+           submodules: true
+       - name: docker-compose
+         run: docker compose up -p rrrcn-backend-${{inputs.staging}} -f ./packages/admin/docker-compose.yml
+           

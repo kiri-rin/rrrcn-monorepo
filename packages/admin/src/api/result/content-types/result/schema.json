@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "results",
+  "info": {
+    "singularName": "result",
+    "pluralName": "results",
+    "displayName": "Result",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "processing",
+        "completed",
+        "error"
+      ]
+    },
+    "uid": {
+      "type": "uid"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "results"
+    },
+    "request_type": {
+      "type": "enumeration",
+      "enum": [
+        "data",
+        "random_forest",
+        "population"
+      ]
+    },
+    "finished_at": {
+      "type": "datetime"
+    },
+    "logs": {
+      "type": "richtext"
+    }
+  }
+}

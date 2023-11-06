@@ -1,0 +1,12 @@
+.data-extraction-left{
+  &__container{
+    display: flex;
+    flex-direction:column;
+    align-items: stretch;
+    padding-left:  15px;
+    padding-right:  8px;
+    padding-top:  15px;
+    min-width:400px;
+    max-width:400px;
+  }
+}

@@ -1,0 +1,17 @@
+.script-input{
+  flex-direction: column;
+  display: flex;
+  border: 1px solid ;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  gap: 8px;
+  &__container{
+
+  }
+  &__advanced-settings{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

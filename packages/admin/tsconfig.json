@@ -10,6 +10,11 @@
     "./**/*.js",
     "src/**/*.json"
   ],
+  "references": [
+    {
+      "path": "../rrrcn-services"
+    }
+  ],
   "exclude": [
     "node_modules/",
     "build/",
