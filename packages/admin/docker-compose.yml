@@ -4,7 +4,8 @@ services:
       R_BASE_URL: "http://R:8000"
     image: kiri909/rrrcn-api:latest
     build:
-      dockerfile: ./Dockerfile
+      dockerfile: ./packages/admin/Dockerfile
+      context: ../..
     ports:
       - "1337:1337"
     volumes:
@@ -13,7 +14,7 @@ services:
   R:
     image: kiri909/rrrcn-r-api:latest
     build:
-      dockerfile: ../r-api/Dockerfile
+      dockerfile: ./Dockerfile
       context: ../r-api
     ports:
       - "8000:8000"
