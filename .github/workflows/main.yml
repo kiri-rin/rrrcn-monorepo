@@ -1,7 +1,9 @@
 on:
-#  push:
-#   branches:
-#    - main
+  push:
+    branches:
+     - monorepo/develop
+    env:
+      GITHUB_ACTION_STAGING: develop
   workflow_dispatch:
     inputs:
       staging:
@@ -12,15 +14,31 @@ on:
         options:
           - "develop"
           - "production"
+    env:
+      GITHUB_ACTION_STAGING: ${{inputs.staging}}
 jobs:
-   # build_admin: 
+   build_admin:
+     environment: $GITHUB_ACTION_STAGING
+     runs-on: [self-hosted, build]
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           submodules: true
+       - name: Build
+         run: docker compose build
+       - name: Build
+         run: docker compose push
+
+
    deploy_admin:
-     runs-on: [self-hosted, "${{ inputs.staging }}"]
+     runs-on: [self-hosted, $GITHUB_ACTION_STAGING]
+     environment: $GITHUB_ACTION_STAGING
      steps:
        - name: Checkout
          uses: actions/checkout@v4
          with:
            submodules: true
        - name: docker-compose
-         run: docker compose -p rrrcn-backend-${{inputs.staging}} -f ./packages/admin/docker-compose.yml up
-           
+         run: docker compose -p rrrcn-backend-${GITHUB_ACTION_STAGING} -f ./packages/admin/docker-compose.yml up
+
