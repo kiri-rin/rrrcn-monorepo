@@ -62,6 +62,9 @@ export const BirdMigrationSeason = ({
       <Typography className={"common__ellipsis-text"}>{title}</Typography>
       <Button
         onClick={() => {
+          migration.mapObjects
+            .slice(startIndex, endIndex)
+            .forEach((it) => it.setOpacity(1));
           showMapObjects(migration.mapObjects.slice(startIndex, endIndex));
         }}
       >
@@ -69,6 +72,10 @@ export const BirdMigrationSeason = ({
       </Button>
       <Button
         onClick={() => {
+          migration.mapObjects
+            .slice(startIndex, endIndex)
+            .forEach((it) => it.setOpacity(0));
+
           hideMapObjects(migration.mapObjects.slice(startIndex, endIndex));
         }}
       >

@@ -10,6 +10,7 @@
     "paths": {
       "@rrrcn/services/dist": ["../rrrcn-services"]
     },
+    "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

@@ -6,6 +6,10 @@ import { MigrationsFilesInput } from "./components/migrations-files";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Point } from "geojson";
 import { MigrationsDateFilterContainer } from "./style";
+import {
+  IndexTracksWorkerContext,
+  useIndexTracksWorker,
+} from "./workers/context";
 
 type MigrationMapObjects = {
   mapObjects: google.maps.Marker[];
@@ -22,6 +26,7 @@ export const MigrationsForm = () => {
     null,
     null,
   ]);
+  const worker = useIndexTracksWorker();
   const filteredMigrations = useMemo(
     () =>
       migrations?.map((migration) => {
@@ -52,33 +57,39 @@ export const MigrationsForm = () => {
   );
 
   return (
-    <div>
-      <MigrationsDateFilterContainer>
-        <DatePicker
-          slotProps={{
-            textField: {
-              size: "small",
-            },
-          }}
-          value={dateFilter[0]}
-          onChange={(newValue) => setDateFilter((prev) => [newValue, prev[1]])}
+    <IndexTracksWorkerContext.Provider value={{ worker }}>
+      <div>
+        {/*<MigrationsDateFilterContainer>*/}
+        {/*  <DatePicker*/}
+        {/*    slotProps={{*/}
+        {/*      textField: {*/}
+        {/*        size: "small",*/}
+        {/*      },*/}
+        {/*    }}*/}
+        {/*    value={dateFilter[0]}*/}
+        {/*    onChange={(newValue) =>*/}
+        {/*      setDateFilter((prev) => [newValue, prev[1]])*/}
+        {/*    }*/}
+        {/*  />*/}
+        {/*  <DatePicker*/}
+        {/*    slotProps={{*/}
+        {/*      textField: {*/}
+        {/*        size: "small",*/}
+        {/*      },*/}
+        {/*    }}*/}
+        {/*    value={dateFilter[1]}*/}
+        {/*    onChange={(newValue) =>*/}
+        {/*      setDateFilter((prev) => [prev[0], newValue])*/}
+        {/*    }*/}
+        {/*  />*/}
+        {/*</MigrationsDateFilterContainer>*/}
+        <MigrationsFilesInput
+          migrations={migrations}
+          onMigrationsChange={setMigrations}
         />
-        <DatePicker
-          slotProps={{
-            textField: {
-              size: "small",
-            },
-          }}
-          value={dateFilter[1]}
-          onChange={(newValue) => setDateFilter((prev) => [prev[0], newValue])}
-        />
-      </MigrationsDateFilterContainer>
-      <MigrationsFilesInput
-        migrations={migrations}
-        onMigrationsChange={setMigrations}
-      />
-      <MigrationsChooseAreas migrations={migrations || []} />
-      <MigrationsGeneratedTracks />
-    </div>
+        <MigrationsChooseAreas migrations={migrations || []} />
+        <MigrationsGeneratedTracks />
+      </div>
+    </IndexTracksWorkerContext.Provider>
   );
 };

@@ -1,23 +1,18 @@
-import {
-  Accordion,
-  Button,
-  Card,
-  CircularProgress,
-  Input,
-} from "@mui/material";
+import { Button, Card, CircularProgress, Input } from "@mui/material";
 import React, {
   Dispatch,
   SetStateAction,
   useCallback,
-  useEffect,
   useRef,
   useState,
 } from "react";
 import { parseMigrationsKml } from "../utils";
-import { MigrationInfo } from "./migration-info";
+import { TrackInfo } from "./track-info";
 import { parseGeojson } from "../../../utils/geometry/map/useDrawGeojson";
 import { IndexedMigration } from "../migrations";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "react-query";
+import { useParseKMLWorker } from "../workers/context";
+import { MigrationFilesModal } from "./migrations-files/modal";
 
 export const MigrationsFilesInput = ({
   migrations,
@@ -26,7 +21,8 @@ export const MigrationsFilesInput = ({
   migrations: IndexedMigration[] | undefined;
   onMigrationsChange: Dispatch<SetStateAction<IndexedMigration[] | undefined>>;
 }) => {
-  const [worker, setWorker] = useState<Worker | undefined>();
+  const worker = useParseKMLWorker();
+  const [filesToParse, setFilesToParse] = useState<FileList | null>(null);
   const [currentEdit, setCurrentEdit] = useState<number | null>(null);
   const [loadingFilesNumber, setLoadingFilesNumber] = useState(0);
   const parseFiles = useCallback(
@@ -50,6 +46,7 @@ export const MigrationsFilesInput = ({
         );
       },
       onSuccess: (res, variables) => {
+        console.log(res);
         setLoadingFilesNumber((prev) =>
           Math.max(prev - (variables?.length || 0), 0)
         );
@@ -60,10 +57,6 @@ export const MigrationsFilesInput = ({
       },
     }
   );
-
-  useEffect(() => {
-    setWorker(new Worker(new URL("../workers/parse_kml.ts", import.meta.url)));
-  }, []);
   const ref = useRef<HTMLInputElement | null>(null);
   return (
     <>
@@ -87,7 +80,7 @@ export const MigrationsFilesInput = ({
         }}
       />
       {migrations?.map((migr, index) => (
-        <MigrationInfo
+        <TrackInfo
           filteredMigration={migr}
           onChangeEditState={(edit) => {
             setCurrentEdit((curEdit) => {
@@ -118,6 +111,7 @@ export const MigrationsFilesInput = ({
             <CircularProgress />
           </Card>
         ))}
+      <MigrationFilesModal open={!!filesToParse?.length} />
     </>
   );
 };

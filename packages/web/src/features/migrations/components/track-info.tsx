@@ -15,7 +15,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { MigrationYear, SEASONS } from "../types";
+import { Migration, MigrationYear, SEASONS } from "../types";
 import { MapDrawingContext } from "../../../components/map/MapEdit";
 import { BirdMigrationYear } from "./migration-year";
 import { BirdMigrationSelectSeasonModal } from "./migration-select-season";
@@ -24,6 +24,9 @@ import {
   getMigrationPathsPolylines,
   getMigrationPolyline,
 } from "../utils/map-objects";
+import { useMutation } from "react-query";
+import { indexTracksWithWorker } from "../utils";
+import { IndexTracksWorkerContext } from "../workers/context";
 function getRandomColor() {
   var letters = "0123456789ABCDEF";
   var color = "#";
@@ -33,7 +36,7 @@ function getRandomColor() {
   return color;
 }
 
-export const MigrationInfo = ({
+export const TrackInfo = ({
   migration,
   onEditEnd,
   isEdit,
@@ -62,13 +65,18 @@ export const MigrationInfo = ({
     () => getMigrationFreePaths(migration),
     [migration]
   );
-  const freeMarkers = useMemo(
-    () =>
-      pathsToShow.flatMap((path: [number, number]) =>
-        migration.mapObjects.slice(...path)
-      ) as google.maps.Marker[],
-    [migration]
-  );
+  const [freePointsIndices, freeMarkers]: [number[], google.maps.Marker[]] =
+    useMemo(() => {
+      const freePointsIndices = pathsToShow.flatMap((path: [number, number]) =>
+        migration.geojson.features
+          .slice(...path)
+          .map(({ properties: { index } }) => index as number)
+      );
+      return [
+        freePointsIndices,
+        freePointsIndices.map((it: number) => migration.mapObjects[it]),
+      ];
+    }, [migration]);
 
   useEffect(() => {
     freePolylinesRef.current = getMigrationPathsPolylines(
@@ -156,10 +164,10 @@ export const MigrationInfo = ({
     [migration]
   );
   const addMarkersClickListeners = useCallback(
-    (markers: google.maps.Marker[]) => {
+    (markers: google.maps.Marker[], pointsIndices: number[]) => {
       markers.forEach((shape, index) => {
         const clickHandler = shape.addListener("click", () =>
-          selectMarker(index)
+          selectMarker(pointsIndices[index])
         );
         clickListenersRef.current.push(clickHandler);
       });
@@ -172,12 +180,13 @@ export const MigrationInfo = ({
       // showFreePaths()
       fullPathRef.current && hideMapObjects([fullPathRef.current]);
       showMapObjects(freeMarkers);
-      addMarkersClickListeners(freeMarkers);
+      addMarkersClickListeners(freeMarkers, freePointsIndices);
     } else {
       hideMapObjects(freeMarkers);
       hideMapObjects(freePolylinesRef.current);
 
       fullPathRef.current && showMapObjects([fullPathRef.current]);
+      // showMapObjects(migration.mapObjects);
     }
     return () => {
       clickListenersRef.current.forEach((listener) => {
@@ -192,17 +201,31 @@ export const MigrationInfo = ({
       freeMarkers.forEach((marker, index) => {
         const overListener = marker.addListener("mouseover", () => {
           setSelectedMarkersOpacity(
-            newSeasonMigration && [newSeasonMigration[0], index]
+            newSeasonMigration && [
+              newSeasonMigration[0],
+              freePointsIndices[index],
+            ]
           );
         });
         const outListener = marker.addListener("mouseout", () => {
           if (newSeasonMigration?.[0]) {
-            migration.mapObjects[index].setOpacity(0);
+            migration.mapObjects[freePointsIndices[index]].setOpacity(0);
             selectedPathRef.current?.setMap(null);
           }
         });
         mouseoverListenersRef.current.push(overListener, outListener);
       });
+    } else {
+      // migration.mapObjects.forEach((marker, index) => {
+      //   marker.setOpacity(0);
+      //   const overListener = marker.addListener("mouseover", () => {
+      //     marker.setOpacity(1);
+      //   });
+      //   const outListener = marker.addListener("mouseout", () => {
+      //     marker.setOpacity(0);
+      //   });
+      //   mouseoverListenersRef.current.push(overListener, outListener);
+      // });
     }
     setSelectedMarkersOpacity(newSeasonMigration);
     return () => {
@@ -210,7 +233,31 @@ export const MigrationInfo = ({
       mouseoverListenersRef.current = [];
     };
   }, [isEdit, newSeasonMigration, migration]);
-
+  const { worker } = useContext(IndexTracksWorkerContext);
+  const indexTracks = () =>
+    indexTracksWithWorker(worker, {
+      ...migration,
+      mapObjects: undefined,
+    } as Migration);
+  const {
+    isLoading,
+    mutate: indexTracksMutation,
+    variables,
+  } = useMutation<Migration | undefined, any, void>("parseFiles", indexTracks, {
+    onError: (error, variables) => {
+      // setLoadingFilesNumber((prev) =>
+      //     Math.max(prev - (variables?.length || 0), 0)
+      // );
+    },
+    onSuccess: (res, variables) => {
+      // setLoadingFilesNumber((prev) =>
+      //     Math.max(prev - (variables?.length || 0), 0)
+      // );
+      if (res) {
+        onEditEnd({ ...res, mapObjects: migration.mapObjects });
+      }
+    },
+  });
   useEffect(() => {
     if (newSeasonMigration?.filter((it) => it !== null).length === 2) {
       setShowSeasonModal(true);
@@ -269,13 +316,22 @@ export const MigrationInfo = ({
             />
           ))}
           {!isEdit ? (
-            <Button
-              onClick={() => {
-                onChangeEditState(true);
-              }}
-            >
-              Add migration
-            </Button>
+            <>
+              <Button
+                onClick={() => {
+                  onChangeEditState(true);
+                }}
+              >
+                Add migration
+              </Button>
+              <Button
+                onClick={() => {
+                  indexTracksMutation();
+                }}
+              >
+                Auto find migrations
+              </Button>
+            </>
           ) : (
             <Button onClick={cancelEdit}>Cancel</Button>
           )}
