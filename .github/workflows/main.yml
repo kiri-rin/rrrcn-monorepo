@@ -31,8 +31,9 @@ jobs:
      runs-on: ubuntu-latest
      outputs:
        staging: ${{ steps.step1.outputs.staging }}
+       product: ${{ steps.step1.outputs.product }}
      steps:
-       - name: Check branch
+       - name: setup
          id: step1
          run: |
               echo "staging=${GITHUB_ACTION_STAGING}" >> $GITHUB_OUTPUT
@@ -40,7 +41,7 @@ jobs:
 
    build_admin:
      needs: [setup]
-     if: ${{ needs.setup.outputs.product }} == "all" || ${{ needs.setup.outputs.product }} == "admin"
+     if: needs.setup.outputs.product == "all" || needs.setup.outputs.product == "web"
      environment:
        name: ${{ needs.setup.outputs.staging }}
      env:
@@ -80,7 +81,7 @@ jobs:
 
    build_web:
      needs: [setup]
-     if: ${{ needs.setup.outputs.product }} == "all" || ${{ needs.setup.outputs.product }} == "web"
+     if: needs.setup.outputs.product == "all" || needs.setup.outputs.product == "web"
      environment:
        name: ${{ needs.setup.outputs.staging }}
      env:
@@ -91,9 +92,11 @@ jobs:
          uses: actions/checkout@v4
          with:
            submodules: true
+       - name: Dependencies
+         run: yarn
        - name: Build
          run: yarn build_web
-       - name: Upload math result for job 1
+       - name: Upload web build
          uses: actions/upload-artifact@v3
          with:
            name: web build
@@ -101,7 +104,7 @@ jobs:
 
    deploy_admin:
      needs: [setup, build_admin]
-     if: ${{ needs.setup.outputs.product }} == "all" || ${{ needs.setup.outputs.product }} == "admin"
+     if: needs.setup.outputs.product == "all" || needs.setup.outputs.product == "web"
      runs-on: [self-hosted, "${{ needs.setup.outputs.staging }}"]
      environment: ${{ needs.setup.outputs.staging }}
      steps:
