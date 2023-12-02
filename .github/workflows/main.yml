@@ -85,9 +85,6 @@ jobs:
      env:
        REACT_APP_BASE_PATH: ${{vars.REACT_APP_BASE_PATH}}
      runs-on: [self-hosted, build]
-     with:
-       name: web build
-       paths: ./packages/web/build
      steps:
        - name: Checkout
          uses: actions/checkout@v4
@@ -95,7 +92,11 @@ jobs:
            submodules: true
        - name: Build
          run: yarn build_web
-
+       - name: Upload math result for job 1
+           uses: actions/upload-artifact@v3
+           with:
+             name: web build
+             paths: ./packages/web/build
 
    deploy_admin:
      needs: [setup, build_admin]
