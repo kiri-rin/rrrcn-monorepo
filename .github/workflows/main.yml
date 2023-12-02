@@ -21,6 +21,7 @@ on:
           - "all"
           - "admin"
           - "web"
+
 env:
   GITHUB_ACTION_STAGING: ${{inputs.staging || 'develop' }}
   GITHUB_ACTION_PRODUCT: ${{inputs.product || 'all' }}
@@ -93,10 +94,10 @@ jobs:
        - name: Build
          run: yarn build_web
        - name: Upload math result for job 1
-           uses: actions/upload-artifact@v3
-           with:
-             name: web build
-             paths: ./packages/web/build
+         uses: actions/upload-artifact@v3
+         with:
+           name: web build
+           paths: ./packages/web/build
 
    deploy_admin:
      needs: [setup, build_admin]
