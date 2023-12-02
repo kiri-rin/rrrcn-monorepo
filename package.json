@@ -20,6 +20,7 @@
     "postinstall": "patch-package",
     "start-admin": "tsc --build ./packages/rrrcn-services && yarn workspace admin develop",
     "start-web": "tsc --build ./packages/rrrcn-services && yarn workspace web start"
+    "build_admin": "tsc --build ./packages/rrrcn-services && yarn workspace admin build"
   },
   "dependencies": {
     "patch-package": "^6.5.0",

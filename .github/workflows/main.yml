@@ -1,0 +1,82 @@
+on:
+  push:
+    branches:
+     - monorepo/develop
+  workflow_dispatch:
+    inputs:
+      staging:
+        description: 'Staging'
+        required: true
+        default: 'develop'
+        type: choice
+        options:
+          - "develop"
+          - "production"
+env:
+  GITHUB_ACTION_STAGING: ${{inputs.staging || 'develop' }}
+
+jobs:
+   setup:
+     runs-on: ubuntu-latest
+     outputs:
+       staging: ${{ steps.step1.outputs.staging }}
+     steps:
+       - name: Check branch
+         id: step1
+         run: echo "staging=${GITHUB_ACTION_STAGING}" >> $GITHUB_OUTPUT
+
+   build_admin:
+     needs: [setup]
+     environment:
+       name: ${{ needs.setup.outputs.staging }}
+     env:
+       HOST: ${{vars.HOST}}
+       PORT: ${{vars.PORT}}
+       APP_KEYS: ${{secrets.APP_KEYS}}
+       API_TOKEN_SALT: ${{secrets.API_TOKEN_SALT}}
+       ADMIN_JWT_SECRET: ${{secrets.ADMIN_JWT_SECRET}}
+       JWT_SECRET: ${{secrets.JWT_SECRET}}
+       DOCKER_REGISTRY_LOGIN: ${{secrets.DOCKER_REGISTRY_LOGIN}}
+       DOCKER_REGISTRY_PASSWORD: ${{secrets.DOCKER_REGISTRY_PASSWORD}}
+       GOOGLE_API_KEY: ${{secrets.GOOGLE_API_KEY}}
+
+     runs-on: [self-hosted, build]
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           submodules: true
+       - name: Set google api key
+         run: |
+              mkdir -p ./packages/admin/.local
+              echo "$GOOGLE_API_KEY" > ./packages/admin/.local/ee-key.json
+              echo "$GOOGLE_API_KEY" > ./packages/admin/ee-key.json
+              echo "HOST=${HOST}" >> ./packages/admin/.env
+              echo "PORT=${PORT}" >> ./packages/admin/.env
+              echo "APP_KEYS=${APP_KEYS}" >> ./packages/admin/.env
+              echo "API_TOKEN_SALT=${API_TOKEN_SALT}" >> ./packages/admin/.env
+              echo "ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}" >> ./packages/admin/.env
+              echo "JWT_SECRET=${JWT_SECRET}" >> ./packages/admin/.env
+       - name: Build
+         run: docker compose -f ./packages/admin/docker-compose.yml build
+       - name: Login to registry
+         run: docker login -u $DOCKER_REGISTRY_LOGIN -p $DOCKER_REGISTRY_PASSWORD
+       - name: Push to registry
+         run: docker compose -f ./packages/admin/docker-compose.yml push
+
+
+   deploy_admin:
+     needs: [setup, build_admin]
+     runs-on: [self-hosted, "${{ needs.setup.outputs.staging }}"]
+     environment: ${{ needs.setup.outputs.staging }}
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           submodules: true
+       - name: docker-compose pull
+         run: docker compose -p rrrcn-backend-${GITHUB_ACTION_STAGING} -f ./packages/admin/docker-compose.yml pull
+
+       - name: docker-compose
+         run: docker compose -p rrrcn-backend-${GITHUB_ACTION_STAGING} -f ./packages/admin/docker-compose.yml up -d
+

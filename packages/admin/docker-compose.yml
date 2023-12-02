@@ -2,15 +2,26 @@ services:
   api:
     environment:
       R_BASE_URL: "http://R:8000"
-    image: kiri909/rrrcn-api:0.0.5
+    image: kiri909/rrrcn-api:latest
+    build:
+      dockerfile: ./packages/admin/Dockerfile
+      context: ../..
     ports:
       - "1337:1337"
     volumes:
-      - ./.tmp:/app/packages/admin/.tmp
-      - ./public:/app/packages/admin/public
+      - strapi_database:/app/packages/admin/.tmp
+      - strapi_public:/app/packages/admin/public
   R:
-    image: kiri909/rrrcn-r-api:0.0.3
+    image: kiri909/rrrcn-r-api:latest
+    build:
+      dockerfile: ./Dockerfile
+      context: ../r-api
     ports:
       - "8000:8000"
     volumes:
-      - ./public:/app/api/public
+      - strapi_public:/app/api/public
+volumes:
+  strapi_database:
+    external: ${STRAPI_USE_EXTERNAL_DB:-false}
+  strapi_public:
+    external: ${STRAPI_USE_EXTERNAL_PUBLIC:-false}
