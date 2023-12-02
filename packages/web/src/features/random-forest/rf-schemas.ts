@@ -53,6 +53,8 @@ export const RandomForestInputSchema: yup.Schema<RandomForestInputConfig> =
     outputMode: yup.string().required() as yup.Schema<
       RandomForestInputConfig["outputMode"]
     >,
+    classificationSplits: yup.array(),
+    buffersPerAreaPoint: yup.array(),
     validation: lazy((value: RandomForestInputConfig["validation"]) => {
       switch (value.type) {
         case "split": {

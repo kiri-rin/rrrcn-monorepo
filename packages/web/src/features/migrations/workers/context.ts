@@ -11,9 +11,9 @@ export const useIndexTracksWorker = () => {
   return worker;
 };
 export const useParseKMLWorker = () => {
-  const [worker, setWorker] = useState<Worker | undefined>();
+  const [worker, setWorker] = useState<Worker | null>(null);
   useEffect(() => {
-    setWorker(new Worker(new URL("./parse_kml.ts", import.meta.url)));
+    setWorker(new Worker(new URL("./parse_kml/index.ts", import.meta.url)));
   }, []);
   return worker;
 };

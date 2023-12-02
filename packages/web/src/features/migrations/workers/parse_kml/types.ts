@@ -2,8 +2,8 @@ import { IndexedMigration } from "../../migrations";
 import { Migration } from "../../types";
 
 export type WorkerMessage = {
-  type: "parse" | "parse_aquila" | "parse_ornitella";
-  files: File[];
+  type: "parse_aquila" | "parse_ornitella";
+  file: File;
   id: string;
 };
 export type ParseTrackerXML = (

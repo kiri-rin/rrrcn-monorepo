@@ -66,7 +66,7 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
           });
 
           archive.pipe(output);
-          archive.directory(tempFolderPath);
+          archive.directory(tempFolderPath, false);
           archive.finalize();
           return res;
         })

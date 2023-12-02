@@ -14,7 +14,6 @@ const cronLogic = async (strapi, fireDate) => {
       finished_at: { $lt: currentDate.toISOString() },
     },
   });
-  console.log(expiredResults);
   for (let { id } of expiredResults) {
     const folder = strapi.service("api::result.result").getResultFolder(id);
     try {

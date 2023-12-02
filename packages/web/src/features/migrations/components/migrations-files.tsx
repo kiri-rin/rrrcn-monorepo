@@ -3,16 +3,19 @@ import React, {
   Dispatch,
   SetStateAction,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { parseMigrationsKml } from "../utils";
 import { TrackInfo } from "./track-info";
 import { parseGeojson } from "../../../utils/geometry/map/useDrawGeojson";
 import { IndexedMigration } from "../migrations";
 import { useMutation, useQueries, useQuery } from "react-query";
 import { useParseKMLWorker } from "../workers/context";
 import { MigrationFilesModal } from "./migrations-files/modal";
+import { Migration } from "../types";
+import { WorkerMessage } from "../workers/parse_kml/types";
+import { useParseMigrationsKml } from "../utils";
 
 export const MigrationsFilesInput = ({
   migrations,
@@ -24,39 +27,53 @@ export const MigrationsFilesInput = ({
   const worker = useParseKMLWorker();
   const [filesToParse, setFilesToParse] = useState<FileList | null>(null);
   const [currentEdit, setCurrentEdit] = useState<number | null>(null);
-  const [loadingFilesNumber, setLoadingFilesNumber] = useState(0);
-  const parseFiles = useCallback(
-    (files: FileList | null) => {
-      setLoadingFilesNumber((prev) => prev + (files?.length || 0));
-      return worker ? parseMigrationsKml(worker, files) : Promise.resolve([]);
+  const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
+  const removeIdFromLoading = (id: string) => {
+    setLoadingFiles((prev) => {
+      const newState = new Set<string>(prev);
+      newState.delete(id);
+      return newState;
+    });
+  };
+  const parseMigrationsKml = useParseMigrationsKml(worker);
+  const parseInputFile = useCallback(
+    (args: WorkerMessage) => {
+      setLoadingFiles((prev) => new Set(prev).add(args.id));
+      return parseMigrationsKml(args)
+        .then((res: any) => {
+          console.log("CALLBAK IN PROMISE");
+          setLoadingFiles((prev) => {
+            const newState = new Set<string>(prev);
+            newState.delete(args.id);
+            return newState;
+          });
+          res &&
+            onMigrationsChange((prevState) => [
+              ...(prevState || []),
+              addMigrationMarkers(res),
+            ]);
+          return res;
+        })
+        .catch((e: Error) => {
+          console.log("CALLBAK IN PROMISE");
+          setLoadingFiles((prev) => {
+            const newState = new Set<string>(prev);
+            newState.delete(args.id);
+            return newState;
+          });
+        })
+        .finally(() => {
+          console.log("CALLBAK IN PROMISE");
+          setLoadingFiles((prev) => {
+            const newState = new Set<string>(prev);
+            newState.delete(args.id);
+            return newState;
+          });
+        });
     },
     [worker]
   );
-  const {
-    isLoading,
-    mutate: parseInputFiles,
-    variables,
-  } = useMutation<Partial<IndexedMigration>[], any, FileList | null>(
-    "parseFiles",
-    parseFiles,
-    {
-      onError: (error, variables) => {
-        setLoadingFilesNumber((prev) =>
-          Math.max(prev - (variables?.length || 0), 0)
-        );
-      },
-      onSuccess: (res, variables) => {
-        console.log(res);
-        setLoadingFilesNumber((prev) =>
-          Math.max(prev - (variables?.length || 0), 0)
-        );
-        onMigrationsChange((prevState) => [
-          ...(prevState || []),
-          ...addMigrationsMarkers(res),
-        ]);
-      },
-    }
-  );
+
   const ref = useRef<HTMLInputElement | null>(null);
   return (
     <>
@@ -76,11 +93,21 @@ export const MigrationsFilesInput = ({
         onChange={({
           target: { files },
         }: React.ChangeEvent<HTMLInputElement>) => {
-          parseInputFiles(files);
+          files &&
+            Array.from(files).forEach(
+              (file, index) =>
+                parseInputFile({
+                  file,
+                  id: String(Math.random()),
+                  type: "parse_aquila",
+                }),
+              0
+            );
         }}
       />
       {migrations?.map((migr, index) => (
         <TrackInfo
+          key={index}
           filteredMigration={migr}
           onChangeEditState={(edit) => {
             setCurrentEdit((curEdit) => {
@@ -104,10 +131,10 @@ export const MigrationsFilesInput = ({
           }}
         />
       ))}
-      {Array(loadingFilesNumber)
+      {Array(loadingFiles.size)
         .fill(0)
-        .map(() => (
-          <Card className={`common__card common__card_blue`}>
+        .map((it, index) => (
+          <Card key={index} className={`common__card common__card_blue`}>
             <CircularProgress />
           </Card>
         ))}
@@ -115,14 +142,14 @@ export const MigrationsFilesInput = ({
     </>
   );
 };
-const addMigrationsMarkers = (migrations: Partial<IndexedMigration>[]) => {
-  return migrations.map((it: any) => {
-    it.mapObjects = parseGeojson(it.geojson).map((_it, index) => {
-      (_it as google.maps.Marker).setTitle(
-        String(it.geojson.features[index].properties?.date)
-      );
-      return _it;
-    });
-    return it;
-  });
+const addMigrationMarkers = (migration: Migration): IndexedMigration => {
+  (migration as IndexedMigration).mapObjects = parseGeojson(
+    migration.geojson
+  ).map((_it, index) => {
+    (_it as google.maps.Marker).setTitle(
+      String(migration.geojson.features[index].properties?.date)
+    );
+    return _it;
+  }) as google.maps.Marker[];
+  return migration as IndexedMigration;
 };

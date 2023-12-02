@@ -17,6 +17,5 @@ export const parseHTMLTable = (doc: Document) => {
       rowsArray.push(cellsArray);
     }
   }
-  console.log(rowsArray);
   return rowsArray;
 };

@@ -28,7 +28,12 @@ export const ruTranslations = {
   "random-forest.choose-output-mode": "Выберите способ классификации",
   "random-forest.all-training-points": "В одном наборе",
   "random-forest.separate-training-points": "Раздельные наборы",
+  "random-forest.post-process": "Пост обработка итоговых растров",
+  "random-forest.buffersPerAreaPoint":
+    "Построить буфферы вокруг дискретных растров",
+  "random-forest.classificationSplits": "Вывести срезы растров по процентам",
   "script-input.scale": "масштаб (scale)",
+  "script-input.bands": "Слои(bands)",
   "script-input.buffer": "буффер (buffer)",
   "script-input.filename": "Имя фалйа (filename)",
   "population.title": "Оценка численности",

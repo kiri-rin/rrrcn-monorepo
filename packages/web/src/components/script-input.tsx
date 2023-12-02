@@ -93,19 +93,25 @@ const ScriptAdvanceSettings = ({ name }: { name: string }) => {
           size={"small"}
           label={strings["script-input.buffer"]}
           type={"numeric"}
-          onChange={({ target: { value: val } }) =>
-            onChange({
-              ...value,
-              buffer: Number(val) as ScriptConfig["buffer"],
-            })
-          }
-          value={value.buffer}
+          onChange={({ target: { value: val } }) => {
+            const res = Number(val.replaceAll(/[^0-9]/g, ""));
+            if (String(res) !== "NaN") {
+              onChange({
+                ...value,
+                buffer: (res || undefined) as ScriptConfig["buffer"],
+              });
+            }
+          }}
+          value={value.buffer || ""}
         />
         <Select
           size={"small"}
-          value={value.mode}
+          value={value.mode || ""}
           onChange={({ target: { value: val } }) =>
-            onChange({ ...value, mode: val as ScriptConfig["mode"] })
+            onChange({
+              ...value,
+              mode: (val || undefined) as ScriptConfig["mode"],
+            })
           }
         >
           <MenuItem value={"SUM"}>SUM</MenuItem>
@@ -116,17 +122,40 @@ const ScriptAdvanceSettings = ({ name }: { name: string }) => {
         size={"small"}
         label={strings["script-input.scale"]}
         type={"numeric"}
-        value={value.scale}
-        onChange={({ target: { value: val } }) =>
-          onChange({ ...value, scale: Number(val) as ScriptConfig["scale"] })
-        }
+        value={value.scale || ""}
+        onChange={({ target: { value: val } }) => {
+          const res = Number(val.replaceAll(/[^0-9]/g, ""));
+          console.log(res, val);
+          if (String(res) !== "NaN") {
+            onChange({
+              ...value,
+              scale: (res || undefined) as ScriptConfig["scale"],
+            });
+          }
+        }}
+      />
+      <TextField
+        size={"small"}
+        label={strings["script-input.bands"]}
+        type={"text"}
+        value={value.bands?.join(",") || ""}
+        onChange={({ target: { value: val } }) => {
+          const res = val
+            .split(",")
+            .map((it) => it.trim())
+            .filter((it) => it);
+          onChange({ ...value, bands: res.length ? res : undefined });
+        }}
       />
       <TextField
         size={"small"}
         label={strings["script-input.filename"]}
-        value={value.filename}
+        value={value.filename || ""}
         onChange={({ target: { value: val } }) =>
-          onChange({ ...value, filename: val as ScriptConfig["filename"] })
+          onChange({
+            ...value,
+            filename: val || (undefined as ScriptConfig["filename"]),
+          })
         }
       />
       <ScriptDatesInput name={`${name}.dates`} />

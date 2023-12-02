@@ -1,5 +1,5 @@
 import React, { useState, useTransition } from "react";
-import { Button, Container } from "@mui/material";
+import { AccordionDetails, Button, Container } from "@mui/material";
 import {
   CommonScriptParams,
   DataExtractionConfig,
@@ -18,6 +18,8 @@ import { CommonPaper } from "../../components/common";
 import Typography from "@mui/material/Typography";
 import { useSendAnalysis } from "../common/utils";
 import { DataExtractionValidationSchema } from "./data-schemas";
+import { PasteScriptsConfigModal } from "./components/paste-scripts-config";
+import { RandomForestInputConfig } from "./random-forest";
 
 export interface ScriptInputConfig extends Omit<ScriptConfig, "dates"> {
   dates?: DatesInputConfig;
@@ -55,6 +57,8 @@ export const DataExtractionConfigForm = () => {
     (opt) => api.analysis.getApiAnalysisScripts(),
     { enabled: false, refetchOnWindowFocus: false }
   );
+  const [openImportConfig, setOpenImport] = useState(false);
+
   //TODO VALIDATE
   return (
     <FormikContext.Provider value={formik}>
@@ -101,6 +105,31 @@ export const DataExtractionConfigForm = () => {
               </>
             )}
           </FieldArray>
+          {/*//TODO MOVE ALL THIS MODULE TO ONE FILE*/}
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(JSON.stringify(config.scripts));
+            }}
+          >
+            Copy scripts config
+          </Button>
+          <Button
+            onClick={() => {
+              setOpenImport(true);
+            }}
+          >
+            Import config
+          </Button>
+          {openImportConfig && (
+            <PasteScriptsConfigModal
+              onClose={() => setOpenImport(false)}
+              open={openImportConfig}
+              onSubmit={(data) => {
+                formik.setFieldValue("scripts", data.scripts);
+                setOpenImport(false);
+              }}
+            />
+          )}
         </CommonPaper>
         <Button
           onClick={() => {

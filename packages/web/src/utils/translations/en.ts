@@ -28,10 +28,14 @@ export const enTranslations = {
   "random-forest.choose-region": "Add  region of interest",
   "random-forest.all-training-points": "All points",
   "random-forest.separate-training-points": "Separate points",
+  "random-forest.post-process": "Post process images",
+  "random-forest.buffersPerAreaPoint":
+    "Buffers around discrete classificated images",
+  "random-forest.classificationSplits": "Split classificated images by percent",
   "script-input.scale": "scale",
   "script-input.buffer": "buffer",
   "script-input.filename": "filename",
-
+  "script-input.bands": "bands",
   "population.title": "Estimate population",
   "population.choose-type": "Estimation type",
   "population.random-generation": "Random points generation",

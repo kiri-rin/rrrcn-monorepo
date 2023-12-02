@@ -28,7 +28,8 @@ export default factories.createCoreController(
       const stream = fs.createReadStream(
         resultService.getResultFolder(resultId) + `.zip`
       );
-      return stream;
+      ctx.set("Content-disposition", "attachment; filename=result.zip");
+      ctx.body = stream;
     },
     async getLoadingInfo(ctx) {
       const { resultId: resultUID } = ctx.params;
