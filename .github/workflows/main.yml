@@ -12,8 +12,18 @@ on:
         options:
           - "develop"
           - "production"
+      product:
+        description: 'product to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "all"
+          - "admin"
+          - "web"
 env:
   GITHUB_ACTION_STAGING: ${{inputs.staging || 'develop' }}
+  GITHUB_ACTION_PRODUCT: ${{inputs.product || 'all' }}
 
 jobs:
    setup:
@@ -23,10 +33,13 @@ jobs:
      steps:
        - name: Check branch
          id: step1
-         run: echo "staging=${GITHUB_ACTION_STAGING}" >> $GITHUB_OUTPUT
+         run: |
+              echo "staging=${GITHUB_ACTION_STAGING}" >> $GITHUB_OUTPUT
+              echo "product=${GITHUB_ACTION_PRODUCT}" >> $GITHUB_OUTPUT
 
    build_admin:
      needs: [setup]
+     if: ${{ needs.setup.outputs.product == "all" || needs.setup.outputs.product == "admin"}}
      environment:
        name: ${{ needs.setup.outputs.staging }}
      env:
@@ -64,9 +77,29 @@ jobs:
        - name: Push to registry
          run: docker compose -f ./packages/admin/docker-compose.yml push
 
+   build_web:
+     needs: [setup]
+     if: ${{ needs.setup.outputs.product == "all" || needs.setup.outputs.product == "web"}}
+     environment:
+       name: ${{ needs.setup.outputs.staging }}
+     env:
+       REACT_APP_BASE_PATH: ${{vars.REACT_APP_BASE_PATH}}
+     runs-on: [self-hosted, build]
+     with:
+       name: web build
+       paths: ./packages/web/build
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           submodules: true
+       - name: Build
+         run: yarn build_web
+
 
    deploy_admin:
      needs: [setup, build_admin]
+     if: ${{ needs.setup.outputs.product == "all" || needs.setup.outputs.product == "admin"}}
      runs-on: [self-hosted, "${{ needs.setup.outputs.staging }}"]
      environment: ${{ needs.setup.outputs.staging }}
      steps:
