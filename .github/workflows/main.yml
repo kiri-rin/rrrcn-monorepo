@@ -100,7 +100,7 @@ jobs:
          uses: actions/upload-artifact@v3
          with:
            name: web build
-           paths: ./packages/web/build
+           path: ./packages/web/build
 
    deploy_admin:
      needs: [setup, build_admin]
