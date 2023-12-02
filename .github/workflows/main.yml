@@ -39,7 +39,7 @@ jobs:
 
    build_admin:
      needs: [setup]
-     if: ${{ needs.setup.outputs.product == "all" || needs.setup.outputs.product == "admin"}}
+     if: ${{ needs.setup.outputs.product }} == "all" || ${{ needs.setup.outputs.product }} == "admin"
      environment:
        name: ${{ needs.setup.outputs.staging }}
      env:
