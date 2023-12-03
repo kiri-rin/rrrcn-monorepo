@@ -19,6 +19,8 @@ export const ruTranslations = {
   "data-extraction.add-dates-to-result": "Добавить даты в результат",
   "data-extraction.choose-params": "Добавить параметры",
   "data-extraction.choose-points": "Добавить точки",
+  "data-extraction.copy-config": "Копировать кофниг",
+  "data-extraction.import-config": "Вставить конфиг",
   "random-forest.title": "Random forest",
   "random-forest.choose-training-points": "Обучающий набор",
   "random-forest.choose-all-training-points": "Добавить обучающий набор",

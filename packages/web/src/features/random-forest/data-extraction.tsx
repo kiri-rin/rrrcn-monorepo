@@ -111,14 +111,14 @@ export const DataExtractionConfigForm = () => {
               navigator.clipboard.writeText(JSON.stringify(config.scripts));
             }}
           >
-            Copy scripts config
+            {strings["data-extraction.copy-config"]}
           </Button>
           <Button
             onClick={() => {
               setOpenImport(true);
             }}
           >
-            Import config
+            {strings["data-extraction.import-config"]}
           </Button>
           {openImportConfig && (
             <PasteScriptsConfigModal

@@ -19,6 +19,8 @@ export const enTranslations = {
   "data-extraction.add-dates-to-result": "Add dates to result",
   "data-extraction.choose-params": "Add params",
   "data-extraction.choose-points": "Add points",
+  "data-extraction.copy-config": "Copy config",
+  "data-extraction.import-config": "Import config",
   "random-forest.title": "Random forest",
   "random-forest.choose-training-points": "Training points",
   "random-forest.choose-all-training-points": "Set training points",
