@@ -46,13 +46,12 @@ const EventSourceLogs = ({ resultId }: { resultId: number }) => {
     <div style={{ border: "1px solid", padding: 10, margin: 10, width: 200 }}>
       {!close && <LinearProgress />}
       <div>{message}</div>
-      {messageId === "success" && (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`${BASE_PATH}/api/result/download/${resultId}`}
-        >{`${BASE_PATH}/api/result/download/${resultId}`}</a>
-      )}
+      {"result will be available here \n"}
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${BASE_PATH}/api/result/download/${resultId}`}
+      >{`${BASE_PATH}/api/result/download/${resultId}`}</a>
     </div>
   );
 };

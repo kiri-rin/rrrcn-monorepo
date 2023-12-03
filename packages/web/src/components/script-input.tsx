@@ -140,11 +140,11 @@ const ScriptAdvanceSettings = ({ name }: { name: string }) => {
         type={"text"}
         value={value.bands?.join(",") || ""}
         onChange={({ target: { value: val } }) => {
-          const res = val
-            .split(",")
-            .map((it) => it.trim())
-            .filter((it) => it);
-          onChange({ ...value, bands: res.length ? res : undefined });
+          const res = val.split(",").map((it) => it.trim());
+          onChange({
+            ...value,
+            bands: res.filter((it) => it).length ? res : undefined,
+          });
         }}
       />
       <TextField
