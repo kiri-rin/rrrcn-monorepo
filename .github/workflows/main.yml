@@ -86,6 +86,7 @@ jobs:
        name: ${{ needs.setup.outputs.staging }}
      env:
        REACT_APP_BASE_PATH: ${{vars.REACT_APP_BASE_PATH}}
+       REACT_APP_GOOGLE_KEY: ${{secrets.REACT_APP_GOOGLE_KEY}}
      runs-on: [self-hosted, build]
      steps:
        - name: Checkout
