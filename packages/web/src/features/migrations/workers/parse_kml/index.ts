@@ -1,12 +1,11 @@
 import "@react-google-maps/api";
-import { WorkerMessage } from "./types";
+import { ParseTrackerXML, WorkerMessage } from "./types";
 import { parseAquilaKML } from "./aquila";
 import { Migration } from "../../types";
 
 const DOMParser = new (require("xmldom").DOMParser)();
 const queue: WorkerMessage[] = [];
 let processing = false;
-const promisesSet = new Set<Promise<any>>();
 /* eslint-disable-next-line no-restricted-globals */
 self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
   if (!e.data) {
@@ -14,12 +13,19 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
   }
   const { type, file, id } = e.data;
   const processData = (data: any) => {
+    let parser: ParseTrackerXML;
+    switch (e.data.type) {
+      case "aquila":
+      default:
+        parser = parseAquilaKML;
+        break;
+    }
     console.log("START PROCESSING", data);
 
     if (!data) {
       return;
     }
-    parseAquilaKML(file, DOMParser)
+    parser(file, DOMParser)
       .then((res) => {
         console.log("finished", id);
         /* eslint-disable-next-line no-restricted-globals */
@@ -38,13 +44,6 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
       });
   };
 
-  switch (e.data.type) {
-    case "parse_aquila": {
-      queue.length || processing ? queue.unshift(e.data) : processData(e.data);
-      break;
-    }
-    default:
-      break;
-  }
+  queue.length || processing ? queue.unshift(e.data) : processData(e.data);
 };
 export {};

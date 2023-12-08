@@ -1,8 +1,11 @@
 import { IndexedMigration } from "../../migrations";
 import { Migration } from "../../types";
-
+export enum TrackerFileTypes {
+  AQUILA = "aquila",
+  ORNITELLA = "ornitella",
+}
 export type WorkerMessage = {
-  type: "parse_aquila" | "parse_ornitella";
+  type: TrackerFileTypes;
   file: File;
   id: string;
 };

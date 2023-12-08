@@ -3,18 +3,16 @@ import React, {
   Dispatch,
   SetStateAction,
   useCallback,
-  useMemo,
   useRef,
   useState,
 } from "react";
 import { TrackInfo } from "./track-info";
 import { parseGeojson } from "../../../utils/geometry/map/useDrawGeojson";
 import { IndexedMigration } from "../migrations";
-import { useMutation, useQueries, useQuery } from "react-query";
 import { useParseKMLWorker } from "../workers/context";
 import { MigrationFilesModal } from "./migrations-files/modal";
 import { Migration } from "../types";
-import { WorkerMessage } from "../workers/parse_kml/types";
+import { TrackerFileTypes, WorkerMessage } from "../workers/parse_kml/types";
 import { useParseMigrationsKml } from "../utils";
 
 export const MigrationsFilesInput = ({
@@ -93,16 +91,7 @@ export const MigrationsFilesInput = ({
         onChange={({
           target: { files },
         }: React.ChangeEvent<HTMLInputElement>) => {
-          files &&
-            Array.from(files).forEach(
-              (file, index) =>
-                parseInputFile({
-                  file,
-                  id: String(Math.random()),
-                  type: "parse_aquila",
-                }),
-              0
-            );
+          files && setFilesToParse(files);
         }}
       />
       {migrations?.map((migr, index) => (
@@ -138,7 +127,22 @@ export const MigrationsFilesInput = ({
             <CircularProgress />
           </Card>
         ))}
-      <MigrationFilesModal open={!!filesToParse?.length} />
+      {!!filesToParse?.length && (
+        <MigrationFilesModal
+          files={filesToParse}
+          onParseClick={(filesWithTypes) => {
+            filesWithTypes.forEach(({ file, type }, index) =>
+              parseInputFile({
+                file,
+                id: String(Math.random()),
+                type,
+              })
+            );
+          }}
+          open={true}
+          onClose={() => setFilesToParse(null)}
+        />
+      )}
     </>
   );
 };
