@@ -63,10 +63,10 @@ const TABS: { label: keyof Strings; Component: ComponentType }[] = [
     label: "survival.title",
     Component: SurvivalForm,
   },
-  {
-    label: "migrations.title",
-    Component: MigrationsForm,
-  },
+  // {
+  //   label: "migrations.title",
+  //   Component: MigrationsForm,
+  // },
 ];
 export const MainPageLeftPanel = () => {
   const [activeTab, setActiveTab] = useState(0);
