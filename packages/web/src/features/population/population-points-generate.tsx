@@ -58,17 +58,29 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
       </CommonPaper>
       <CommonPaper>
         <Typography sx={{ marginY: "10px" }}>
-          {strings["population.distance-total-area"]}
+          {strings["population.cross-validation"]}
         </Typography>
         <Input
+          placeholder={strings["population.cross-validation"]}
           error={
-            (touched[`${name}.totalArea`] || submitCount) &&
+            (touched[`${name}.crossValidation`] || submitCount) &&
             errors?.crossValidation
           }
           onChange={({ target: { value } }) =>
             setFieldValue(`${name}.crossValidation`, value || undefined)
           }
           value={config.crossValidation || ""}
+        />
+        <Typography sx={{ marginY: "10px" }}>
+          {strings["population.seed"]}
+        </Typography>
+        <Input
+          placeholder={strings["population.seed"]}
+          error={(touched[`${name}.seed`] || submitCount) && errors?.seed}
+          onChange={({ target: { value } }) =>
+            setFieldValue(`${name}.seed`, value || undefined)
+          }
+          value={config.seed || ""}
         />
       </CommonPaper>
     </>

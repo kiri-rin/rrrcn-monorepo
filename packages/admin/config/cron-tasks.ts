@@ -7,7 +7,7 @@ function addMinutes(date, minutes) {
 }
 
 const cronLogic = async (strapi, fireDate) => {
-  const currentDate = addMinutes(new Date(), -60);
+  const currentDate = addMinutes(new Date(), -600);
   const expiredResults = await strapi.db.query("api::result.result").findMany({
     where: {
       status: "completed",

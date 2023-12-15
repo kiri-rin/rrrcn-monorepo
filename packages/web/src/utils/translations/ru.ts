@@ -46,6 +46,8 @@ export const ruTranslations = {
   "population.observed-areas": "Обследованные области",
   "population.presence-points": "Точки присутствия",
   "population.presence-area": "Область присутствия",
+  "population.cross-validation": "Количество прогонов кросс валидации",
+  "population.seed": "Случайное зерно",
   "population.use-random-forest": "Использовать результат random forest",
   "population.distance-file": "Файл для distance",
   "population.distance-function": "Функция плотности",

@@ -46,6 +46,8 @@ export const enTranslations = {
   "population.observed-areas": "Observed areas",
   "population.presence-points": "Presence points",
   "population.presence-area": "Presence area",
+  "population.cross-validation": "Cross validation",
+  "population.seed": "Random seed",
   "population.use-random-forest": "Use random forest",
   "population.distance-file": "File for distance",
   "population.distance-function": "Key function",
