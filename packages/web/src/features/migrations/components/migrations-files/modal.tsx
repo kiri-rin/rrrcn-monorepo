@@ -75,6 +75,7 @@ const TrackerFileTypesArray = [
 const MigrationFilesModalFile = ({
   fileWithType,
   onDeleteClick,
+  onChangeType,
 }: {
   fileWithType: MigrationFilesParseConfig;
   onDeleteClick: () => void;
@@ -88,6 +89,9 @@ const MigrationFilesModalFile = ({
       <MigrationFilesModalFileTypeSelect
         size={"small"}
         value={fileWithType.type}
+        onChange={({ target: { value } }) => {
+          onChangeType(value as WorkerMessage["type"]);
+        }}
       >
         {TrackerFileTypesArray.map((it) => (
           <MenuItem value={it}>{it}</MenuItem>

@@ -32,7 +32,7 @@ export const parseAquilaKML: ParseTrackerXML = async (file, DOMParser) => {
                   it.properties?.description?.value || "<div></div>",
                   "text/html"
                 )
-              ).find((it) => it?.[0]?.includes("Altitude"))?.[1] || "0"
+              ).find((it) => it?.[1]?.includes("Altitude"))?.[3] || "0"
             ).replace(/\D/g, "")
           ),
           date: parse(

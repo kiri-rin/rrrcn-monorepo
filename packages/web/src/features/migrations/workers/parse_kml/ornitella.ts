@@ -1,7 +1,7 @@
 import type { ParseTrackerXML } from "./types";
 import { kml } from "@tmcw/togeojson";
 import { Feature, GeoJSON } from "geojson";
-import { parse } from "date-fns";
+import { parse, parseISO } from "date-fns";
 import { parseHTMLTable } from "./utils";
 import { Migration, MigrationPointProperties } from "../../types";
 import { SetTimeoutPromise } from "../../utils/parser-utils";
@@ -35,11 +35,7 @@ export const parseOrnitellaKML: ParseTrackerXML = async (file, DOMParser) => {
               ).find((it) => it?.[0]?.includes("Altitude"))?.[1] || "0"
             ).replace(/\D/g, "")
           ),
-          date: parse(
-            it.properties?.[DATE_PROP] || "",
-            DATE_FORMAT,
-            new Date()
-          ),
+          date: parseISO(it.properties?.[DATE_PROP] || ""),
         },
       } as Feature<GeoJSON.Point, MigrationPointProperties>);
     }
