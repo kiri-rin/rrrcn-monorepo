@@ -4,7 +4,7 @@ import { Feature, GeoJSON } from "geojson";
 import { parse } from "date-fns";
 import { parseHTMLTable } from "./utils";
 import { Migration, MigrationPointProperties } from "../../types";
-import { SetTimeoutPromise } from "../../utils";
+import { SetTimeoutPromise } from "../../utils/parser-utils";
 const DATE_PROP = "timestamp";
 const DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 

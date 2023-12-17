@@ -17,14 +17,10 @@ import { SelectedSeasonsType } from "../migrations";
 import { FormikContext, useFormik } from "formik";
 import { mapScriptsConfigToRequest } from "../../random-forest/utils";
 
-type MigrationMapObjects = {
-  mapObjects: GoogleMapObject[];
-};
-export type MigrationWithMapObjects = Migration & MigrationMapObjects;
 export const MigrationsChooseAreas = ({
   migrations,
 }: {
-  migrations: MigrationWithMapObjects[];
+  migrations: Migration[];
 }) => {
   const mapObjectsRef = useRef<GoogleMapObject[]>([]);
   const listenersRef = useRef<google.maps.MapsEventListener[]>([]);
@@ -241,7 +237,7 @@ export const MigrationsChooseAreas = ({
     </FormikContext.Provider>
   );
 };
-const reduceMigrations = (migrations: MigrationWithMapObjects[]) => {
+const reduceMigrations = (migrations: Migration[]) => {
   return migrations.reduce((acc, migr) => {
     Object.entries(migr.years).forEach(([year, yearInfo]) => {
       if (!acc[year]) {
@@ -257,7 +253,7 @@ const reduceMigrations = (migrations: MigrationWithMapObjects[]) => {
   }, {} as any);
 };
 const prepareSeasonsRequest = (
-  migrations: MigrationWithMapObjects[],
+  migrations: Migration[],
   seasons: SelectedSeasonsType
 ) => {
   const res: { migrations: { geojson: GeoJSON.FeatureCollection }[] } = {
@@ -286,7 +282,7 @@ const prepareSeasonsRequest = (
   return res;
 };
 export const prepareGenerateRequest = (
-  migrations: MigrationWithMapObjects[],
+  migrations: Migration[],
   selectedSeasons: any,
   grid: any,
   params: any,

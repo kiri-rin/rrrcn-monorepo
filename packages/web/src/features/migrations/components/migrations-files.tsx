@@ -6,14 +6,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { TrackInfo } from "./track-info";
+import { MigrationTrackInfo } from "./track-info/migrationTrackInfo";
 import { parseGeojson } from "../../../utils/geometry/map/useDrawGeojson";
 import { IndexedMigration } from "../migrations";
 import { useParseKMLWorker } from "../workers/context";
 import { MigrationFilesModal } from "./migrations-files/modal";
 import { Migration } from "../types";
 import { TrackerFileTypes, WorkerMessage } from "../workers/parse_kml/types";
-import { useParseMigrationsKml } from "../utils";
+import { useParseMigrationsKml } from "../utils/parser-utils";
 
 export const MigrationsFilesInput = ({
   migrations,
@@ -45,11 +45,7 @@ export const MigrationsFilesInput = ({
             newState.delete(args.id);
             return newState;
           });
-          res &&
-            onMigrationsChange((prevState) => [
-              ...(prevState || []),
-              addMigrationMarkers(res),
-            ]);
+          res && onMigrationsChange((prevState) => [...(prevState || []), res]);
           return res;
         })
         .catch((e: Error) => {
@@ -95,7 +91,7 @@ export const MigrationsFilesInput = ({
         }}
       />
       {migrations?.map((migr, index) => (
-        <TrackInfo
+        <MigrationTrackInfo
           key={index}
           filteredMigration={migr}
           onChangeEditState={(edit) => {
@@ -145,15 +141,4 @@ export const MigrationsFilesInput = ({
       )}
     </>
   );
-};
-const addMigrationMarkers = (migration: Migration): IndexedMigration => {
-  (migration as IndexedMigration).mapObjects = parseGeojson(
-    migration.geojson
-  ).map((_it, index) => {
-    (_it as google.maps.Marker).setTitle(
-      String(migration.geojson.features[index].properties?.date)
-    );
-    return _it;
-  }) as google.maps.Marker[];
-  return migration as IndexedMigration;
 };

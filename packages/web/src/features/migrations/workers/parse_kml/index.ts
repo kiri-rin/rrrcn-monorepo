@@ -2,6 +2,7 @@ import "@react-google-maps/api";
 import { ParseTrackerXML, TrackerFileTypes, WorkerMessage } from "./types";
 import { parseAquilaKML } from "./aquila";
 import { Migration } from "../../types";
+import { indexTrackByYears } from "../index_tracks/by-date";
 const DOMParser = new (require("xmldom").DOMParser)();
 const queue: WorkerMessage[] = [];
 let processing = false;
@@ -49,7 +50,10 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
 
   queue.length || processing
     ? queue.unshift(e.data)
-    : /* eslint-disable-next-line no-restricted-globals */
-      processData(e.data, self.postMessage);
+    : processData(e.data, (res) => {
+        res.result.years = indexTrackByYears(res.result);
+        /* eslint-disable-next-line no-restricted-globals */
+        self.postMessage(res);
+      });
 };
 export {};

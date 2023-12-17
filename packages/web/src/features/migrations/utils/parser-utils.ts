@@ -1,6 +1,6 @@
-import { IndexedMigration } from "./migrations";
-import { Migration } from "./types";
-import { WorkerMessage } from "./workers/parse_kml/types";
+import { IndexedMigration } from "../migrations";
+import { Migration } from "../types";
+import { WorkerMessage } from "../workers/parse_kml/types";
 import { useCallback, useEffect, useRef } from "react";
 export const SetTimeoutPromise = (timeout: number) =>
   new Promise((resolve) => {

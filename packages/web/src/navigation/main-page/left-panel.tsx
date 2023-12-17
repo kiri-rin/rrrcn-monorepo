@@ -28,6 +28,7 @@ import {
 import { MigrationsForm } from "../../features/migrations/migrations";
 import { SurvivalForm } from "../../features/survival/survival";
 import { MaxentConfigForm } from "../../features/maxent/maxent";
+import { AnalysisRightPanel } from "./right-panel";
 
 export type FormType = {
   data?: Partial<DataExtractionInput>;
@@ -93,7 +94,7 @@ export const MainPageLeftPanel = () => {
             <Tab key={index} label={strings[label] as string} />
           ))}
         </Tabs>
-        {TABS.map(({ Component }, index) => (
+        {TABS.map(({ label, Component }, index) => (
           <div
             key={index}
             style={activeTab !== index ? { display: "none" } : undefined}
@@ -101,6 +102,7 @@ export const MainPageLeftPanel = () => {
             <Component />
           </div>
         ))}
+        {activeTab !== 5 && <AnalysisRightPanel />}
       </div>
     </Drawer>
   );

@@ -50,7 +50,7 @@ export const MainPage = () => {
       <div>
         <MainPageLeftPanel />
         <MapEdit />
-        <AnalysisRightPanel />
+        <div id={"main-page-right-panel"} />
       </div>
     </MapDrawingContext.Provider>
   );

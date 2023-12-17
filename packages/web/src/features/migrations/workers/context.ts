@@ -6,7 +6,7 @@ export const IndexTracksWorkerContext = createContext<{
 export const useIndexTracksWorker = () => {
   const [worker, setWorker] = useState<Worker | undefined>();
   useEffect(() => {
-    setWorker(new Worker(new URL("./index_tracks.ts", import.meta.url)));
+    setWorker(new Worker(new URL("./index_tracks/index.ts", import.meta.url)));
   }, []);
   return worker;
 };

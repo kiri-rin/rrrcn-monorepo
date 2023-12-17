@@ -25,4 +25,5 @@ export type MigrationPointProperties = {
   date: Date;
   elevation?: number;
   index?: number;
+  description?: { value?: string };
 };
