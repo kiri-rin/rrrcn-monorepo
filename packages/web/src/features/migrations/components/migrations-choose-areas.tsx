@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button, Select } from "@mui/material";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Button, LinearProgress, Select } from "@mui/material";
 import {
   GoogleMapObject,
   parseGeojson,
@@ -17,14 +17,10 @@ import { SelectedSeasonsType } from "../migrations";
 import { FormikContext, useFormik } from "formik";
 import { mapScriptsConfigToRequest } from "../../random-forest/utils";
 
-type MigrationMapObjects = {
-  mapObjects: GoogleMapObject[];
-};
-export type IndexedMigration = Migration & MigrationMapObjects;
 export const MigrationsChooseAreas = ({
   migrations,
 }: {
-  migrations: IndexedMigration[];
+  migrations: Migration[];
 }) => {
   const mapObjectsRef = useRef<GoogleMapObject[]>([]);
   const listenersRef = useRef<google.maps.MapsEventListener[]>([]);
@@ -33,27 +29,33 @@ export const MigrationsChooseAreas = ({
     new Set()
   );
 
-  const { data: migrationSplitAreaState, mutateAsync: postSplitArea } =
-    useMutation(
-      "migration-split-area",
-      api.migration.postApiMigrationSplitArea,
-      {
-        onSuccess({ data }) {
-          queryClient.setQueriesData("migration-split-area", data);
-        },
-      }
-    );
-  const { data: generatedMigrations, mutateAsync: generateTracks } =
-    useMutation(
-      "migration-generated-tracks",
-      api.migration.postApiMigrationGenerateTracks,
-      {
-        onSuccess({ data }) {
-          console.log("SUCCESS");
-          queryClient.setQueriesData("migration-generated-tracks", data);
-        },
-      }
-    );
+  const {
+    data: migrationSplitAreaState,
+    mutateAsync: postSplitArea,
+    isLoading,
+  } = useMutation(
+    "migration-split-area",
+    api.migration.postApiMigrationSplitArea,
+    {
+      onSuccess({ data }) {
+        queryClient.setQueriesData("migration-split-area", data);
+      },
+    }
+  );
+  const {
+    data: generatedMigrations,
+    mutateAsync: generateTracks,
+    isLoading: isGenerateLoading,
+  } = useMutation(
+    "migration-generated-tracks",
+    api.migration.postApiMigrationGenerateTracks,
+    {
+      onSuccess({ data }) {
+        console.log("SUCCESS");
+        queryClient.setQueriesData("migration-generated-tracks", data);
+      },
+    }
+  );
   useEffect(() => {
     selectedPolygons.forEach((value) => {
       mapObjectsRef.current[value]?.setOptions({ fillColor: "red" });
@@ -125,100 +127,117 @@ export const MigrationsChooseAreas = ({
 
   const queryClient = useQueryClient();
 
-  const seasonsArray: { year: string; season: SEASONS }[] = Object.entries(
-    indexedSeasons
-  )
-    .sort(([year1], [year2]) => Number(year1) - Number(year2))
-    .flatMap(([year, info]: [string, any]) =>
-      Object.values(SEASONS)
-        .filter((season) => info[season])
-        .map((season) => ({ year, season }))
-    );
+  const seasonsArray: { year: string; season: SEASONS }[] = useMemo(
+    () =>
+      Object.entries(indexedSeasons)
+        .sort(([year1], [year2]) => Number(year1) - Number(year2))
+        .flatMap(([year, info]: [string, any]) =>
+          Object.values(SEASONS)
+            .filter((season) => info[season])
+            .map((season) => ({ year, season }))
+        ),
+    [migrations, selectedSeasons]
+  );
   return (
     <FormikContext.Provider value={paramsForm}>
-      <Select
-        multiple={true}
-        onChange={({ target: { value } }) => {
-          setSelectedSeasons((prev: any) => {
-            const newState: any = {};
-            (value as string[]).forEach((val: any) => {
-              const [year, season] = val.split(" ");
-              if (!newState[year]) {
-                newState[year] = {};
-              }
-              newState[year][season] = true;
+      Choose migrations to process
+      <div>
+        <Select
+          size={"small"}
+          multiple={true}
+          onChange={({ target: { value } }) => {
+            setSelectedSeasons((prev: any) => {
+              const newState: any = {};
+              (value as string[]).forEach((val: any) => {
+                const [year, season] = val.split(" ");
+                if (!newState[year]) {
+                  newState[year] = {};
+                }
+                newState[year][season] = true;
+              });
+              return newState;
             });
-            return newState;
-          });
-        }}
-        renderValue={(selected) => selected.join(", ")}
-        value={seasonsArray
-          .filter(({ year, season }) => selectedSeasons[year]?.[season])
-          .map(({ year, season }) => `${year} ${season}`)}
-      >
-        {seasonsArray.map(({ year, season }) => (
-          <MenuItem key={`${year} ${season}`} value={`${year} ${season}`}>
-            <Checkbox checked={selectedSeasons[year]?.[season]} />
-            <ListItemText
-              primary={`${year} ${season} (${indexedSeasons[year]?.[season]})`}
-            />
-          </MenuItem>
-        ))}
-      </Select>
-      <Button
-        onClick={() => {
-          postSplitArea(
-            prepareSeasonsRequest(migrations || [], selectedSeasons)
-          );
-        }}
-      >
-        Send
-      </Button>
-      {migrationSplitAreaState && (
-        <div>
-          <Button
-            onClick={() => {
-              generateTracks(
-                prepareGenerateRequest(
-                  migrations || [],
-                  selectedSeasons,
-                  migrationSplitAreaState?.data.grid,
-                  paramsForm.values.params,
-                  selectedPolygons
-                )
-              );
-            }}
-          >
-            Generate
-          </Button>
-          <Button
-            onClick={() => {
-              showMapObjects(mapObjectsRef.current);
-            }}
-          >
-            Show
-          </Button>
-          <Button
-            onClick={() => {
-              hideMapObjects(mapObjectsRef.current);
-            }}
-          >
-            Hide
-          </Button>
-          <Button
-            onClick={() => {
-              setSelectedPolygons(new Set());
-            }}
-          >
-            Clear selection
-          </Button>
-        </div>
-      )}
-      <ParamsImageInput name={"params"} />
+          }}
+          renderValue={(selected) => selected.join(", ")}
+          value={seasonsArray
+            .filter(({ year, season }) => selectedSeasons[year]?.[season])
+            .map(({ year, season }) => `${year} ${season}`)}
+        >
+          {seasonsArray.map(({ year, season }) => (
+            <MenuItem key={`${year} ${season}`} value={`${year} ${season}`}>
+              <Checkbox
+                checked={!!selectedSeasons[year]?.[season]}
+                onChange={() => {}}
+              />
+              <ListItemText
+                primary={`${year} ${season} (${indexedSeasons[year]?.[season]})`}
+              />
+            </MenuItem>
+          ))}
+        </Select>
+        <Button
+          disabled={isLoading}
+          onClick={() => {
+            postSplitArea(
+              prepareSeasonsRequest(migrations || [], selectedSeasons)
+            );
+          }}
+        >
+          Split migration area
+        </Button>
+
+        {isLoading ? (
+          <LinearProgress />
+        ) : (
+          migrationSplitAreaState && (
+            <div>
+              <Button
+                disabled={isGenerateLoading}
+                onClick={() => {
+                  generateTracks(
+                    prepareGenerateRequest(
+                      migrations || [],
+                      selectedSeasons,
+                      migrationSplitAreaState?.data.grid,
+                      paramsForm.values.params,
+                      selectedPolygons
+                    )
+                  );
+                }}
+              >
+                Generate
+              </Button>
+              <Button
+                onClick={() => {
+                  showMapObjects(mapObjectsRef.current);
+                }}
+              >
+                Show
+              </Button>
+              <Button
+                onClick={() => {
+                  hideMapObjects(mapObjectsRef.current);
+                }}
+              >
+                Hide
+              </Button>
+              <Button
+                onClick={() => {
+                  setSelectedPolygons(new Set());
+                }}
+              >
+                Clear selection
+              </Button>
+            </div>
+          )
+        )}
+        {isGenerateLoading && <LinearProgress />}
+        {migrationSplitAreaState && <ParamsImageInput name={"params"} />}
+      </div>
     </FormikContext.Provider>
   );
 };
-const reduceMigrations = (migrations: IndexedMigration[]) => {
+const reduceMigrations = (migrations: Migration[]) => {
   return migrations.reduce((acc, migr) => {
     Object.entries(migr.years).forEach(([year, yearInfo]) => {
       if (!acc[year]) {
@@ -234,7 +253,7 @@ const reduceMigrations = (migrations: IndexedMigration[]) => {
   }, {} as any);
 };
 const prepareSeasonsRequest = (
-  migrations: IndexedMigration[],
+  migrations: Migration[],
   seasons: SelectedSeasonsType
 ) => {
   const res: { migrations: { geojson: GeoJSON.FeatureCollection }[] } = {
@@ -263,7 +282,7 @@ const prepareSeasonsRequest = (
   return res;
 };
 export const prepareGenerateRequest = (
-  migrations: IndexedMigration[],
+  migrations: Migration[],
   selectedSeasons: any,
   grid: any,
   params: any,

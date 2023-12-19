@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { api } from "../../api";
 import { useEventSource } from "../../utils/hooks";
 import { LinearProgress } from "@mui/material";
+import { createPortal } from "react-dom";
 
 export const AnalysisRightPanel = () => {
   const [results, setResults] = useState<number[]>([]);
@@ -24,13 +25,18 @@ export const AnalysisRightPanel = () => {
     ]);
   }, [dataExtractionState]);
 
-  return (
-    <Drawer variant="permanent" anchor="right">
-      <Offset style={{ width: 200 }} />
-      {results?.map((resultId: number) => (
-        <EventSourceLogs resultId={resultId} key={resultId} />
-      ))}
-    </Drawer>
+  return document.getElementById("main-page-right-panel") ? (
+    createPortal(
+      <Drawer variant="permanent" anchor="right">
+        <Offset style={{ width: 200 }} />
+        {results?.map((resultId: number) => (
+          <EventSourceLogs resultId={resultId} key={resultId} />
+        ))}
+      </Drawer>,
+      document.getElementById("main-page-right-panel")!
+    )
+  ) : (
+    <></>
   );
 };
 const EventSourceLogs = ({ resultId }: { resultId: number }) => {
@@ -46,13 +52,12 @@ const EventSourceLogs = ({ resultId }: { resultId: number }) => {
     <div style={{ border: "1px solid", padding: 10, margin: 10, width: 200 }}>
       {!close && <LinearProgress />}
       <div>{message}</div>
-      {messageId === "success" && (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={`${BASE_PATH}/api/result/download/${resultId}`}
-        >{`${BASE_PATH}/api/result/download/${resultId}`}</a>
-      )}
+      {"result will be available here \n"}
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${BASE_PATH}/api/result/download/${resultId}`}
+      >{`${BASE_PATH}/api/result/download/${resultId}`}</a>
     </div>
   );
 };

@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FieldArray, useField, useFormikContext } from "formik";
 import { useQuery } from "react-query";
 import { api } from "../api";
+import { PasteScriptsConfigModal } from "../features/random-forest/components/paste-scripts-config";
 export const ParamsImageInput = ({ name }: { name: string }) => {
   const { submitCount } = useFormikContext();
   const [{ value: config }, fieldMeta, { setValue: setConfig }] = useField<
@@ -28,6 +29,7 @@ export const ParamsImageInput = ({ name }: { name: string }) => {
     (opt) => api.analysis.getApiAnalysisScripts(),
     { enabled: false, refetchOnWindowFocus: false }
   );
+  const [openImportConfig, setOpenImport] = useState(false);
   const strings = useTranslations();
 
   switch (config?.type) {
@@ -93,6 +95,34 @@ export const ParamsImageInput = ({ name }: { name: string }) => {
                 </>
               )}
             </FieldArray>
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(JSON.stringify(config.scripts));
+              }}
+            >
+              {strings["data-extraction.copy-config"]}
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenImport(true);
+              }}
+            >
+              {strings["data-extraction.import-config"]}
+            </Button>
+            {openImportConfig && (
+              <PasteScriptsConfigModal
+                onClose={() => setOpenImport(false)}
+                open={openImportConfig}
+                onSubmit={(data) => {
+                  console.log(data);
+                  setConfig({
+                    type: "scripts",
+                    ...data,
+                  } as RandomForestInputConfig["params"]);
+                  setOpenImport(false);
+                }}
+              />
+            )}
           </AccordionDetails>
         </Accordion>
       );

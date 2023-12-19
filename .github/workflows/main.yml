@@ -12,21 +12,36 @@ on:
         options:
           - "develop"
           - "production"
+      product:
+        description: 'product to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - "all"
+          - "admin"
+          - "web"
+
 env:
   GITHUB_ACTION_STAGING: ${{inputs.staging || 'develop' }}
+  GITHUB_ACTION_PRODUCT: ${{inputs.product || 'all' }}
 
 jobs:
    setup:
      runs-on: ubuntu-latest
      outputs:
        staging: ${{ steps.step1.outputs.staging }}
+       product: ${{ steps.step1.outputs.product }}
      steps:
-       - name: Check branch
+       - name: setup
          id: step1
-         run: echo "staging=${GITHUB_ACTION_STAGING}" >> $GITHUB_OUTPUT
+         run: |
+              echo "staging=${GITHUB_ACTION_STAGING}" >> $GITHUB_OUTPUT
+              echo "product=${GITHUB_ACTION_PRODUCT}" >> $GITHUB_OUTPUT
 
    build_admin:
      needs: [setup]
+     if: ${{ needs.setup.outputs.product == 'all' || needs.setup.outputs.product == 'admin' }}
      environment:
        name: ${{ needs.setup.outputs.staging }}
      env:
@@ -64,9 +79,33 @@ jobs:
        - name: Push to registry
          run: docker compose -f ./packages/admin/docker-compose.yml push
 
+   build_web:
+     needs: [setup]
+     if: ${{ needs.setup.outputs.product == 'all' || needs.setup.outputs.product == 'web' }}
+     environment:
+       name: ${{ needs.setup.outputs.staging }}
+     env:
+       REACT_APP_BASE_PATH: ${{vars.REACT_APP_BASE_PATH}}
+       REACT_APP_GOOGLE_KEY: ${{secrets.REACT_APP_GOOGLE_KEY}}
+     runs-on: [self-hosted, build]
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           submodules: true
+       - name: Dependencies
+         run: yarn
+       - name: Build
+         run: yarn build_web
+       - name: Upload web build
+         uses: actions/upload-artifact@v3
+         with:
+           name: web-build
+           path: ./packages/web/build
 
    deploy_admin:
      needs: [setup, build_admin]
+     if: ${{ needs.setup.outputs.product == 'all' || needs.setup.outputs.product == 'admin' }}
      runs-on: [self-hosted, "${{ needs.setup.outputs.staging }}"]
      environment: ${{ needs.setup.outputs.staging }}
      steps:
@@ -79,4 +118,23 @@ jobs:
 
        - name: docker-compose
          run: docker compose -p rrrcn-backend-${GITHUB_ACTION_STAGING} -f ./packages/admin/docker-compose.yml up -d
+
+
+   deploy_web:
+     needs: [setup, build_web]
+     if: ${{ needs.setup.outputs.product == 'all' || needs.setup.outputs.product == 'web' }}
+     runs-on: [self-hosted, "${{ needs.setup.outputs.staging }}"]
+     environment: ${{ needs.setup.outputs.staging }}
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v4
+         with:
+           submodules: true
+       - name: Download a single artifact
+         uses: actions/download-artifact@v3
+         with:
+           name: web-build
+           path: ./packages/web/web-build
+       - name: docker-compose
+         run: docker compose -p rrrcn-nginx-${GITHUB_ACTION_STAGING} -f ./packages/web/docker-compose.yml up -d
 

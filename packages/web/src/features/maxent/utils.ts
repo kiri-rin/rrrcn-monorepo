@@ -2,7 +2,7 @@ import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import {
   DatesConfig,
   getDateIntervals,
-} from "@rrrcn/services/dist/src/services/utils/dates";
+} from "@rrrcn/services/dist/src/utils/dates";
 import { DataExtractionConfig } from "@rrrcn/services/dist/src/analytics_config_types";
 import { DataExtractionInput } from "../random-forest/data-extraction";
 

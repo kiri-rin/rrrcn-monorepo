@@ -7,15 +7,13 @@ function addMinutes(date, minutes) {
 }
 
 const cronLogic = async (strapi, fireDate) => {
-  const currentDate = addMinutes(new Date(), -60);
-  console.log("Cron activated on", currentDate, " Should be on ", fireDate);
+  const currentDate = addMinutes(new Date(), -600);
   const expiredResults = await strapi.db.query("api::result.result").findMany({
     where: {
       status: "completed",
       finished_at: { $lt: currentDate.toISOString() },
     },
   });
-  console.log(expiredResults);
   for (let { id } of expiredResults) {
     const folder = strapi.service("api::result.result").getResultFolder(id);
     try {

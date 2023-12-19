@@ -63,22 +63,32 @@ export const MigrationsGeneratedTracks = () => {
   return (
     <>
       {generatedMigrations && (
-        <div>
-          <Button
-            onClick={() => {
-              showMapObjects(mapObjectsRef.current);
-            }}
-          >
-            Show
-          </Button>
-          <Button
-            onClick={() => {
-              hideMapObjects(mapObjectsRef.current);
-            }}
-          >
-            Hide
-          </Button>
-        </div>
+        <>
+          Generated Tracks
+          <div>
+            <Button
+              onClick={() => {
+                showMapObjects(mapObjectsRef.current);
+              }}
+            >
+              Show
+            </Button>
+            <Button
+              onClick={() => {
+                hideMapObjects(mapObjectsRef.current);
+              }}
+            >
+              Hide
+            </Button>
+            <Button
+              onClick={() => {
+                hideMapObjects(mapObjectsRef.current);
+              }}
+            >
+              Export
+            </Button>
+          </div>
+        </>
       )}
     </>
   );

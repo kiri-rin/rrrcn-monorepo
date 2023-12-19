@@ -113,7 +113,10 @@ export const GeometryInput = ({
             size={"small"}
             label={"latitude_key"}
             onChange={({ target: { value } }) => {
-              setGeometryConfig({ ...geometryConfig, latitude_key: value });
+              setGeometryConfig({
+                ...geometryConfig,
+                latitude_key: value || undefined,
+              });
             }}
             value={geometryConfig.latitude_key}
           />
@@ -122,7 +125,10 @@ export const GeometryInput = ({
             size={"small"}
             label={"longitude_key"}
             onChange={({ target: { value } }) => {
-              setGeometryConfig({ ...geometryConfig, longitude_key: value });
+              setGeometryConfig({
+                ...geometryConfig,
+                longitude_key: value || undefined,
+              });
             }}
             value={geometryConfig.longitude_key}
           />
@@ -131,7 +137,10 @@ export const GeometryInput = ({
             size={"small"}
             label={"id_key"}
             onChange={({ target: { value } }) => {
-              setGeometryConfig({ ...geometryConfig, id_key: value });
+              setGeometryConfig({
+                ...geometryConfig,
+                id_key: value || undefined,
+              });
             }}
             value={geometryConfig.id_key}
           />

@@ -18,6 +18,12 @@ export type MigrationYear = {
 export type Migration = {
   meta?: {};
   title: string;
-  geojson: GeoJSON.FeatureCollection<Point, { date: Date }>;
+  geojson: GeoJSON.FeatureCollection<Point, MigrationPointProperties>;
   years: { [year: string]: MigrationYear };
+};
+export type MigrationPointProperties = {
+  date: Date;
+  elevation?: number;
+  index?: number;
+  description?: { value?: string };
 };

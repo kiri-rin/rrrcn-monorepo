@@ -121,6 +121,7 @@ export const RandomForestConfigForm = () => {
               <MenuItem value={"PROBABILITY"}>PROBABILITY</MenuItem>
               <MenuItem value={"REGRESSION"}>REGRESSION</MenuItem>
               <MenuItem value={"CLASSIFICATION"}> CLASSIFICATION</MenuItem>
+              <MenuItem value={"MEAN"}>MEAN</MenuItem>
             </Select>
           </div>
         </CommonPaper>
@@ -328,6 +329,58 @@ export const RandomForestConfigForm = () => {
         </Accordion>
         <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
         <ParamsImageInput name={`params`} />
+        <Accordion defaultExpanded={true} sx={{ boxShadow: "none" }}>
+          <AccordionSummary
+            sx={{
+              boxShadow:
+                "0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)",
+            }}
+            className={`common__card common__card_blue`}
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <div className={"common__row"}>
+              <Typography sx={{ marginY: "10px" }}>
+                {strings["random-forest.post-process"]}
+              </Typography>
+            </div>
+          </AccordionSummary>
+          <AccordionDetails>
+            <CommonPaper>
+              <TextField
+                margin={"dense"}
+                disabled={config.outputMode === "CLASSIFICATION"}
+                size={"small"}
+                label={strings["random-forest.classificationSplits"]}
+                value={config.classificationSplits?.join(",") || ""}
+                onChange={({ target: { value } }) =>
+                  setFieldValue(
+                    `classificationSplits`,
+                    value ? value.split(",") : undefined
+                  )
+                }
+              />
+
+              {
+                <TextField
+                  margin={"dense"}
+                  disabled={
+                    config.outputMode !== "CLASSIFICATION" &&
+                    !config.classificationSplits?.length
+                  }
+                  size={"small"}
+                  label={strings["random-forest.buffersPerAreaPoint"]}
+                  value={config.buffersPerAreaPoint?.join(",") || ""}
+                  onChange={({ target: { value } }) =>
+                    setFieldValue(
+                      `buffersPerAreaPoint`,
+                      value ? value.split(",") : undefined
+                    )
+                  }
+                />
+              }
+            </CommonPaper>
+          </AccordionDetails>
+        </Accordion>
       </div>
       <Button
         onClick={() => {

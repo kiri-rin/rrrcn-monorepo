@@ -2,8 +2,14 @@ import { IndexedMigration } from "../migrations";
 import { SEASONS } from "../types";
 import { Feature, FeatureCollection, Point } from "geojson";
 
-export const getMigrationPolyline = (migration: IndexedMigration) =>
-  getFeaturesPolyline(migration.geojson.features as Feature<Point, any>[]);
+export const getMigrationPolyline = (
+  migration: IndexedMigration,
+  color?: string
+) =>
+  getFeaturesPolyline(
+    migration.geojson.features as Feature<Point, any>[],
+    color
+  );
 export const getMigrationFreePaths = (migration: IndexedMigration) => {
   const pathsToHide = Object.entries(migration.years).flatMap(
     ([year, info]: [string, any]) =>
@@ -44,8 +50,12 @@ export const getMigrationPathsPolylines = (
     )
   );
 };
-export const getFeaturesPolyline = (features: Feature<Point, any>[]) =>
+export const getFeaturesPolyline = (
+  features: Feature<Point, any>[],
+  color?: string
+) =>
   new google.maps.Polyline({
+    strokeColor: color,
     path: features.map((feature) => {
       const coord = (feature as Feature<Point>).geometry.coordinates;
       return {

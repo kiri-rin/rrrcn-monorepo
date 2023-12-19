@@ -43,6 +43,7 @@ export const TrainingPointsSchema = lazy(
     }
   }
 ) as unknown as yup.Schema<MaxentInputConfig["trainingPoints"]>;
+
 export const MaxentInputSchema: yup.Schema<MaxentInputConfig> = yup.object({
   params: lazy((value: MaxentInputConfig["params"]) => {
     switch (value.type) {
@@ -65,9 +66,6 @@ export const MaxentInputSchema: yup.Schema<MaxentInputConfig> = yup.object({
   regionOfInterest: GeometryInputSchema(),
   trainingPoints: TrainingPointsSchema,
   backgroundCount: yup.number(),
-  outputMode: yup.string().required() as yup.Schema<
-    MaxentInputConfig["outputMode"]
-  >,
   validation: lazy((value: MaxentInputConfig["validation"]) => {
     switch (value.type) {
       case "split": {

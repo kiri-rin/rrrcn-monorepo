@@ -16,6 +16,7 @@ export const PopulationSchema = yup.lazy((values: PopulationInputConfig) => {
           presenceArea: GeometryInputSchema(),
           areas: GeometryInputSchema(),
           points: GeometryInputSchema(),
+          crossValidation: yup.number(),
         }) as yup.Schema<
           Omit<
             PopulationRandomGenerationConfigType<File>,
