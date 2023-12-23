@@ -16,6 +16,7 @@ import { api } from "../../../api";
 import { SelectedSeasonsType } from "../migrations";
 import { FormikContext, useFormik } from "formik";
 import { mapScriptsConfigToRequest } from "../../random-forest/utils";
+import { useMigrationSelectedItems } from "../utils/selected-items-context";
 
 export const MigrationsChooseAreas = ({
   migrations,
@@ -56,6 +57,7 @@ export const MigrationsChooseAreas = ({
       },
     }
   );
+  const { selectedBBox, setSelectedBBox } = useMigrationSelectedItems();
   useEffect(() => {
     selectedPolygons.forEach((value) => {
       mapObjectsRef.current[value]?.setOptions({ fillColor: "red" });
@@ -93,6 +95,14 @@ export const MigrationsChooseAreas = ({
       mapObjectsRef.current.forEach((polygon, index) => {
         listenersRef.current.push(
           polygon.addListener("click", () => {
+            setSelectedBBox({
+              index: index,
+              probabilities: (
+                migrationSplitAreaState as unknown as {
+                  data: { probabilities: any };
+                }
+              ).data.probabilities[index],
+            });
             setSelectedPolygons((prev) => {
               const newState = new Set(prev);
               if (newState.has(index)) {
