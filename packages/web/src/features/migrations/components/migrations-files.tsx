@@ -39,7 +39,6 @@ export const MigrationsFilesInput = ({
       setLoadingFiles((prev) => new Set(prev).add(args.id));
       return parseMigrationsKml(args)
         .then((res: any) => {
-          console.log("CALLBAK IN PROMISE");
           setLoadingFiles((prev) => {
             const newState = new Set<string>(prev);
             newState.delete(args.id);
@@ -49,7 +48,6 @@ export const MigrationsFilesInput = ({
           return res;
         })
         .catch((e: Error) => {
-          console.log("CALLBAK IN PROMISE");
           setLoadingFiles((prev) => {
             const newState = new Set<string>(prev);
             newState.delete(args.id);
@@ -57,7 +55,6 @@ export const MigrationsFilesInput = ({
           });
         })
         .finally(() => {
-          console.log("CALLBAK IN PROMISE");
           setLoadingFiles((prev) => {
             const newState = new Set<string>(prev);
             newState.delete(args.id);

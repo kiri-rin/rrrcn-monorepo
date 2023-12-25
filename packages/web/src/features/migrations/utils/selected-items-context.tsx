@@ -18,9 +18,22 @@ const MigrationSelectedItemsContext = createContext<{
       MigrationPointProperties
     > | null>
   >;
+
+  selectedBBox: {
+    index: number;
+    probabilities: any;
+  } | null;
+  setSelectedBBox: React.Dispatch<
+    SetStateAction<{
+      index: number;
+      probabilities: any;
+    } | null>
+  >;
 }>({
   selectedPoint: null,
   setSelectedPoint: () => {},
+  selectedBBox: null,
+  setSelectedBBox: () => {},
 });
 export const MigrationSelectedItemsProvider = ({
   children,
@@ -29,9 +42,13 @@ export const MigrationSelectedItemsProvider = ({
     GeoJSON.Point,
     MigrationPointProperties
   > | null>(null);
+  const [selectedBBox, setSelectedBBox] = useState<{
+    index: number;
+    probabilities: any;
+  } | null>(null);
   return (
     <MigrationSelectedItemsContext.Provider
-      value={{ setSelectedPoint, selectedPoint }}
+      value={{ setSelectedPoint, selectedPoint, selectedBBox, setSelectedBBox }}
     >
       {children}
     </MigrationSelectedItemsContext.Provider>

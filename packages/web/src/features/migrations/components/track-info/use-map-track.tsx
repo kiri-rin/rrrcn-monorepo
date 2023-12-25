@@ -96,6 +96,19 @@ export function useMapTrack(migration: Migration) {
     [migration, showMapObjects]
   );
   useEffect(() => {
+    for (let shownMigr of Array.from(shownSeasonsMigrations)) {
+      const season = deserializeMigrationSeason(shownMigr);
+      showSeasonMigration(season);
+    }
+    return () => {
+      for (let shownMigr of Array.from(shownSeasonsMigrations)) {
+        const season = deserializeMigrationSeason(shownMigr);
+        const seasonIndices = migration.years[season.year]?.[season.season];
+        seasonIndices && hideMapObjects(mapObjects.slice(...seasonIndices));
+      }
+    };
+  }, [showSeasonMigrationPoints]);
+  useEffect(() => {
     if (shown) {
       showTrack();
       setShownSeasonsMigrations(
@@ -186,6 +199,11 @@ function getRandomColor() {
   }
   return color;
 }
+export const deserializeMigrationSeason = (season: string) => ({
+  year: season.split("_")[0],
+  season: season.split("_")[1] as SEASONS,
+});
+
 export const getMigrationMarkers = (
   migration: Migration
 ): google.maps.Marker[] => {

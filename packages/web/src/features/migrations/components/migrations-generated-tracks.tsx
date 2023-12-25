@@ -32,7 +32,6 @@ export const MigrationsGeneratedTracks = () => {
   const { data: generatedMigrations } = useQuery("migration-generated-tracks");
 
   useEffect(() => {
-    console.log({ generatedMigrations });
     if (generatedMigrations) {
       mapObjectsRef.current = (
         generatedMigrations as unknown as GeneratedTrack[]
@@ -80,13 +79,13 @@ export const MigrationsGeneratedTracks = () => {
             >
               Hide
             </Button>
-            <Button
-              onClick={() => {
-                hideMapObjects(mapObjectsRef.current);
-              }}
-            >
-              Export
-            </Button>
+            {/*<Button*/}
+            {/*  onClick={() => {*/}
+            {/*    hideMapObjects(mapObjectsRef.current);*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  Export*/}
+            {/*</Button>*/}
           </div>
         </>
       )}

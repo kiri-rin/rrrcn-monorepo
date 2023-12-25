@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Button, LinearProgress, Select } from "@mui/material";
+import { Button, LinearProgress, Select, TextField } from "@mui/material";
 import {
   GoogleMapObject,
   parseGeojson,
@@ -16,6 +16,7 @@ import { api } from "../../../api";
 import { SelectedSeasonsType } from "../migrations";
 import { FormikContext, useFormik } from "formik";
 import { mapScriptsConfigToRequest } from "../../random-forest/utils";
+import { useMigrationSelectedItems } from "../utils/selected-items-context";
 
 export const MigrationsChooseAreas = ({
   migrations,
@@ -28,6 +29,7 @@ export const MigrationsChooseAreas = ({
   const [selectedPolygons, setSelectedPolygons] = useState<Set<number>>(
     new Set()
   );
+  const [initCount, setInitCount] = useState<number>(10);
 
   const {
     data: migrationSplitAreaState,
@@ -51,11 +53,11 @@ export const MigrationsChooseAreas = ({
     api.migration.postApiMigrationGenerateTracks,
     {
       onSuccess({ data }) {
-        console.log("SUCCESS");
         queryClient.setQueriesData("migration-generated-tracks", data);
       },
     }
   );
+  const { selectedBBox, setSelectedBBox } = useMigrationSelectedItems();
   useEffect(() => {
     selectedPolygons.forEach((value) => {
       mapObjectsRef.current[value]?.setOptions({ fillColor: "red" });
@@ -93,6 +95,14 @@ export const MigrationsChooseAreas = ({
       mapObjectsRef.current.forEach((polygon, index) => {
         listenersRef.current.push(
           polygon.addListener("click", () => {
+            setSelectedBBox({
+              index: index,
+              probabilities: (
+                migrationSplitAreaState as unknown as {
+                  data: { probabilities: any };
+                }
+              ).data.probabilities[index],
+            });
             setSelectedPolygons((prev) => {
               const newState = new Set(prev);
               if (newState.has(index)) {
@@ -191,43 +201,54 @@ export const MigrationsChooseAreas = ({
         ) : (
           migrationSplitAreaState && (
             <div>
-              <Button
-                disabled={isGenerateLoading}
-                onClick={() => {
-                  generateTracks(
-                    prepareGenerateRequest(
-                      migrations || [],
-                      selectedSeasons,
-                      migrationSplitAreaState?.data.grid,
-                      paramsForm.values.params,
-                      selectedPolygons
-                    )
-                  );
-                }}
-              >
-                Generate
-              </Button>
-              <Button
-                onClick={() => {
-                  showMapObjects(mapObjectsRef.current);
-                }}
-              >
-                Show
-              </Button>
-              <Button
-                onClick={() => {
-                  hideMapObjects(mapObjectsRef.current);
-                }}
-              >
-                Hide
-              </Button>
-              <Button
-                onClick={() => {
-                  setSelectedPolygons(new Set());
-                }}
-              >
-                Clear selection
-              </Button>
+              <TextField
+                size={"small"}
+                type={"number"}
+                value={initCount}
+                onChange={({ target: { value } }) =>
+                  setInitCount(Number(value))
+                }
+              />
+              <div>
+                <Button
+                  disabled={isGenerateLoading}
+                  onClick={() => {
+                    generateTracks(
+                      prepareGenerateRequest(
+                        migrations || [],
+                        selectedSeasons,
+                        migrationSplitAreaState?.data.grid,
+                        paramsForm.values.params,
+                        selectedPolygons,
+                        initCount
+                      )
+                    );
+                  }}
+                >
+                  Generate
+                </Button>
+                <Button
+                  onClick={() => {
+                    showMapObjects(mapObjectsRef.current);
+                  }}
+                >
+                  Show
+                </Button>
+                <Button
+                  onClick={() => {
+                    hideMapObjects(mapObjectsRef.current);
+                  }}
+                >
+                  Hide
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSelectedPolygons(new Set());
+                  }}
+                >
+                  Clear selection
+                </Button>
+              </div>
             </div>
           )
         )}
@@ -271,7 +292,12 @@ const prepareSeasonsRequest = (
               };
             }
             res.migrations[index].geojson.features.push(
-              ...geojson.features.slice(...currentMigrationSeason)
+              ...geojson.features
+                .slice(...currentMigrationSeason)
+                .map((it) => ({
+                  ...it,
+                  properties: { ...it.properties, description: undefined },
+                }))
             );
           }
         });
@@ -286,7 +312,8 @@ export const prepareGenerateRequest = (
   selectedSeasons: any,
   grid: any,
   params: any,
-  selectedPolygons: Set<number>
+  selectedPolygons: Set<number>,
+  initCount: number
 ) => {
   const res = prepareSeasonsRequest(migrations, selectedSeasons);
   //@ts-ignore
@@ -297,5 +324,7 @@ export const prepareGenerateRequest = (
   res.selectedAreasIndices = Array.from(selectedPolygons);
   //@ts-ignore
   res.migrations = res.migrations.map((it) => it.geojson);
+  //@ts-ignore
+  res.initCount = initCount;
   return res;
 };

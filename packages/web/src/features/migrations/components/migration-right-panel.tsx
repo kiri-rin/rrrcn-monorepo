@@ -5,10 +5,11 @@ import React from "react";
 import { CommonPaper } from "../../../components/common";
 import { createPortal } from "react-dom";
 import { Button } from "@mui/material";
+import { json } from "stream/consumers";
 
 export const MigrationRightPanel = () => {
-  const { selectedPoint, setSelectedPoint } = useMigrationSelectedItems();
-  console.log({ selectedPoint });
+  const { selectedPoint, setSelectedPoint, selectedBBox, setSelectedBBox } =
+    useMigrationSelectedItems();
   return document.getElementById("main-page-right-panel") ? (
     createPortal(
       <Drawer variant="permanent" anchor="right">
@@ -25,6 +26,13 @@ export const MigrationRightPanel = () => {
               }}
             />
             <Button onClick={() => setSelectedPoint(null)}>Hide</Button>
+          </CommonPaper>
+        )}
+        {selectedBBox && (
+          <CommonPaper>
+            {selectedBBox.index}
+            {JSON.stringify(selectedBBox.probabilities)}
+            <Button onClick={() => setSelectedBBox(null)}>Hide</Button>
           </CommonPaper>
         )}
       </Drawer>,

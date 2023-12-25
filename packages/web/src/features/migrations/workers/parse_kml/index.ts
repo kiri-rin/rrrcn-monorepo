@@ -27,15 +27,11 @@ const processData = (
       parser = parseAquilaKML;
       break;
   }
-  console.log("START PROCESSING", data);
-
   parser(file, DOMParser)
     .then((res) => {
-      console.log("finished", id);
       callback({ result: res, id });
     })
     .catch((err) => {
-      console.log("finished with error", id);
       console.log(err);
       processing = false;
 
