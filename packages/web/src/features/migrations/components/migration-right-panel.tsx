@@ -10,7 +10,6 @@ import { json } from "stream/consumers";
 export const MigrationRightPanel = () => {
   const { selectedPoint, setSelectedPoint, selectedBBox, setSelectedBBox } =
     useMigrationSelectedItems();
-  console.log({ selectedPoint });
   return document.getElementById("main-page-right-panel") ? (
     createPortal(
       <Drawer variant="permanent" anchor="right">

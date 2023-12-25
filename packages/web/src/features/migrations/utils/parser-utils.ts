@@ -79,7 +79,6 @@ export const parseMigrationsKml = (
     }
     function listener(message: MessageEvent) {
       if (message.data.id === args.id) {
-        console.log(message.data.id, "finished");
         resolve(message.data.result);
       }
       worker?.removeEventListener("message", listener);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Button, LinearProgress, Select } from "@mui/material";
+import { Button, LinearProgress, Select, TextField } from "@mui/material";
 import {
   GoogleMapObject,
   parseGeojson,
@@ -29,6 +29,7 @@ export const MigrationsChooseAreas = ({
   const [selectedPolygons, setSelectedPolygons] = useState<Set<number>>(
     new Set()
   );
+  const [initCount, setInitCount] = useState<number>(10);
 
   const {
     data: migrationSplitAreaState,
@@ -52,7 +53,6 @@ export const MigrationsChooseAreas = ({
     api.migration.postApiMigrationGenerateTracks,
     {
       onSuccess({ data }) {
-        console.log("SUCCESS");
         queryClient.setQueriesData("migration-generated-tracks", data);
       },
     }
@@ -201,43 +201,54 @@ export const MigrationsChooseAreas = ({
         ) : (
           migrationSplitAreaState && (
             <div>
-              <Button
-                disabled={isGenerateLoading}
-                onClick={() => {
-                  generateTracks(
-                    prepareGenerateRequest(
-                      migrations || [],
-                      selectedSeasons,
-                      migrationSplitAreaState?.data.grid,
-                      paramsForm.values.params,
-                      selectedPolygons
-                    )
-                  );
-                }}
-              >
-                Generate
-              </Button>
-              <Button
-                onClick={() => {
-                  showMapObjects(mapObjectsRef.current);
-                }}
-              >
-                Show
-              </Button>
-              <Button
-                onClick={() => {
-                  hideMapObjects(mapObjectsRef.current);
-                }}
-              >
-                Hide
-              </Button>
-              <Button
-                onClick={() => {
-                  setSelectedPolygons(new Set());
-                }}
-              >
-                Clear selection
-              </Button>
+              <TextField
+                size={"small"}
+                type={"number"}
+                value={initCount}
+                onChange={({ target: { value } }) =>
+                  setInitCount(Number(value))
+                }
+              />
+              <div>
+                <Button
+                  disabled={isGenerateLoading}
+                  onClick={() => {
+                    generateTracks(
+                      prepareGenerateRequest(
+                        migrations || [],
+                        selectedSeasons,
+                        migrationSplitAreaState?.data.grid,
+                        paramsForm.values.params,
+                        selectedPolygons,
+                        initCount
+                      )
+                    );
+                  }}
+                >
+                  Generate
+                </Button>
+                <Button
+                  onClick={() => {
+                    showMapObjects(mapObjectsRef.current);
+                  }}
+                >
+                  Show
+                </Button>
+                <Button
+                  onClick={() => {
+                    hideMapObjects(mapObjectsRef.current);
+                  }}
+                >
+                  Hide
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSelectedPolygons(new Set());
+                  }}
+                >
+                  Clear selection
+                </Button>
+              </div>
             </div>
           )
         )}
@@ -281,7 +292,12 @@ const prepareSeasonsRequest = (
               };
             }
             res.migrations[index].geojson.features.push(
-              ...geojson.features.slice(...currentMigrationSeason)
+              ...geojson.features
+                .slice(...currentMigrationSeason)
+                .map((it) => ({
+                  ...it,
+                  properties: { ...it.properties, description: undefined },
+                }))
             );
           }
         });
@@ -296,7 +312,8 @@ export const prepareGenerateRequest = (
   selectedSeasons: any,
   grid: any,
   params: any,
-  selectedPolygons: Set<number>
+  selectedPolygons: Set<number>,
+  initCount: number
 ) => {
   const res = prepareSeasonsRequest(migrations, selectedSeasons);
   //@ts-ignore
@@ -307,5 +324,7 @@ export const prepareGenerateRequest = (
   res.selectedAreasIndices = Array.from(selectedPolygons);
   //@ts-ignore
   res.migrations = res.migrations.map((it) => it.geojson);
+  //@ts-ignore
+  res.initCount = initCount;
   return res;
 };

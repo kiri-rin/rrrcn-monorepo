@@ -57,14 +57,12 @@ function findAutumnMigrationStart(
         );
         prevDayFeatureIndex = nextDayFeature;
       } else {
-        console.log("BREAK BY nextDayFeature", prevDayFeatureIndex);
         break;
       }
     }
     if (daysCount) {
       currentAverageDistances = currentAverageDistances / daysCount;
     } else {
-      console.log("BREAK BY daysCount", prevDayFeatureIndex);
       break;
     }
     if (averageDistances !== undefined) {
@@ -100,26 +98,17 @@ function findAutumnMigrationEnd(
         );
         prevDayFeatureIndex = nextDayFeature;
       } else {
-        console.log("BREAK BY nextDayFeature", prevDayFeatureIndex);
         break;
       }
     }
     if (daysCount) {
       currentAverageDistances = currentAverageDistances / daysCount;
     } else {
-      console.log("BREAK BY daysCount", prevDayFeatureIndex);
-
       break;
     }
     if (averageDistances !== undefined) {
       if (currentAverageDistances * 3 < averageDistances) {
         resultIndex = i;
-        console.log(
-          "BREAK BY distances",
-          currentAverageDistances,
-          averageDistances
-        );
-
         break;
       }
     }
