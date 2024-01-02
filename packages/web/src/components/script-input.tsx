@@ -1,7 +1,7 @@
-import { ScriptConfig } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { ScriptConfig } from "@rrrcn/services/src/analytics_config_types";
 import React, { useEffect, useState } from "react";
 import { Button, Select, TextField } from "@mui/material";
-import { scriptKey } from "@rrrcn/services/dist/src/services/ee-data";
+import type { scriptKey } from "@rrrcn/services/src/services/ee-data";
 import MenuItem from "@mui/material/MenuItem";
 import {
   DatesIntervalsInput,

@@ -10,13 +10,13 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import {
+import type {
   AssetImportConfig,
   CommonScriptParams,
   ComputedObjectImportConfig,
   RandomForestConfig,
   SeparateTrainingPoints,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { GeometryInput } from "../../components/geometry-input";
 import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import { useTranslations } from "../../utils/translations";
@@ -37,7 +37,6 @@ import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
 import Typography from "@mui/material/Typography";
 import { CommonPaper } from "../../components/common";
-import { scriptKey } from "@rrrcn/services/dist/src/services/ee-data";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSendAnalysis } from "../common/utils";
 import { DataExtractionValidationSchema } from "./data-schemas";

@@ -1,29 +1,5 @@
-import { GeoJSON, Geometry, Point } from "geojson";
-export enum SEASONS {
-  SPRING = "spring",
-  SUMMER = "summer",
-  AUTUMN = "autumn",
-  WINTER = "winter",
-}
+export { SEASONS } from "@rrrcn/services/src/controllers/migrations/types";
+export type { MigrationYear } from "@rrrcn/services/src/controllers/migrations/types";
+export type { IndexedMigration as Migration } from "@rrrcn/services/src/controllers/migrations/types";
 
-export type MigrationYear = {
-  meta?: any;
-  title?: string;
-
-  [SEASONS.SUMMER]?: [number, number];
-  [SEASONS.AUTUMN]?: [number, number];
-  [SEASONS.WINTER]?: [number, number];
-  [SEASONS.SPRING]?: [number, number];
-};
-export type Migration = {
-  meta?: {};
-  title: string;
-  geojson: GeoJSON.FeatureCollection<Point, MigrationPointProperties>;
-  years: { [year: string]: MigrationYear };
-};
-export type MigrationPointProperties = {
-  date: Date;
-  elevation?: number;
-  index?: number;
-  description?: { value?: string };
-};
+export type { MigrationPointProperties } from "@rrrcn/services/src/controllers/migrations/types";

@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { GeometriesImportConfig } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { GeometriesImportConfig } from "@rrrcn/services/src/analytics_config_types";
 import { Button, Input, Select, TextField } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useEffectNoOnMount } from "../utils/hooks";

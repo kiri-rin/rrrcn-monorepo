@@ -1,10 +1,10 @@
 import React, { useState, useTransition } from "react";
 import { AccordionDetails, Button, Container } from "@mui/material";
-import {
+import type {
   CommonScriptParams,
   DataExtractionConfig,
   ScriptConfig,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { GeometryInput } from "../../components/geometry-input";
 import { ScriptSelectInput } from "../../components/script-input";
 import { DatesInputConfig } from "../../components/date-inputs/dates-input";

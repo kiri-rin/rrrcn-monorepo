@@ -134,8 +134,6 @@ export function useMapTrack(migration: Migration) {
       );
     }
     mapObjects.map((it, index) => {
-      setShown(false);
-      setShownSeasonsMigrations(new Set());
       it.setOpacity(0.5);
       pointsClickEventsListenerRef.current.push(
         it.addListener("click", () => {
@@ -149,11 +147,14 @@ export function useMapTrack(migration: Migration) {
       );
     });
     return () => {
-      pointsClickEventsListenerRef.current.forEach((it) => it.remove());
-      pointsClickEventsListenerRef.current = [];
-      hideTrack();
-      setShownSeasonsMigrations(new Set());
-      setShownSeasonsMigrationsPoints(new Set());
+      if (mapObjects) {
+        pointsClickEventsListenerRef.current.forEach((it) => it.remove());
+        pointsClickEventsListenerRef.current = [];
+        hideMapObjects([polyline]);
+        hideMapObjects(mapObjects);
+        setShownSeasonsMigrations(new Set());
+        setShownSeasonsMigrationsPoints(new Set());
+      }
     };
   }, [mapObjects]);
 

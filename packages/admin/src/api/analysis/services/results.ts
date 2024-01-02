@@ -1,4 +1,4 @@
-import { extractData } from "@rrrcn/services/dist/src/controllers/extract-data/extract-data";
+import { extractData } from "@rrrcn/services/src/controllers/extract-data/extract-data";
 import { Strapi } from "@strapi/strapi";
 import fs from "fs";
 import util from "util";

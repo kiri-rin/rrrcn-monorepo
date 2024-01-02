@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { Button, Input, TextField } from "@mui/material";
 import React from "react";
 import { SurvivalValidationSchema } from "./schema";
-import { SurvivalNestConfig } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { SurvivalNestConfig } from "@rrrcn/services/src/analytics_config_types";
 
 export const SurvivalForm = () => {
   const strings = useTranslations();

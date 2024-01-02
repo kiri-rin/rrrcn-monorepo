@@ -10,12 +10,12 @@ import { serializeRequestToForm } from "../../utils/request";
 import { FormType } from "../../navigation/main-page/left-panel";
 import { useCallback } from "react";
 
-import {
+import type {
   DataExtractionConfig,
   PopulationConfig,
   RandomForestConfig,
   SurvivalNestConfig,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { MaxentBodyType } from "admin/src/api/analysis/models";
 
 export type GetDataBodyType = { type: "data"; config: DataExtractionConfig };

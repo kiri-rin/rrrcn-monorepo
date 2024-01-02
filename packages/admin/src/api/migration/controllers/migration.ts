@@ -3,12 +3,12 @@ import { Context, Request } from "koa";
 import {
   SplitMigrationAreaConfigType,
   SplitMigrationsArea,
-} from "@rrrcn/services/dist/src/controllers/migrations/split-area";
+} from "@rrrcn/services/src/controllers/migrations/split-area";
 import {
   GeneratedTrack,
   MigrationGenerationConfigType,
-} from "@rrrcn/services/dist/src/controllers/migrations/types";
-import { generateMigrationTracks } from "@rrrcn/services/dist/src/controllers/migrations/generate-tracks";
+} from "@rrrcn/services/src/controllers/migrations/types";
+import { generateMigrationTracks } from "@rrrcn/services/src/controllers/migrations/generate-tracks";
 
 const { PassThrough } = require("stream");
 

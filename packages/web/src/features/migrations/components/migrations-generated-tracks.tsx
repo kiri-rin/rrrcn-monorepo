@@ -14,7 +14,7 @@ import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 import { api } from "../../../api";
 import { SelectedSeasonsType } from "../migrations";
-import { GeneratedTrack } from "@rrrcn/services/dist/src/controllers/migrations/types";
+import type { GeneratedTrack } from "@rrrcn/services/src/controllers/migrations/types";
 import {
   getFeaturesPolyline,
   getMigrationPathsPolylines,
@@ -41,7 +41,7 @@ export const MigrationsGeneratedTracks = () => {
             .filter((_it) => _it.point)
             .map((_it) => ({
               type: "Feature",
-              geometry: _it.point!,
+              geometry: _it.point!.geometry,
               properties: {},
             }))
         )

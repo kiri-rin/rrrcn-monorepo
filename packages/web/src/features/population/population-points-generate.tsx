@@ -1,4 +1,4 @@
-import { PopulationRandomGenerationConfigType } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { PopulationRandomGenerationConfigType } from "@rrrcn/services/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
 import { GeometryInput } from "../../components/geometry-input";
 import { Checkbox, Input, Typography } from "@mui/material";

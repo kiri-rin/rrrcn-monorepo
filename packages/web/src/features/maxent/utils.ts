@@ -1,11 +1,8 @@
 import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 
 import { DataExtractionInput } from "../random-forest/data-extraction";
-import {
-  DatesConfig,
-  getDateIntervals,
-} from "@rrrcn/services/dist/src/utils/dates";
-import { DataExtractionConfig } from "@rrrcn/services/dist/src/analytics_config_types";
+import { DatesConfig, getDateIntervals } from "@rrrcn/services/src/utils/dates";
+import type { DataExtractionConfig } from "@rrrcn/services/src/analytics_config_types";
 
 export const mapDatesConfigToRequest = (
   dates: DatesInputConfig

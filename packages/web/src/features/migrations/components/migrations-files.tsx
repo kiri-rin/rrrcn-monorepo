@@ -131,6 +131,7 @@ export const MigrationsFilesInput = ({
                 type,
               })
             );
+            setFilesToParse(null);
           }}
           open={true}
           onClose={() => setFilesToParse(null)}

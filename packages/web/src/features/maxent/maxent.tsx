@@ -11,12 +11,12 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import {
+import type {
   AssetImportConfig,
   CommonScriptParams,
   ComputedObjectImportConfig,
   MaxentConfig,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { GeometryInput } from "../../components/geometry-input";
 import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import { useTranslations } from "../../utils/translations";

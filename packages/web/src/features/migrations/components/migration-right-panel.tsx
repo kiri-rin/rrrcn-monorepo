@@ -18,7 +18,7 @@ export const MigrationRightPanel = () => {
           <CommonPaper>
             <div>index: {selectedPoint.properties?.index}</div>
             <div>date: {selectedPoint.properties?.date.toLocaleString()}</div>
-            <div>elevation: {selectedPoint.properties?.elevation}</div>
+            <div>altitude: {selectedPoint.properties?.altitude}</div>
             INFO:
             <div
               dangerouslySetInnerHTML={{

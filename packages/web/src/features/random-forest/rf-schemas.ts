@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import { lazy } from "yup";
 import { RandomForestInputConfig } from "./random-forest";
-import { SeparateTrainingPoints } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { SeparateTrainingPoints } from "@rrrcn/services/src/analytics_config_types";
 import { DefaultScriptParamsSchema, ScriptInputSchema } from "./data-schemas";
 import { GeometryInputSchema } from "../common/geometry-validations";
 

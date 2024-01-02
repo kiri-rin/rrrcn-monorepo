@@ -1,8 +1,8 @@
-import {
+import type {
   PopulationDensityType,
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
 import { GeometryInput } from "../../components/geometry-input";
 import { Checkbox, Input, MenuItem, Select, Typography } from "@mui/material";
