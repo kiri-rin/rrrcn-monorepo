@@ -29,7 +29,8 @@ const processData = (
   }
   parser(file, DOMParser)
     .then((res) => {
-      callback({ result: res, id });
+      (res as Migration).id = String(Math.random());
+      callback({ result: res as Migration, id });
     })
     .catch((err) => {
       console.log(err);

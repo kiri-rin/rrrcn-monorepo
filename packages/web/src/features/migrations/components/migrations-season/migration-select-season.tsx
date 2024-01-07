@@ -1,8 +1,8 @@
-import { IndexedMigration } from "../migrations";
-import { SEASONS } from "../types";
+import { IndexedMigration } from "../../index";
+import { SEASONS } from "../../types";
 import React, { useMemo } from "react";
 import Modal from "@mui/material/Modal";
-import { Offset } from "../../../App";
+import { Offset } from "../../../../App";
 import { Box, Button } from "@mui/material";
 
 export const BirdMigrationSelectSeasonModal = ({

@@ -1,6 +1,6 @@
 import { Migration, SEASONS } from "../../types";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { IndexedMigration } from "../../migrations";
+import { IndexedMigration } from "../../index";
 import { parseGeojson } from "../../../../utils/geometry/map/useDrawGeojson";
 import { MapDrawingContext } from "../../../../components/map/MapEdit";
 import {
@@ -30,12 +30,23 @@ export function useMapTrack(migration: Migration) {
   );
   const hideAllMarkers = useCallback(() => {
     setIsInspect(false);
+    setShownSeasonsMigrations(new Set<string>());
+
     hideMapObjects(mapObjects);
   }, [hideMapObjects]);
   const showAllMarkers = useCallback(() => {
     setIsInspect(true);
     showMapObjects(mapObjects);
-  }, [showMapObjects]);
+    const allSeasonsSet = new Set<string>();
+    Object.entries(migration.years).forEach(([year, yearSeasons]) => {
+      Object.entries(yearSeasons).forEach(([season]) => {
+        allSeasonsSet.add(
+          serializeMigrationSeason({ year, season: season as SEASONS })
+        );
+      });
+    });
+    setShownSeasonsMigrations(allSeasonsSet);
+  }, [showMapObjects, migration]);
   const hideTrack = useCallback(() => {
     setIsInspect(false);
     setShown(false);
@@ -107,7 +118,7 @@ export function useMapTrack(migration: Migration) {
         seasonIndices && hideMapObjects(mapObjects.slice(...seasonIndices));
       }
     };
-  }, [showSeasonMigrationPoints]);
+  }, [migration]);
   useEffect(() => {
     if (shown) {
       showTrack();

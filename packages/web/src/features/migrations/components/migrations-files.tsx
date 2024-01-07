@@ -6,22 +6,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { MigrationTrackInfo } from "./track-info/migrationTrackInfo";
+import { Index } from "./track-info";
 import { parseGeojson } from "../../../utils/geometry/map/useDrawGeojson";
-import { IndexedMigration } from "../migrations";
+import { IndexedMigration, useMigrationsContext } from "../index";
 import { useParseKMLWorker } from "../workers/context";
 import { MigrationFilesModal } from "./migrations-files/modal";
 import { Migration } from "../types";
 import { TrackerFileTypes, WorkerMessage } from "../workers/parse_kml/types";
 import { useParseMigrationsKml } from "../utils/parser-utils";
 
-export const MigrationsFilesInput = ({
-  migrations,
-  onMigrationsChange,
-}: {
-  migrations: IndexedMigration[] | undefined;
-  onMigrationsChange: Dispatch<SetStateAction<IndexedMigration[] | undefined>>;
-}) => {
+export const MigrationsFilesInput = () => {
+  const { migrations, setMigrations: onMigrationsChange } =
+    useMigrationsContext();
   const worker = useParseKMLWorker();
   const [filesToParse, setFilesToParse] = useState<FileList | null>(null);
   const [currentEdit, setCurrentEdit] = useState<number | null>(null);
@@ -88,7 +84,7 @@ export const MigrationsFilesInput = ({
         }}
       />
       {migrations?.map((migr, index) => (
-        <MigrationTrackInfo
+        <Index
           key={index}
           filteredMigration={migr}
           onChangeEditState={(edit) => {

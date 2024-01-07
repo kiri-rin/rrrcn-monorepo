@@ -10,35 +10,34 @@ import { json } from "stream/consumers";
 export const MigrationRightPanel = () => {
   const { selectedPoint, setSelectedPoint, selectedBBox, setSelectedBBox } =
     useMigrationSelectedItems();
-  return document.getElementById("main-page-right-panel") ? (
-    createPortal(
-      <Drawer variant="permanent" anchor="right">
-        <Offset style={{ minWidth: 300 }} />
-        {selectedPoint && (
-          <CommonPaper>
-            <div>index: {selectedPoint.properties?.index}</div>
-            <div>date: {selectedPoint.properties?.date.toLocaleString()}</div>
-            <div>altitude: {selectedPoint.properties?.altitude}</div>
-            INFO:
-            <div
-              dangerouslySetInnerHTML={{
-                __html: selectedPoint.properties?.description?.value || "",
-              }}
-            />
-            <Button onClick={() => setSelectedPoint(null)}>Hide</Button>
-          </CommonPaper>
-        )}
-        {selectedBBox && (
-          <CommonPaper>
-            {selectedBBox.index}
-            {JSON.stringify(selectedBBox.probabilities)}
-            <Button onClick={() => setSelectedBBox(null)}>Hide</Button>
-          </CommonPaper>
-        )}
-      </Drawer>,
-      document.getElementById("main-page-right-panel")!
-    )
-  ) : (
-    <></>
+  return (
+    <Drawer variant="permanent" anchor="right">
+      <Offset style={{ minWidth: 300 }} />
+      {selectedPoint && (
+        <CommonPaper>
+          <div>index: {selectedPoint.properties?.index}</div>
+          <div>date: {selectedPoint.properties?.date.toLocaleString()}</div>
+          <div>altitude: {selectedPoint.properties?.altitude}</div>
+          INFO:
+          <div
+            dangerouslySetInnerHTML={{
+              __html: selectedPoint.properties?.description?.value || "",
+            }}
+          />
+          <Button onClick={() => setSelectedPoint(null)}>Hide</Button>
+        </CommonPaper>
+      )}
+      {selectedBBox && (
+        <CommonPaper>
+          <div>{selectedBBox.index}</div>
+          <div>
+            {JSON.stringify(selectedBBox?.probabilities?.probabilities)}
+          </div>
+          <div>{JSON.stringify(selectedBBox?.probabilities?.altitudes)}</div>
+          <div>{JSON.stringify(selectedBBox?.probabilities?.total)}</div>
+          <Button onClick={() => setSelectedBBox(null)}>Hide</Button>
+        </CommonPaper>
+      )}
+    </Drawer>
   );
 };

@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../../migrations";
+import { IndexedMigration } from "../../index";
 import {
   Accordion,
   AccordionDetails,
@@ -17,8 +17,8 @@ import React, {
 } from "react";
 import { Migration, MigrationYear, SEASONS } from "../../types";
 import { MapDrawingContext } from "../../../../components/map/MapEdit";
-import { BirdMigrationYear } from "../migration-year";
-import { BirdMigrationSelectSeasonModal } from "../migration-select-season";
+import { BirdMigrationYear } from "../migrations-season/migration-year";
+import { BirdMigrationSelectSeasonModal } from "../migrations-season/migration-select-season";
 import {
   getMigrationFreePaths,
   getMigrationPathsPolylines,
@@ -28,6 +28,10 @@ import { useMutation } from "react-query";
 import { indexTracksWithWorker } from "../../utils/parser-utils";
 import { IndexTracksWorkerContext } from "../../workers/context";
 import { useMapTrack } from "./use-map-track";
+import {
+  MigrationTrackInfoShowButton,
+  MigrationTrackInfoShowMarkersButton,
+} from "./style";
 function getRandomColor() {
   var letters = "0123456789ABCDEF";
   var color = "#";
@@ -37,7 +41,7 @@ function getRandomColor() {
   return color;
 }
 
-export const MigrationTrackInfo = ({
+export const Index = ({
   migration,
   onEditEnd,
   isEdit,
@@ -129,7 +133,8 @@ export const MigrationTrackInfo = ({
             </Typography>
             {!isEdit && (
               <>
-                <Button
+                <MigrationTrackInfoShowButton
+                  fill={isTrackShown ? "blue" : "gray"}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (isTrackShown) {
@@ -138,21 +143,22 @@ export const MigrationTrackInfo = ({
                       showTrack();
                     }
                   }}
-                >
-                  {isTrackShown ? "Hide track" : "Show track"}
-                </Button>
-                <Button
+                />
+                <MigrationTrackInfoShowMarkersButton
+                  fill={isTrackMarkersShown ? "blue" : "gray"}
                   onClick={(e) => {
+                    console.log("SET SHOWN SEASONS 1");
+
                     e.stopPropagation();
                     if (isTrackMarkersShown) {
+                      console.log("SET SHOWN SEASONS 2");
+
                       hideAllMarkers();
                     } else {
                       showAllMarkers();
                     }
                   }}
-                >
-                  {isTrackMarkersShown ? "Hide markers" : "Show markers"}
-                </Button>
+                />
               </>
             )}
           </div>

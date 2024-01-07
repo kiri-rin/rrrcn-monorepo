@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../migrations";
+import { IndexedMigration } from "../index";
 import { SEASONS } from "../types";
 import { Feature, FeatureCollection, Point } from "geojson";
 

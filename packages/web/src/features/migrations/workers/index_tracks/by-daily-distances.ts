@@ -22,7 +22,7 @@ export function indexTracksByDailyDistances(
         yearInfo[SEASONS.SPRING]?.[1],
       ].filter((it) => it !== undefined && String(it) !== "NaN") as number[];
       const summerEnd = yearInfo[SEASONS.SUMMER]?.[1];
-      const winterEnd = years[Number(year) + 1]?.[SEASONS.WINTER]?.[1];
+      const winterEnd = years[String(Number(year) + 1)]?.[SEASONS.WINTER]?.[1];
       years[year] = {};
       if (!index) {
       }
@@ -117,7 +117,6 @@ export function indexTracksByDailyDistances(
           if (String(autumnStart) === "NaN" || String(autumnEnd) === "NaN") {
             break;
           }
-          console.log(year, { autumnEnd }, autumnStartPeriod);
           if (autumnEnd >= autumnStartPeriod[1]) {
             prevEnd = autumnEnd;
             break;

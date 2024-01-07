@@ -18,7 +18,7 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
       request: Request & { body: SplitMigrationAreaConfigType };
     }
   ) {
-    return SplitMigrationsArea(ctx.request.body);
+    const { grid } = await SplitMigrationsArea(ctx.request.body);
   },
   async generateTracks(
     ctx: Context & {
@@ -26,6 +26,7 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
     }
   ) {
     const resultService = strapi.service("api::result.result");
+    const { grid } = await SplitMigrationsArea(ctx.request.body);
 
     const config = ctx.request.body;
     const { id: resultId, uid: resultUID } = await resultService.create({

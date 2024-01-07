@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../../migrations";
+import { IndexedMigration } from "../../index";
 import "@react-google-maps/api";
 import { Feature, Point } from "geojson";
 import { indexTracksByDate } from "./by-date";

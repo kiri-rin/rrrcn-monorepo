@@ -1,5 +1,5 @@
 import { Migration } from "../../types";
-import { IndexedMigration } from "../../migrations";
+import { IndexedMigration } from "../../index";
 
 export function indexTracksByDate(migration: Migration): Migration["years"] {
   return [...migration.geojson.features]

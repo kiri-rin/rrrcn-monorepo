@@ -1,4 +1,4 @@
-import { IndexedMigration } from "../migrations";
+import { IndexedMigration } from "../index";
 import { Migration } from "../types";
 import { WorkerMessage } from "../workers/parse_kml/types";
 import { useCallback, useEffect, useRef } from "react";

@@ -1,8 +1,8 @@
 import { Button, MenuItem, Select, SelectProps } from "@mui/material";
 import { AddBoxRounded, Close } from "@mui/icons-material";
 import React from "react";
-import { LangType } from "../../store/store/lang/actions";
-import { RootState } from "../../store/store/root-reducer";
+import { LangType } from "../../store/lang/actions";
+import { RootState } from "../../store/root-reducer";
 import { useSelector } from "react-redux";
 import { getIdGetter } from "../../utils/id";
 import { FormikErrors } from "formik";
