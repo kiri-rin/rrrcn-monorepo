@@ -1,7 +1,11 @@
-import { createContext, useEffect, useState } from "react";
-
+import { createContext, useContext, useEffect, useState } from "react";
+import WebworkerPromise from "webworker-promise";
+import PromiseWorker from "webworker-promise";
 export const IndexTracksWorkerContext = createContext<{
   worker: Worker | undefined;
+}>({ worker: undefined });
+export const VulnerabilityWorkerContext = createContext<{
+  worker: PromiseWorker | undefined;
 }>({ worker: undefined });
 export const useIndexTracksWorker = () => {
   const [worker, setWorker] = useState<Worker | undefined>();
@@ -16,4 +20,19 @@ export const useParseKMLWorker = () => {
     setWorker(new Worker(new URL("./parse_kml/index.ts", import.meta.url)));
   }, []);
   return worker;
+};
+
+export const useProcessVulnerabilityWorker = () => {
+  const [worker, setWorker] = useState<PromiseWorker | undefined>();
+  useEffect(() => {
+    setWorker(
+      new WebworkerPromise(
+        new Worker(new URL("./parse_kml/index.ts", import.meta.url))
+      )
+    );
+  }, []);
+  return worker;
+};
+export const useProcessVulnerabilityWorkerContext = () => {
+  return useContext(VulnerabilityWorkerContext);
 };

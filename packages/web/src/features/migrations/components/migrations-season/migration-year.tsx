@@ -227,8 +227,19 @@ export const BirdMigrationSeason = ({
   return (
     <div key={season + year} title={title}>
       <MigrationSeasonTitleRow>
-        <MigrationSeasonTitle>{season}</MigrationSeasonTitle>
-        <MigrationSeasonDates>{title}</MigrationSeasonDates>
+        <FormControlLabel
+          label={
+            <>
+              <MigrationSeasonDates>
+                <MigrationSeasonTitle>{season}</MigrationSeasonTitle>
+                {title}
+              </MigrationSeasonDates>
+            </>
+          }
+          checked={!!selectedSeasons[migration.id]?.[year]?.[season]}
+          onChange={() => toggleSelectedSeason(migration.id, year, season)}
+          control={<Checkbox />}
+        />
         <MigrationSeasonShowMarkersButton
           fill={isShown ? "blue" : "gray"}
           onClick={() => {
@@ -236,12 +247,6 @@ export const BirdMigrationSeason = ({
           }}
         />
       </MigrationSeasonTitleRow>
-      <FormControlLabel
-        label={"Use for generation"}
-        checked={!!selectedSeasons[migration.id]?.[year]?.[season]}
-        onChange={() => toggleSelectedSeason(migration.id, year, season)}
-        control={<Checkbox />}
-      />
 
       {(isEdit || isNew) && (
         <div>

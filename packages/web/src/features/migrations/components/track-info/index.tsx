@@ -147,12 +147,8 @@ export const Index = ({
                 <MigrationTrackInfoShowMarkersButton
                   fill={isTrackMarkersShown ? "blue" : "gray"}
                   onClick={(e) => {
-                    console.log("SET SHOWN SEASONS 1");
-
                     e.stopPropagation();
                     if (isTrackMarkersShown) {
-                      console.log("SET SHOWN SEASONS 2");
-
                       hideAllMarkers();
                     } else {
                       showAllMarkers();

@@ -17,6 +17,8 @@ import { MigrationsDateFilterContainer } from "./style";
 import {
   IndexTracksWorkerContext,
   useIndexTracksWorker,
+  useProcessVulnerabilityWorker,
+  VulnerabilityWorkerContext,
 } from "./workers/context";
 import { MigrationRightPanel } from "./components/migration-right-panel";
 import { MigrationSelectedItemsProvider } from "./utils/selected-items-context";
@@ -31,6 +33,7 @@ export type IndexedMigration = Migration;
 export const MigrationsForm = () => {
   const contextValues = useMigrationContextValues();
   const worker = useIndexTracksWorker();
+  const vulnerabilityWorker = useProcessVulnerabilityWorker();
   // const filteredMigrations = useMemo(
   //   () =>
   //     migrations?.map((migration) => {
@@ -62,40 +65,44 @@ export const MigrationsForm = () => {
 
   return (
     <IndexTracksWorkerContext.Provider value={{ worker }}>
-      <MigrationsContext.Provider value={contextValues}>
-        <MigrationSelectedItemsProvider>
-          <div>
-            {/*<MigrationsDateFilterContainer>*/}
-            {/*  <DatePicker*/}
-            {/*    slotProps={{*/}
-            {/*      textField: {*/}
-            {/*        size: "small",*/}
-            {/*      },*/}
-            {/*    }}*/}
-            {/*    value={dateFilter[0]}*/}
-            {/*    onChange={(newValue) =>*/}
-            {/*      setDateFilter((prev) => [newValue, prev[1]])*/}
-            {/*    }*/}
-            {/*  />*/}
-            {/*  <DatePicker*/}
-            {/*    slotProps={{*/}
-            {/*      textField: {*/}
-            {/*        size: "small",*/}
-            {/*      },*/}
-            {/*    }}*/}
-            {/*    value={dateFilter[1]}*/}
-            {/*    onChange={(newValue) =>*/}
-            {/*      setDateFilter((prev) => [prev[0], newValue])*/}
-            {/*    }*/}
-            {/*  />*/}
-            {/*</MigrationsDateFilterContainer>*/}
-            <MigrationsFilesInput />
-            <MigrationsChooseAreas />
-            <MigrationsGeneratedTracks />
-          </div>
-          <MigrationRightPanel />
-        </MigrationSelectedItemsProvider>
-      </MigrationsContext.Provider>
+      <VulnerabilityWorkerContext.Provider
+        value={{ worker: vulnerabilityWorker }}
+      >
+        <MigrationsContext.Provider value={contextValues}>
+          <MigrationSelectedItemsProvider>
+            <div>
+              {/*<MigrationsDateFilterContainer>*/}
+              {/*  <DatePicker*/}
+              {/*    slotProps={{*/}
+              {/*      textField: {*/}
+              {/*        size: "small",*/}
+              {/*      },*/}
+              {/*    }}*/}
+              {/*    value={dateFilter[0]}*/}
+              {/*    onChange={(newValue) =>*/}
+              {/*      setDateFilter((prev) => [newValue, prev[1]])*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <DatePicker*/}
+              {/*    slotProps={{*/}
+              {/*      textField: {*/}
+              {/*        size: "small",*/}
+              {/*      },*/}
+              {/*    }}*/}
+              {/*    value={dateFilter[1]}*/}
+              {/*    onChange={(newValue) =>*/}
+              {/*      setDateFilter((prev) => [prev[0], newValue])*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*</MigrationsDateFilterContainer>*/}
+              <MigrationsFilesInput />
+              <MigrationsChooseAreas />
+              <MigrationsGeneratedTracks />
+            </div>
+            <MigrationRightPanel />
+          </MigrationSelectedItemsProvider>
+        </MigrationsContext.Provider>
+      </VulnerabilityWorkerContext.Provider>
     </IndexTracksWorkerContext.Provider>
   );
 };

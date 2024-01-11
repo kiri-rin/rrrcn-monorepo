@@ -38,6 +38,7 @@
     "typesafe-actions": "^5.1.0",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
+    "webworker-promise": "^0.5.1",
     "xmldom": "^0.6.0",
     "yup": "^1.0.2"
   },
