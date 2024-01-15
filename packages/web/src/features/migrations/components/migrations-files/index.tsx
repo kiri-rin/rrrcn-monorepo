@@ -6,14 +6,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Index } from "./track-info";
-import { parseGeojson } from "../../../utils/geometry/map/useDrawGeojson";
-import { IndexedMigration, useMigrationsContext } from "../index";
-import { useParseKMLWorker } from "../workers/context";
-import { MigrationFilesModal } from "./migrations-files/modal";
-import { Migration } from "../types";
-import { TrackerFileTypes, WorkerMessage } from "../workers/parse_kml/types";
-import { useParseMigrationsKml } from "../utils/parser-utils";
+import { Index } from "../track-info";
+import { parseGeojson } from "../../../../utils/geometry/map/useDrawGeojson";
+import { IndexedMigration, useMigrationsContext } from "../../index";
+import { useParseKMLWorker } from "../../workers/context";
+import { MigrationFilesModal } from "./modal";
+import { Migration } from "../../types";
+import { TrackerFileTypes, WorkerMessage } from "../../workers/parse_kml/types";
+import { useParseMigrationsKml } from "../../utils/parser-utils";
 
 export const MigrationsFilesInput = () => {
   const { migrations, setMigrations: onMigrationsChange } =

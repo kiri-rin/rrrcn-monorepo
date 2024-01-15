@@ -8,12 +8,8 @@ import React, {
   useState,
 } from "react";
 import { Migration, SEASONS } from "./types";
-import { MigrationsChooseAreas } from "./components/migrations-choose-areas";
-import { MigrationsGeneratedTracks } from "./components/migrations-generated-tracks";
+import { MigrationsChooseAreas } from "./components/generate-tracks";
 import { MigrationsFilesInput } from "./components/migrations-files";
-import { DatePicker } from "@mui/x-date-pickers";
-import { Point } from "geojson";
-import { MigrationsDateFilterContainer } from "./style";
 import {
   IndexTracksWorkerContext,
   useIndexTracksWorker,
@@ -97,7 +93,6 @@ export const MigrationsForm = () => {
               {/*</MigrationsDateFilterContainer>*/}
               <MigrationsFilesInput />
               <MigrationsChooseAreas />
-              <MigrationsGeneratedTracks />
             </div>
             <MigrationRightPanel />
           </MigrationSelectedItemsProvider>

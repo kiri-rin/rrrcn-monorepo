@@ -1,4 +1,4 @@
-import { IndexedMigration, useMigrationsContext } from "../../index";
+import { IndexedMigration, useMigrationsContext } from "../../../../index";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
@@ -7,9 +7,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Migration, MigrationYear, SEASONS } from "../../types";
-import { BirdMigrationSelectSeasonModal } from "./migration-select-season";
-import { serializeMigrationSeason } from "../track-info/use-map-track";
+import { Migration, MigrationYear, SEASONS } from "../../../../types";
+import { BirdMigrationSelectSeasonModal } from "./add-migration-modal";
+import { serializeMigrationSeason } from "../../use-map-track";
 import {
   MigrationSeasonDates,
   MigrationSeasonShowMarkersButton,
@@ -77,7 +77,6 @@ export const BirdMigrationYear = ({
     },
     [migration, newSeasonMigration]
   );
-  console.log({ shownSeasons });
   return (
     <>
       <Typography variant={"h5"}>{year}</Typography>

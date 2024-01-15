@@ -20,7 +20,6 @@ import type {
 import { GeometryInput } from "../../components/geometry-input";
 import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import { useTranslations } from "../../utils/translations";
-import { serializeRequestToForm } from "../../utils/request";
 import { mapScriptsConfigToRequest } from "./utils";
 
 import Divider from "@mui/material/Divider";
@@ -34,12 +33,10 @@ import {
   useFormikContext,
 } from "formik";
 import { Simulate } from "react-dom/test-utils";
-import error = Simulate.error;
 import Typography from "@mui/material/Typography";
 import { CommonPaper } from "../../components/common";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSendAnalysis } from "../common/utils";
-import { DataExtractionValidationSchema } from "./data-schemas";
 import { RandomForestInputSchema } from "./rf-schemas";
 
 export interface RandomForestInputConfig
@@ -104,7 +101,7 @@ export const RandomForestConfigForm = () => {
     <FormikContext.Provider value={formik}>
       <div style={{ paddingBottom: 20 }}>
         <CommonPaper
-          error={(touched[`outputMode`] || submitCount) && errors?.outputMode}
+          $error={(touched[`outputMode`] || submitCount) && errors?.outputMode}
         >
           <div className={"common__row"}>
             <Typography sx={{ marginY: "10px" }}>
@@ -125,7 +122,7 @@ export const RandomForestConfigForm = () => {
           </div>
         </CommonPaper>
         <CommonPaper
-          error={
+          $error={
             (touched[`regionOfInterest`] || submitCount) &&
             errors?.regionOfInterest
           }
@@ -198,7 +195,7 @@ export const RandomForestConfigForm = () => {
                 case "split":
                   return (
                     <CommonPaper
-                      error={
+                      $error={
                         !!(
                           (touched as any)[`validation.split`] ||
                           (touched as any)[`validation.seed`] ||
@@ -447,7 +444,7 @@ const TrainingPointsInput = ({
             case "all-points":
               return (
                 <CommonPaper
-                  error={
+                  $error={
                     (touched[`allPoints.points`] || submitCount) &&
                     errors?.allPoints?.points
                   }
@@ -482,7 +479,7 @@ const TrainingPointsInput = ({
               return (
                 <>
                   <CommonPaper
-                    error={
+                    $error={
                       (touched[`${name}.presencePoints`] || submitCount) &&
                       errors?.presencePoints
                     }
@@ -503,7 +500,7 @@ const TrainingPointsInput = ({
                     />
                   </CommonPaper>
                   <CommonPaper
-                    error={
+                    $error={
                       (touched[`${name}.absencePoints`] || submitCount) &&
                       errors?.absencePoints
                     }

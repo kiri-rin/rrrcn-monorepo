@@ -17,8 +17,8 @@ import React, {
 } from "react";
 import { Migration, MigrationYear, SEASONS } from "../../types";
 import { MapDrawingContext } from "../../../../components/map/MapEdit";
-import { BirdMigrationYear } from "../migrations-season/migration-year";
-import { BirdMigrationSelectSeasonModal } from "../migrations-season/migration-select-season";
+import { BirdMigrationYear } from "./components/migrations-season/migration-year";
+import { BirdMigrationSelectSeasonModal } from "./components/migrations-season/add-migration-modal";
 import {
   getMigrationFreePaths,
   getMigrationPathsPolylines,
@@ -134,7 +134,7 @@ export const Index = ({
             {!isEdit && (
               <>
                 <MigrationTrackInfoShowButton
-                  fill={isTrackShown ? "blue" : "gray"}
+                  show={isTrackShown}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (isTrackShown) {

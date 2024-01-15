@@ -30,7 +30,7 @@ export const SurvivalForm = () => {
 
   return (
     <FormikContext.Provider value={formik}>
-      <CommonPaper error={false}>
+      <CommonPaper $error={false}>
         <Typography sx={{ marginY: "10px" }}>
           {strings["survival.file"]}
         </Typography>

@@ -19,7 +19,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
   return (
     <>
       <CommonPaper
-        error={(touched[`${name}.areas`] || submitCount) && errors?.areas}
+        $error={(touched[`${name}.areas`] || submitCount) && errors?.areas}
       >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.observed-areas"]}
@@ -31,7 +31,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
         />
       </CommonPaper>
       <CommonPaper
-        error={(touched[`${name}.points`] || submitCount) && errors?.points}
+        $error={(touched[`${name}.points`] || submitCount) && errors?.points}
       >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.presence-points"]}
@@ -42,7 +42,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
         />
       </CommonPaper>
       <CommonPaper
-        error={
+        $error={
           (touched[`${name}.presenceArea`] || submitCount) &&
           errors?.presenceArea
         }

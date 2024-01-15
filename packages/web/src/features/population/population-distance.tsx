@@ -15,7 +15,7 @@ export const PopulationDistanceForm = ({ name }: { name: string }) => {
   return (
     <>
       <CommonPaper
-        error={
+        $error={
           (touched[`${name}.distanceFile`] ||
             touched[`${name}.totalArea`] ||
             submitCount) &&

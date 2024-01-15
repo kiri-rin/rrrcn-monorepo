@@ -64,7 +64,7 @@ export const DataExtractionConfigForm = () => {
     <FormikContext.Provider value={formik}>
       <div>
         <CommonPaper
-          error={(touched?.[`points`] || submitCount) && errors?.points}
+          $error={(touched?.[`points`] || submitCount) && errors?.points}
         >
           {" "}
           <Box sx={{ marginY: "10px" }}>
@@ -78,7 +78,7 @@ export const DataExtractionConfigForm = () => {
 
         <Divider sx={{ marginY: "10px", backgroundColor: "black" }} />
         <CommonPaper
-          error={(touched?.[`scripts`] || submitCount) && errors?.scripts}
+          $error={(touched?.[`scripts`] || submitCount) && errors?.scripts}
         >
           <Typography sx={{ marginY: "10px" }}>
             {strings["data-extraction.choose-params"]}
