@@ -3,7 +3,8 @@ import { GenerateTracksResponse } from "@rrrcn/services/dist/src/controllers/mig
 export const exportGeneratedMigrationsTracks = (
   generatedTracks: GenerateTracksResponse
 ) => {
-  const tracksData = new Blob([
-    JSON.stringify(generatedTracks.generatedTracks),
-  ]);
+  const tracksBlobs = generatedTracks.generatedTracks.map(
+    (fc) => new Blob([JSON.stringify(fc.points)])
+  );
+  // tracksBlobs.reduce();
 };

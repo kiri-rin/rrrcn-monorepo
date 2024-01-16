@@ -21,11 +21,11 @@ export const useGeneratedAreas = () => {
   const showAreas = useCallback(() => {
     showMapObjects(mapObjectsRef.current);
     setShown(true);
-  }, [mapObjectsRef]);
+  }, [mapObjectsRef.current]);
   const hideAreas = useCallback(() => {
     hideMapObjects(mapObjectsRef.current);
     setShown(false);
-  }, [mapObjectsRef]);
+  }, [mapObjectsRef.current]);
   const showIndexedAreas = useCallback(() => {
     mapObjectsRef.current.forEach(
       (it, index) =>
