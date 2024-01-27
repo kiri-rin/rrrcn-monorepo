@@ -20,6 +20,7 @@ import {
   MigrationGeneratedTracksShowButton,
   MigrationGeneratedTracksTitle,
 } from "./style";
+import { exportGeneratedMigrationsTracks } from "./utils/export";
 
 export const MigrationsChooseAreas = () => {
   const { migrations, selectedSeasons, setSelectedSeasons } =
@@ -137,6 +138,13 @@ export const MigrationsChooseAreas = () => {
                   show={indexedAreasShown}
                 />
               </MigrationGeneratedTracksRow>
+              <Button
+                onClick={() => {
+                  exportGeneratedMigrationsTracks(generatedMigrations?.data);
+                }}
+              >
+                Export
+              </Button>
             </MigrationGeneratedTracksContainer>
           )
         )}

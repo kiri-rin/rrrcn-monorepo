@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@mapbox/shp-write": "^0.4.3",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^6.18.0",
