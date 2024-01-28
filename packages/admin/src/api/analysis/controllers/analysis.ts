@@ -12,6 +12,10 @@ import { RandomForestConfig } from "@rrrcn/services/src/analytics_config_types";
 import { populationEstimation } from "@rrrcn/services/src/controllers/population-estimation";
 import { estimateNestSurvival } from "@rrrcn/services/src/controllers/survival/survival-nest-mark";
 import { maxent } from "@rrrcn/services/src/controllers/maxent/maxent";
+import {
+  multipleAreaVulnerabilityController,
+  MultipleAreaVulnerabilityRequest,
+} from "@rrrcn/services/dist/src/controllers/vulnerability/multiple-area-vulnerability";
 
 const { PassThrough } = require("stream");
 
@@ -32,7 +36,12 @@ export type MaxentBodyType = {
   type: "survival";
   config: SurvivalNestConfig;
 };
+export type VulnerabilityBodyType = {
+  type: "vulnerability";
+  config: MultipleAreaVulnerabilityRequest;
+};
 export type AnalysisBodyType =
+  | VulnerabilityBodyType
   | GetDataBodyType
   | RandomForestBodyType
   | PopulationEstimateBodyType
@@ -46,6 +55,7 @@ const analysisServices = {
   migrations: "",
   survival: estimateNestSurvival,
   maxent: maxent,
+  vulnerability: multipleAreaVulnerabilityController,
 };
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
   async processAnalysis(

@@ -8,7 +8,7 @@ import {
   getMigrationPolyline,
 } from "../../utils/map-objects";
 import { object } from "yup";
-import { useMigrationSelectedItems } from "../../utils/selected-items-context";
+import { useMigrationSelectedItems } from "../../context/selected-items";
 export type MigrationTrackWithMap = {};
 export function useMapTrack(migration: Migration) {
   const colorRef = useRef(getRandomColor());

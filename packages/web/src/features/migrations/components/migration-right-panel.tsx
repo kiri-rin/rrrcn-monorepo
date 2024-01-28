@@ -1,17 +1,16 @@
-import { useMigrationSelectedItems } from "../utils/selected-items-context";
+import { useMigrationSelectedItems } from "../context/selected-items";
 import Drawer from "@mui/material/Drawer";
 import { Offset } from "../../../App";
 import React, { useState } from "react";
 import { CommonPaper } from "../../../components/common";
-import { createPortal } from "react-dom";
-import { Button } from "@mui/material";
-import { json } from "stream/consumers";
-import { MigrationAreaVulnerabilityModal } from "./vulnerability";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
+import { useMigrationVulnerabilityContext } from "../context/vulnerability-areas";
 
 export const MigrationRightPanel = () => {
   const { selectedPoint, setSelectedPoint, selectedBBox, setSelectedBBox } =
     useMigrationSelectedItems();
-  const [openVulnerability, setOpenVulnerability] = useState(false);
+  const { selectedAreas, toggleSelectedArea } =
+    useMigrationVulnerabilityContext();
   return (
     <Drawer variant="permanent" anchor="right">
       <Offset style={{ minWidth: 300 }} />
@@ -37,16 +36,18 @@ export const MigrationRightPanel = () => {
           </div>
           <div>{JSON.stringify(selectedBBox?.probabilities?.altitudes)}</div>
           <div>{JSON.stringify(selectedBBox?.probabilities?.total)}</div>
-          <Button onClick={() => setSelectedBBox(null)}>Hid</Button>
-          <Button onClick={() => setOpenVulnerability(true)}>
-            Vulnerability
-          </Button>
+          {selectedBBox.probabilities !== undefined && (
+            <FormControlLabel
+              label={<>Use in vulnerability calculation</>}
+              checked={
+                !!selectedAreas.find((it) => selectedBBox?.index === it.index)
+              }
+              onChange={() => toggleSelectedArea(selectedBBox)}
+              control={<Checkbox />}
+            />
+          )}
+          <Button onClick={() => setSelectedBBox(null)}>Hide</Button>
         </CommonPaper>
-      )}
-      {openVulnerability && (
-        <MigrationAreaVulnerabilityModal
-          onCancelClick={() => setOpenVulnerability(false)}
-        />
       )}
     </Drawer>
   );

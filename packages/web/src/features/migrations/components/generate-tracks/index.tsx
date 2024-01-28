@@ -9,9 +9,9 @@ import { Migration, SEASONS } from "../../types";
 import { MapDrawingContext } from "../../../../components/map/MapEdit";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../../../api";
-import { SelectedTracksSeasonsType, useMigrationsContext } from "../../index";
+import { SelectedTracksSeasonsType } from "../../index";
 import { FormikContext, useFormik } from "formik";
-import { useMigrationSelectedItems } from "../../utils/selected-items-context";
+import { useMigrationSelectedItems } from "../../context/selected-items";
 import { useGeneratedTracks } from "./hooks/use-generated-tracks";
 import { useGeneratedAreas } from "./hooks/use-generated-areas";
 import {
@@ -21,6 +21,7 @@ import {
   MigrationGeneratedTracksTitle,
 } from "./style";
 import { exportGeneratedMigrationsTracks } from "./utils/export";
+import { useMigrationsContext } from "../../context/migrations";
 
 export const MigrationsChooseAreas = () => {
   const { migrations, selectedSeasons, setSelectedSeasons } =

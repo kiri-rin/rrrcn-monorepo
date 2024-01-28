@@ -6,7 +6,6 @@ import { useQuery } from "react-query";
 import { api } from "../../api";
 import { useEventSource } from "../../utils/hooks";
 import { LinearProgress } from "@mui/material";
-import { createPortal } from "react-dom";
 
 export const AnalysisRightPanel = () => {
   const [results, setResults] = useState<number[]>([]);
@@ -25,29 +24,19 @@ export const AnalysisRightPanel = () => {
     ]);
   }, [dataExtractionState]);
 
-  return document.getElementById("main-page-right-panel") ? (
-    createPortal(
-      <Drawer variant="permanent" anchor="right">
-        <Offset style={{ width: 200 }} />
-        {results?.map((resultId: number) => (
-          <EventSourceLogs resultId={resultId} key={resultId} />
-        ))}
-      </Drawer>,
-      document.getElementById("main-page-right-panel")!
-    )
-  ) : (
-    <></>
+  return (
+    <>
+      {results?.map((resultId: number) => (
+        <EventSourceLogs resultId={resultId} key={resultId} />
+      ))}
+    </>
   );
 };
 const EventSourceLogs = ({ resultId }: { resultId: number }) => {
   const {
     message: { message, id: messageId },
     close,
-  } = useEventSource(
-    // TODO maybe better to handle messages on low level? like dom
-    `${BASE_PATH}/api/result/loading/${resultId}`,
-    [resultId]
-  );
+  } = useEventSource(`${BASE_PATH}/api/result/loading/${resultId}`, [resultId]);
   return (
     <div style={{ border: "1px solid", padding: 10, margin: 10, width: 200 }}>
       {!close && <LinearProgress />}

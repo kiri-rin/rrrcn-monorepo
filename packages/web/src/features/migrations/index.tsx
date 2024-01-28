@@ -1,12 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React from "react";
 import { Migration, SEASONS } from "./types";
 import { MigrationsChooseAreas } from "./components/generate-tracks";
 import { MigrationsFilesInput } from "./components/migrations-files";
@@ -17,7 +9,16 @@ import {
   VulnerabilityWorkerContext,
 } from "./workers/context";
 import { MigrationRightPanel } from "./components/migration-right-panel";
-import { MigrationSelectedItemsProvider } from "./utils/selected-items-context";
+import { MigrationSelectedItemsProvider } from "./context/selected-items";
+import {
+  MigrationsContext,
+  useMigrationContextValues,
+} from "./context/migrations";
+import {
+  MigrationVulnerabilityContextProvider,
+  useMigrationVulnerabilityContextValue,
+} from "./context/vulnerability-areas";
+import { MigrationsVulnerability } from "./components/vulnerability";
 
 export type SelectedSeasonsType = {
   [year: string]: { [season in SEASONS]?: boolean };
@@ -30,6 +31,7 @@ export const MigrationsForm = () => {
   const contextValues = useMigrationContextValues();
   const worker = useIndexTracksWorker();
   const vulnerabilityWorker = useProcessVulnerabilityWorker();
+  const vulnerabilityContextValues = useMigrationVulnerabilityContextValue();
   // const filteredMigrations = useMemo(
   //   () =>
   //     migrations?.map((migration) => {
@@ -66,130 +68,43 @@ export const MigrationsForm = () => {
       >
         <MigrationsContext.Provider value={contextValues}>
           <MigrationSelectedItemsProvider>
-            <div>
-              {/*<MigrationsDateFilterContainer>*/}
-              {/*  <DatePicker*/}
-              {/*    slotProps={{*/}
-              {/*      textField: {*/}
-              {/*        size: "small",*/}
-              {/*      },*/}
-              {/*    }}*/}
-              {/*    value={dateFilter[0]}*/}
-              {/*    onChange={(newValue) =>*/}
-              {/*      setDateFilter((prev) => [newValue, prev[1]])*/}
-              {/*    }*/}
-              {/*  />*/}
-              {/*  <DatePicker*/}
-              {/*    slotProps={{*/}
-              {/*      textField: {*/}
-              {/*        size: "small",*/}
-              {/*      },*/}
-              {/*    }}*/}
-              {/*    value={dateFilter[1]}*/}
-              {/*    onChange={(newValue) =>*/}
-              {/*      setDateFilter((prev) => [prev[0], newValue])*/}
-              {/*    }*/}
-              {/*  />*/}
-              {/*</MigrationsDateFilterContainer>*/}
-              <MigrationsFilesInput />
-              <MigrationsChooseAreas />
-            </div>
-            <MigrationRightPanel />
+            <MigrationVulnerabilityContextProvider
+              value={vulnerabilityContextValues}
+            >
+              <div>
+                {/*<MigrationsDateFilterContainer>*/}
+                {/*  <DatePicker*/}
+                {/*    slotProps={{*/}
+                {/*      textField: {*/}
+                {/*        size: "small",*/}
+                {/*      },*/}
+                {/*    }}*/}
+                {/*    value={dateFilter[0]}*/}
+                {/*    onChange={(newValue) =>*/}
+                {/*      setDateFilter((prev) => [newValue, prev[1]])*/}
+                {/*    }*/}
+                {/*  />*/}
+                {/*  <DatePicker*/}
+                {/*    slotProps={{*/}
+                {/*      textField: {*/}
+                {/*        size: "small",*/}
+                {/*      },*/}
+                {/*    }}*/}
+                {/*    value={dateFilter[1]}*/}
+                {/*    onChange={(newValue) =>*/}
+                {/*      setDateFilter((prev) => [prev[0], newValue])*/}
+                {/*    }*/}
+                {/*  />*/}
+                {/*</MigrationsDateFilterContainer>*/}
+                <MigrationsFilesInput />
+                <MigrationsChooseAreas />
+                {/*<MigrationsVulnerability />*/}
+              </div>
+              <MigrationRightPanel />
+            </MigrationVulnerabilityContextProvider>
           </MigrationSelectedItemsProvider>
         </MigrationsContext.Provider>
       </VulnerabilityWorkerContext.Provider>
     </IndexTracksWorkerContext.Provider>
   );
 };
-export type MigrationsContextType = {
-  migrations?: Migration[];
-  setMigrations: React.Dispatch<React.SetStateAction<Migration[] | undefined>>;
-  setSelectedSeasons: React.Dispatch<
-    React.SetStateAction<SelectedTracksSeasonsType>
-  >;
-  selectedSeasons: SelectedTracksSeasonsType;
-  addSelectedSeason: (trackId: string, year: string, season: SEASONS) => void;
-  removeSelectedSeason: (
-    trackId: string,
-    year: string,
-    season: SEASONS
-  ) => void;
-  toggleSelectedSeason: (
-    trackId: string,
-    year: string,
-    season: SEASONS
-  ) => void;
-};
-export const MigrationsContext = createContext<MigrationsContextType>({
-  setMigrations: () => {},
-  setSelectedSeasons: () => {},
-  addSelectedSeason: () => {},
-  removeSelectedSeason: () => {},
-  toggleSelectedSeason: () => {},
-  selectedSeasons: {},
-});
-const useMigrationContextValues = (): MigrationsContextType => {
-  const [migrations, setMigrations] = useState<
-    IndexedMigration[] | undefined
-  >();
-  const [selectedSeasons, setSelectedSeasons] =
-    useState<SelectedTracksSeasonsType>({});
-  const addSelectedSeason = useCallback(
-    (trackId: string, year: string, season: SEASONS) => {
-      setSelectedSeasons((prevState) => {
-        const newState = { ...prevState };
-        if (!newState[trackId]) {
-          newState[trackId] = {};
-        }
-        if (!newState[trackId][year]) {
-          newState[trackId][year] = {};
-        }
-        newState[trackId][year][season] = true;
-        return newState;
-      });
-    },
-    []
-  );
-  const removeSelectedSeason = useCallback(
-    (trackId: string, year: string, season: SEASONS) => {
-      setSelectedSeasons((prevState) => {
-        const newState = { ...prevState };
-        if (!newState[trackId]) {
-          newState[trackId] = {};
-        }
-        if (!newState[trackId][year]) {
-          newState[trackId][year] = {};
-        }
-        newState[trackId][year][season] = false;
-        return newState;
-      });
-    },
-    []
-  );
-  const toggleSelectedSeason = useCallback(
-    (trackId: string, year: string, season: SEASONS) => {
-      setSelectedSeasons((prevState) => {
-        const newState = { ...prevState };
-        if (!newState[trackId]) {
-          newState[trackId] = {};
-        }
-        if (!newState[trackId][year]) {
-          newState[trackId][year] = {};
-        }
-        newState[trackId][year][season] = !newState[trackId][year][season];
-        return newState;
-      });
-    },
-    []
-  );
-  return {
-    migrations,
-    setMigrations,
-    selectedSeasons,
-    setSelectedSeasons,
-    addSelectedSeason,
-    removeSelectedSeason,
-    toggleSelectedSeason,
-  };
-};
-export const useMigrationsContext = () => useContext(MigrationsContext);

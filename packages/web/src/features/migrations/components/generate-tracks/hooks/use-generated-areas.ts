@@ -6,7 +6,7 @@ import {
 import { MapDrawingContext } from "../../../../../components/map/MapEdit";
 import { useMutation, useQuery } from "react-query";
 import { GenerateTracksResponse } from "@rrrcn/services/src/controllers/migrations/types";
-import { useMigrationSelectedItems } from "../../../utils/selected-items-context";
+import { useMigrationSelectedItems } from "../../../context/selected-items";
 
 export const useGeneratedAreas = () => {
   const mapObjectsRef = useRef<GoogleMapObject[]>([]);

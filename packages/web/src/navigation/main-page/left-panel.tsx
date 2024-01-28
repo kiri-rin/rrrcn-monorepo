@@ -94,7 +94,12 @@ export const MainPageLeftPanel = () => {
             <Component />
           </div>
         ))}
-        {activeTab !== 5 && <AnalysisRightPanel />}
+        {activeTab !== 5 && (
+          <Drawer variant="permanent" anchor="right">
+            <Offset style={{ width: 200 }} />
+            <AnalysisRightPanel />
+          </Drawer>
+        )}
       </div>
     </Drawer>
   );

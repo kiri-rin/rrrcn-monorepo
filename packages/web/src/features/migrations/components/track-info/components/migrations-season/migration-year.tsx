@@ -1,4 +1,4 @@
-import { IndexedMigration, useMigrationsContext } from "../../../../index";
+import { IndexedMigration } from "../../../../index";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
@@ -16,6 +16,7 @@ import {
   MigrationSeasonTitle,
   MigrationSeasonTitleRow,
 } from "./style";
+import { useMigrationsContext } from "../../../../context/migrations";
 
 const sortedSeasons = [
   SEASONS.WINTER,

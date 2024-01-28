@@ -8,12 +8,13 @@ import React, {
 } from "react";
 import { Index } from "../track-info";
 import { parseGeojson } from "../../../../utils/geometry/map/useDrawGeojson";
-import { IndexedMigration, useMigrationsContext } from "../../index";
+import { IndexedMigration } from "../../index";
 import { useParseKMLWorker } from "../../workers/context";
 import { MigrationFilesModal } from "./modal";
 import { Migration } from "../../types";
 import { TrackerFileTypes, WorkerMessage } from "../../workers/parse_kml/types";
 import { useParseMigrationsKml } from "../../utils/parser-utils";
+import { useMigrationsContext } from "../../context/migrations";
 
 export const MigrationsFilesInput = () => {
   const { migrations, setMigrations: onMigrationsChange } =
