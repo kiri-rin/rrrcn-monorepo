@@ -17,6 +17,8 @@ import {
   MigrationSeasonTitleRow,
 } from "./style";
 import { useMigrationsContext } from "../../../../context/migrations";
+import { Strings, useTranslations } from "../../../../../../utils/translations";
+import { ruTranslations } from "../../../../../../utils/translations/ru";
 
 const sortedSeasons = [
   SEASONS.WINTER,
@@ -48,6 +50,7 @@ export const BirdMigrationYear = ({
   const [newSeasonMigration, setNewSeasonMigration] = useState<
     [number, number | null] | undefined
   >();
+  const t = useTranslations();
   const yearInfo = migration.years[year] || {};
   const onAddMigration = useCallback((season: SEASONS) => {
     setEditMigration(null);
@@ -121,7 +124,13 @@ export const BirdMigrationYear = ({
         ))}
       {addMigration && (
         <>
-          <Typography variant={"h6"}>{addMigration}</Typography>
+          <Typography variant={"h6"}>
+            {
+              t[
+                `migrations.${addMigration.toLowerCase()}` as unknown as keyof Strings
+              ] as string
+            }
+          </Typography>
           <BirdMigrationSeason
             isNew={true}
             onEdit={() => {}}
@@ -157,7 +166,7 @@ export const BirdMigrationYear = ({
           setShowSeasonModal(true);
         }}
       >
-        Add migration
+        {t["migrations.add-migration"]}
       </Button>
       {showSeasonModal && (
         <BirdMigrationSelectSeasonModal
@@ -209,6 +218,7 @@ export const BirdMigrationSeason = ({
 }) => {
   const { selectedSeasons, addSelectedSeason, toggleSelectedSeason } =
     useMigrationsContext();
+  const t = useTranslations();
   const yearInfo = migration.years[year] || {};
   const defaultIndices = isNew
     ? [0, 0]
@@ -231,7 +241,9 @@ export const BirdMigrationSeason = ({
           label={
             <>
               <MigrationSeasonDates>
-                <MigrationSeasonTitle>{season}</MigrationSeasonTitle>
+                <MigrationSeasonTitle>
+                  {t[`migrations.${season}`]}
+                </MigrationSeasonTitle>
                 {title}
               </MigrationSeasonDates>
             </>
@@ -283,7 +295,7 @@ export const BirdMigrationSeason = ({
           }
         }}
       >
-        {isEdit || isNew ? "Cancel" : "Edit"}
+        {isEdit || isNew ? t["common.cancel"] : t["common.edit"]}
       </Button>
       {(isEdit || isNew) && (
         <Button
@@ -293,7 +305,7 @@ export const BirdMigrationSeason = ({
               onChange([startIndex, endIndex]);
           }}
         >
-          Save
+          {t["common.save"]}
         </Button>
       )}
       {!isNew && (
@@ -302,7 +314,7 @@ export const BirdMigrationSeason = ({
             onDeleteMigration();
           }}
         >
-          Delete
+          {t["common.delete"]}
         </Button>
       )}
     </div>

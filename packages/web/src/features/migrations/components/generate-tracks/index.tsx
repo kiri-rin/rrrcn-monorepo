@@ -22,8 +22,12 @@ import {
 } from "./style";
 import { exportGeneratedMigrationsTracks } from "./utils/export";
 import { useMigrationsContext } from "../../context/migrations";
+import { MigrationsVulnerability } from "../vulnerability";
+import { useTranslations } from "../../../../utils/translations";
+import { CommonPaper } from "../../../../components/common";
 
 export const MigrationsChooseAreas = () => {
+  const t = useTranslations();
   const { migrations, selectedSeasons, setSelectedSeasons } =
     useMigrationsContext();
   const [initCount, setInitCount] = useState<number>(10);
@@ -42,6 +46,7 @@ export const MigrationsChooseAreas = () => {
     hideAreas,
     indexedAreasShown,
     showAreas,
+    mapObjectsRef,
   } = useGeneratedAreas();
 
   const queryClient = useQueryClient();
@@ -63,21 +68,27 @@ export const MigrationsChooseAreas = () => {
     onSubmit: () => {},
     initialValues: { params: { type: "scripts", scripts: [] } },
   });
+  const selectedSeasonsCount = useMemo(
+    () =>
+      Object.values(selectedSeasons)
+        .flatMap((trackSelected) =>
+          Object.values(trackSelected).map(
+            (trackSelectedSeasons) =>
+              Object.values(trackSelectedSeasons).filter((it) => it).length
+          )
+        )
+        .reduce((a, b) => a + b, 0),
+    [selectedSeasons]
+  );
 
   return (
     <FormikContext.Provider value={paramsForm}>
-      <div>
-        Selected migrations:{" "}
-        {Object.values(selectedSeasons)
-          .flatMap((trackSelected) =>
-            Object.values(trackSelected).map(
-              (trackSelectedSeasons) =>
-                Object.values(trackSelectedSeasons).filter((it) => it).length
-            )
-          )
-          .reduce((a, b) => a + b, 0)}
+      <CommonPaper>
+        {t["migrations.selected-migrations"]}: {selectedSeasonsCount}
         <div>
           <TextField
+            sx={{ marginTop: "8px" }}
+            label={t["migrations.generate-count-label"]}
             size={"small"}
             type={"number"}
             value={initCount}
@@ -85,7 +96,7 @@ export const MigrationsChooseAreas = () => {
           />
           <div>
             <Button
-              disabled={isGenerateLoading}
+              disabled={isGenerateLoading || !selectedSeasonsCount}
               onClick={() => {
                 generateTracks(
                   prepareGenerateRequest(
@@ -96,61 +107,65 @@ export const MigrationsChooseAreas = () => {
                 );
               }}
             >
-              Generate
+              {t["migrations.generate"]}
             </Button>
           </div>
         </div>
-        {isGenerateLoading ? (
-          <LinearProgress />
-        ) : (
-          generatedMigrations && (
-            <MigrationGeneratedTracksContainer>
-              Generated tracks
-              <MigrationGeneratedTracksRow>
-                <MigrationGeneratedTracksTitle>
-                  tracks: {tracks?.length}
-                </MigrationGeneratedTracksTitle>
-                <MigrationGeneratedTracksShowButton
-                  onClick={() => {
-                    tracksShown ? hideTracks() : showTracks();
-                  }}
-                  show={tracksShown}
-                />
-              </MigrationGeneratedTracksRow>
-              <MigrationGeneratedTracksRow>
-                <MigrationGeneratedTracksTitle>
-                  areas:{areas?.features.length}
-                </MigrationGeneratedTracksTitle>
-                <MigrationGeneratedTracksShowButton
-                  onClick={() => {
-                    areasShown ? hideAreas() : showAreas();
-                  }}
-                  show={areasShown}
-                />
-              </MigrationGeneratedTracksRow>
-              <MigrationGeneratedTracksRow>
-                <MigrationGeneratedTracksTitle>
-                  Indexed areas:{Object.values(indexedAreas || {}).length}
-                </MigrationGeneratedTracksTitle>
-                <MigrationGeneratedTracksShowButton
-                  onClick={() => {
-                    indexedAreasShown ? hideIndexedAreas() : showIndexedAreas();
-                  }}
-                  show={indexedAreasShown}
-                />
-              </MigrationGeneratedTracksRow>
-              <Button
+      </CommonPaper>
+      {isGenerateLoading ? (
+        <LinearProgress />
+      ) : (
+        generatedMigrations && (
+          <MigrationGeneratedTracksContainer>
+            {t["migrations.generated-tracks"]}
+            <MigrationGeneratedTracksRow>
+              <MigrationGeneratedTracksTitle>
+                {t["migrations.generated-tracks-total"]}: {tracks?.length}
+              </MigrationGeneratedTracksTitle>
+              <MigrationGeneratedTracksShowButton
                 onClick={() => {
-                  exportGeneratedMigrationsTracks(generatedMigrations?.data);
+                  tracksShown ? hideTracks() : showTracks();
                 }}
-              >
-                Export
-              </Button>
-            </MigrationGeneratedTracksContainer>
-          )
-        )}
-        {/*{migrationSplitAreaState && <ParamsImageInput name={"params"} />}*/}
-      </div>
+                show={tracksShown}
+              />
+            </MigrationGeneratedTracksRow>
+            <MigrationGeneratedTracksRow>
+              <MigrationGeneratedTracksTitle>
+                {t["migrations.generated-areas"]}:{areas?.features.length}
+              </MigrationGeneratedTracksTitle>
+              <MigrationGeneratedTracksShowButton
+                onClick={() => {
+                  areasShown ? hideAreas() : showAreas();
+                }}
+                show={areasShown}
+              />
+            </MigrationGeneratedTracksRow>
+            <MigrationGeneratedTracksRow>
+              <MigrationGeneratedTracksTitle>
+                {t["migrations.indexed-areas"]}:
+                {Object.values(indexedAreas || {}).length}
+              </MigrationGeneratedTracksTitle>
+              <MigrationGeneratedTracksShowButton
+                onClick={() => {
+                  indexedAreasShown ? hideIndexedAreas() : showIndexedAreas();
+                }}
+                show={indexedAreasShown}
+              />
+            </MigrationGeneratedTracksRow>
+            <Button
+              onClick={() => {
+                exportGeneratedMigrationsTracks(generatedMigrations?.data);
+              }}
+            >
+              Export
+            </Button>
+          </MigrationGeneratedTracksContainer>
+        )
+      )}
+      {/*{migrationSplitAreaState && <ParamsImageInput name={"params"} />}*/}
+      {generatedMigrations && (
+        <MigrationsVulnerability mapObjects={mapObjectsRef.current} />
+      )}
     </FormikContext.Provider>
   );
 };

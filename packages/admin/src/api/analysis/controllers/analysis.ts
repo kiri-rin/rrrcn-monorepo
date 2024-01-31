@@ -15,7 +15,7 @@ import { maxent } from "@rrrcn/services/src/controllers/maxent/maxent";
 import {
   multipleAreaVulnerabilityController,
   MultipleAreaVulnerabilityRequest,
-} from "@rrrcn/services/dist/src/controllers/vulnerability/multiple-area-vulnerability";
+} from "@rrrcn/services/src/controllers/vulnerability/multiple-area-vulnerability";
 
 const { PassThrough } = require("stream");
 

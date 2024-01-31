@@ -98,7 +98,6 @@ export const MigrationsForm = () => {
                 {/*</MigrationsDateFilterContainer>*/}
                 <MigrationsFilesInput />
                 <MigrationsChooseAreas />
-                {/*<MigrationsVulnerability />*/}
               </div>
               <MigrationRightPanel />
             </MigrationVulnerabilityContextProvider>

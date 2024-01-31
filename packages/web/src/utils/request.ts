@@ -5,9 +5,6 @@ export const serializeRequestToForm = (
   form: FormData,
   prevKey = ""
 ) => {
-  !prevKey && console.log(request);
-
-  JSON.stringify(request);
   switch (typeof request) {
     case "object": {
       if (isDate(request)) {

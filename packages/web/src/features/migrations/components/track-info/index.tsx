@@ -32,6 +32,7 @@ import {
   MigrationTrackInfoShowButton,
   MigrationTrackInfoShowMarkersButton,
 } from "./style";
+import { useTranslations } from "../../../../utils/translations";
 function getRandomColor() {
   var letters = "0123456789ABCDEF";
   var color = "#";
@@ -41,7 +42,7 @@ function getRandomColor() {
   return color;
 }
 
-export const Index = ({
+export const TrackInfo = ({
   migration,
   onEditEnd,
   isEdit,
@@ -96,6 +97,7 @@ export const Index = ({
 
     onEditEnd(newMigration);
   };
+  const t = useTranslations();
 
   const { worker } = useContext(IndexTracksWorkerContext);
   const indexTracks = () =>
@@ -182,11 +184,11 @@ export const Index = ({
                   indexTracksMutation();
                 }}
               >
-                Auto find migrations
+                {t["migrations.auto-migration"]}
               </Button>
             </>
           ) : (
-            <Button onClick={() => {}}>Cancel</Button>
+            <Button onClick={() => {}}>{t["common.cancel"]}</Button>
           )}
         </AccordionDetails>
       </Accordion>

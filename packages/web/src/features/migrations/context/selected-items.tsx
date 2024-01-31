@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { MigrationPointProperties } from "../types";
-import { IndexedArea } from "@rrrcn/services/dist/src/controllers/migrations/types";
+import { IndexedArea } from "@rrrcn/services/src/controllers/migrations/types";
 
 const MigrationSelectedItemsContext = createContext<{
   selectedPoint: GeoJSON.Feature<

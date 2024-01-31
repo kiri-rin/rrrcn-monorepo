@@ -43,6 +43,7 @@ const EventSourceLogs = ({ resultId }: { resultId: number }) => {
       <div>{message}</div>
       {"result will be available here \n"}
       <a
+        style={{ wordBreak: "break-all" }}
         target="_blank"
         rel="noopener noreferrer"
         href={`${BASE_PATH}/api/result/download/${resultId}`}

@@ -1,7 +1,7 @@
 import {
   GenerateTracksResponse,
   TrackPointProperties,
-} from "@rrrcn/services/dist/src/controllers/migrations/types";
+} from "@rrrcn/services/src/controllers/migrations/types";
 import { featureCollection, length, lineString } from "@turf/turf";
 import { Position } from "geojson";
 import shpwrite from "@mapbox/shp-write";

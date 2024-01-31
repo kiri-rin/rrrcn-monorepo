@@ -67,9 +67,8 @@ export const useGeneratedAreas = () => {
             setSelectedBBox(
               selectedBBox?.index !== index
                 ? {
+                    ...generatedMigrations.indexedAreas[index],
                     index: index,
-                    probabilities:
-                      generatedMigrations.indexedAreas[index]?.probabilities,
                   }
                 : null
             );
@@ -96,6 +95,7 @@ export const useGeneratedAreas = () => {
     indexedAreasShown,
     showIndexedAreas,
     hideIndexedAreas,
+    mapObjectsRef,
     areas: generatedMigrations?.grid,
     indexedAreas: generatedMigrations?.indexedAreas,
   };
@@ -140,9 +140,8 @@ export const useGeneratedIndexedAreas = () => {
             setSelectedBBox(
               selectedBBox?.index !== index
                 ? {
+                    ...generatedMigrations.indexedAreas[index],
                     index: index,
-                    probabilities:
-                      generatedMigrations.indexedAreas[index]?.probabilities,
                   }
                 : null
             );

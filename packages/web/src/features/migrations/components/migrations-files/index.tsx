@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Index } from "../track-info";
+import { TrackInfo } from "../track-info";
 import { parseGeojson } from "../../../../utils/geometry/map/useDrawGeojson";
 import { IndexedMigration } from "../../index";
 import { useParseKMLWorker } from "../../workers/context";
@@ -15,10 +15,12 @@ import { Migration } from "../../types";
 import { TrackerFileTypes, WorkerMessage } from "../../workers/parse_kml/types";
 import { useParseMigrationsKml } from "../../utils/parser-utils";
 import { useMigrationsContext } from "../../context/migrations";
+import { useTranslations } from "../../../../utils/translations";
 
 export const MigrationsFilesInput = () => {
   const { migrations, setMigrations: onMigrationsChange } =
     useMigrationsContext();
+  const t = useTranslations();
   const worker = useParseKMLWorker();
   const [filesToParse, setFilesToParse] = useState<FileList | null>(null);
   const [currentEdit, setCurrentEdit] = useState<number | null>(null);
@@ -70,7 +72,7 @@ export const MigrationsFilesInput = () => {
           ref.current?.click();
         }}
       >
-        Add files
+        {t["migrations.add-files"]}
       </Button>
       <Input
         inputRef={ref}
@@ -85,7 +87,7 @@ export const MigrationsFilesInput = () => {
         }}
       />
       {migrations?.map((migr, index) => (
-        <Index
+        <TrackInfo
           key={index}
           filteredMigration={migr}
           onChangeEditState={(edit) => {
