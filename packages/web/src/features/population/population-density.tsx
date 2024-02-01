@@ -1,17 +1,8 @@
-import {
-  PopulationDensityType,
-  PopulationDistanceConfigType,
-  PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+import type { PopulationDensityType } from "@rrrcn/services/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
-import { GeometryInput } from "../../components/geometry-input";
 import { Checkbox, Input, MenuItem, Select, Typography } from "@mui/material";
 import { useTranslations } from "../../utils/translations";
 import { useField, useFormikContext } from "formik";
-import {
-  defaultRFConfig,
-  RandomForestInputConfig,
-} from "../random-forest/random-forest";
 import React from "react";
 
 export const PopulationDensityForm = ({ name }: { name: string }) => {
@@ -24,7 +15,7 @@ export const PopulationDensityForm = ({ name }: { name: string }) => {
   return (
     <>
       <CommonPaper
-        error={
+        $error={
           (touched[`${name}.densityFile`] ||
             touched[`${name}.totalArea`] ||
             submitCount) &&

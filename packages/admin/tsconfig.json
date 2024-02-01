@@ -2,10 +2,7 @@
   "extends": "@strapi/typescript-utils/tsconfigs/server",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": ".",
-    "paths": {
-      "rrrcn-services": ["../rrrcn-services/dist"]
-    }
+    "rootDir": "."
   },
   "include": [
     "./",

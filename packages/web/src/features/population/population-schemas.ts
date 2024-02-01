@@ -1,10 +1,10 @@
 import * as yup from "yup";
 import { PopulationInputConfig } from "./population";
-import {
+import type {
   PopulationDensityType,
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { GeometryInputSchema } from "../common/geometry-validations";
 
 export const PopulationSchema = yup.lazy((values: PopulationInputConfig) => {

@@ -1,10 +1,10 @@
 import Select from "@mui/material/Select";
-import {
+import type {
   PopulationConfig,
   PopulationDensityType,
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
 import { useTranslations } from "../../utils/translations";
 import React from "react";

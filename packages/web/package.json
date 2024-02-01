@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@mapbox/shp-write": "^0.4.3",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^6.18.0",
@@ -13,10 +14,12 @@
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
     "@tmcw/togeojson": "^5.7.0",
+    "@turf/turf": "^6.5.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@zip.js/zip.js": "^2.7.32",
     "axios": "0.21.4",
     "browserify": "^17.0.0",
     "customize-cra": "^1.0.0",
@@ -37,6 +40,7 @@
     "typesafe-actions": "^5.1.0",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
+    "webworker-promise": "^0.5.1",
     "xmldom": "^0.6.0",
     "yup": "^1.0.2"
   },

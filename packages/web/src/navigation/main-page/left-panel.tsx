@@ -7,25 +7,17 @@ import {
   DataExtractionInput,
 } from "../../features/random-forest/data-extraction";
 import {
-  defaultRFConfig,
-  mapRFConfigToRequest,
   RandomForestConfigForm,
   RandomForestInputConfig,
 } from "../../features/random-forest/random-forest";
 import { Strings, useTranslations } from "../../utils/translations";
-import Checkbox from "@mui/material/Checkbox";
-import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../api";
-import { serializeRequestToForm } from "../../utils/request";
-import { mapScriptsConfigToRequest } from "../../features/random-forest/utils";
-import { Formik, FormikProps } from "formik";
 import {
-  defaultPopulationConfig,
   PopulationForm,
   PopulationInputConfig,
 } from "../../features/population/population";
-import { MigrationsForm } from "../../features/migrations/migrations";
+import { MigrationsForm } from "../../features/migrations";
 import { SurvivalForm } from "../../features/survival/survival";
 import { MaxentConfigForm } from "../../features/maxent/maxent";
 import { AnalysisRightPanel } from "./right-panel";
@@ -102,7 +94,12 @@ export const MainPageLeftPanel = () => {
             <Component />
           </div>
         ))}
-        {activeTab !== 5 && <AnalysisRightPanel />}
+        {activeTab !== 5 && (
+          <Drawer variant="permanent" anchor="right">
+            <Offset style={{ width: 200 }} />
+            <AnalysisRightPanel />
+          </Drawer>
+        )}
       </div>
     </Drawer>
   );

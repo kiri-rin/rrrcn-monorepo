@@ -1,4 +1,4 @@
-import { PopulationRandomGenerationConfigType } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { PopulationRandomGenerationConfigType } from "@rrrcn/services/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
 import { GeometryInput } from "../../components/geometry-input";
 import { Checkbox, Input, Typography } from "@mui/material";
@@ -19,7 +19,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
   return (
     <>
       <CommonPaper
-        error={(touched[`${name}.areas`] || submitCount) && errors?.areas}
+        $error={(touched[`${name}.areas`] || submitCount) && errors?.areas}
       >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.observed-areas"]}
@@ -31,7 +31,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
         />
       </CommonPaper>
       <CommonPaper
-        error={(touched[`${name}.points`] || submitCount) && errors?.points}
+        $error={(touched[`${name}.points`] || submitCount) && errors?.points}
       >
         <Typography sx={{ marginY: "10px" }}>
           {strings["population.presence-points"]}
@@ -42,7 +42,7 @@ export const PopulationRandomPointsForm = ({ name }: { name: string }) => {
         />
       </CommonPaper>
       <CommonPaper
-        error={
+        $error={
           (touched[`${name}.presenceArea`] || submitCount) &&
           errors?.presenceArea
         }

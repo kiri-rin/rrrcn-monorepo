@@ -25,7 +25,7 @@ export const parseOrnitellaKML: ParseTrackerXML = async (file, DOMParser) => {
         ...it,
         properties: {
           ...it.properties,
-          elevation: parseInt(
+          altitude: parseInt(
             (
               parseHTMLTable(
                 DOMParser.parseFromString(

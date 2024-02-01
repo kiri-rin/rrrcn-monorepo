@@ -3,12 +3,12 @@ import { Context, Request } from "koa";
 import {
   SplitMigrationAreaConfigType,
   SplitMigrationsArea,
-} from "@rrrcn/services/dist/src/controllers/migrations/split-area";
+} from "@rrrcn/services/src/controllers/migrations/split-area";
 import {
   GeneratedTrack,
   MigrationGenerationConfigType,
-} from "@rrrcn/services/dist/src/controllers/migrations/types";
-import { generateMigrationTracks } from "@rrrcn/services/dist/src/controllers/migrations/generate-tracks";
+} from "@rrrcn/services/src/controllers/migrations/types";
+import { generateMigrationTracks } from "@rrrcn/services/src/controllers/migrations/generate-tracks";
 
 const { PassThrough } = require("stream");
 
@@ -18,7 +18,7 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
       request: Request & { body: SplitMigrationAreaConfigType };
     }
   ) {
-    return SplitMigrationsArea(ctx.request.body);
+    const { grid } = await SplitMigrationsArea(ctx.request.body);
   },
   async generateTracks(
     ctx: Context & {
@@ -26,6 +26,7 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
     }
   ) {
     const resultService = strapi.service("api::result.result");
+    const { grid } = await SplitMigrationsArea(ctx.request.body);
 
     const config = ctx.request.body;
     const { id: resultId, uid: resultUID } = await resultService.create({

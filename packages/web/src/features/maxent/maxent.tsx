@@ -11,12 +11,12 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import {
+import type {
   AssetImportConfig,
   CommonScriptParams,
   ComputedObjectImportConfig,
   MaxentConfig,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { GeometryInput } from "../../components/geometry-input";
 import { DatesInputConfig } from "../../components/date-inputs/dates-input";
 import { useTranslations } from "../../utils/translations";
@@ -109,7 +109,7 @@ export const MaxentConfigForm = () => {
     <FormikContext.Provider value={formik}>
       <div style={{ paddingBottom: 20 }}>
         <CommonPaper
-          error={
+          $error={
             (touched[`backgroundCount`] || submitCount) &&
             errors?.backgroundCount
           }
@@ -145,7 +145,7 @@ export const MaxentConfigForm = () => {
           />
         </CommonPaper>
         <CommonPaper
-          error={
+          $error={
             (touched[`regionOfInterest`] || submitCount) &&
             errors?.regionOfInterest
           }
@@ -218,7 +218,7 @@ export const MaxentConfigForm = () => {
                 case "split":
                   return (
                     <CommonPaper
-                      error={
+                      $error={
                         !!(
                           (touched as any)[`validation.split`] ||
                           (touched as any)[`validation.seed`] ||
@@ -462,7 +462,7 @@ const TrainingPointsInput = ({
             case "all-points":
               return (
                 <CommonPaper
-                  error={
+                  $error={
                     (touched[`allPoints.points`] || submitCount) &&
                     errors?.allPoints?.points
                   }
@@ -497,7 +497,7 @@ const TrainingPointsInput = ({
               return (
                 <>
                   <CommonPaper
-                    error={
+                    $error={
                       (touched[`${name}.presencePoints`] || submitCount) &&
                       errors?.presencePoints
                     }
@@ -518,7 +518,7 @@ const TrainingPointsInput = ({
                     />
                   </CommonPaper>
                   <CommonPaper
-                    error={
+                    $error={
                       (touched[`${name}.absencePoints`] || submitCount) &&
                       errors?.absencePoints
                     }

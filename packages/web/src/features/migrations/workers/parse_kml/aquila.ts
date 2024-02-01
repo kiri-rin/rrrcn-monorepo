@@ -7,7 +7,12 @@ import { Migration, MigrationPointProperties } from "../../types";
 import { SetTimeoutPromise } from "../../utils/parser-utils";
 const DATE_PROP = "timestamp";
 const DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
+const altitudeDict = ["altitude", "высота"];
+function isIncludeAltitudeWord(text: string) {
+  return altitudeDict.some((altitudeWord) =>
+    text.toLowerCase().includes(altitudeWord)
+  );
+}
 export const parseAquilaKML: ParseTrackerXML = async (file, DOMParser) => {
   const text = await file.text();
   const geojson = kml(
@@ -25,14 +30,14 @@ export const parseAquilaKML: ParseTrackerXML = async (file, DOMParser) => {
         ...it,
         properties: {
           ...it.properties,
-          elevation: parseInt(
+          altitude: parseInt(
             (
               parseHTMLTable(
                 DOMParser.parseFromString(
                   it.properties?.description?.value || "<div></div>",
                   "text/html"
                 )
-              ).find((it) => it?.[1]?.includes("Altitude"))?.[3] || "0"
+              ).find((it) => isIncludeAltitudeWord(it?.[1] || ""))?.[3] || "0"
             ).replace(/\D/g, "")
           ),
           date: parse(

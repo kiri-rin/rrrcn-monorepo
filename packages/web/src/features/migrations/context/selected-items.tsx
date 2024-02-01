@@ -3,9 +3,16 @@ import {
   PropsWithChildren,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { MigrationPointProperties } from "../types";
+import {
+  GenerateTracksResponse,
+  IndexedArea,
+} from "@rrrcn/services/src/controllers/migrations/types";
+import { useMigrationsContext } from "./migrations";
+import { useQuery } from "react-query";
 
 const MigrationSelectedItemsContext = createContext<{
   selectedPoint: GeoJSON.Feature<
@@ -19,10 +26,13 @@ const MigrationSelectedItemsContext = createContext<{
     > | null>
   >;
 
-  selectedBBox: {
-    index: number;
-    probabilities: any;
-  } | null;
+  selectedBBox:
+    | (IndexedArea & { index: number })
+    | {
+        index: number;
+        probabilities: undefined;
+      }
+    | null;
   setSelectedBBox: React.Dispatch<
     SetStateAction<{
       index: number;

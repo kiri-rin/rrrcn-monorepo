@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { lazy } from "yup";
-import { SeparateTrainingPoints } from "@rrrcn/services/dist/src/analytics_config_types";
+import { SeparateTrainingPoints } from "@rrrcn/services/src/analytics_config_types";
 import {
   DefaultScriptParamsSchema,
   ScriptInputSchema,

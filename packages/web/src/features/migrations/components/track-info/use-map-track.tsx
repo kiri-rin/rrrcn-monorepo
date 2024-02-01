@@ -1,6 +1,6 @@
 import { Migration, SEASONS } from "../../types";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { IndexedMigration } from "../../migrations";
+import { IndexedMigration } from "../../index";
 import { parseGeojson } from "../../../../utils/geometry/map/useDrawGeojson";
 import { MapDrawingContext } from "../../../../components/map/MapEdit";
 import {
@@ -8,7 +8,7 @@ import {
   getMigrationPolyline,
 } from "../../utils/map-objects";
 import { object } from "yup";
-import { useMigrationSelectedItems } from "../../utils/selected-items-context";
+import { useMigrationSelectedItems } from "../../context/selected-items";
 export type MigrationTrackWithMap = {};
 export function useMapTrack(migration: Migration) {
   const colorRef = useRef(getRandomColor());
@@ -30,12 +30,23 @@ export function useMapTrack(migration: Migration) {
   );
   const hideAllMarkers = useCallback(() => {
     setIsInspect(false);
+    setShownSeasonsMigrations(new Set<string>());
+
     hideMapObjects(mapObjects);
   }, [hideMapObjects]);
   const showAllMarkers = useCallback(() => {
     setIsInspect(true);
     showMapObjects(mapObjects);
-  }, [showMapObjects]);
+    const allSeasonsSet = new Set<string>();
+    Object.entries(migration.years).forEach(([year, yearSeasons]) => {
+      Object.entries(yearSeasons).forEach(([season]) => {
+        allSeasonsSet.add(
+          serializeMigrationSeason({ year, season: season as SEASONS })
+        );
+      });
+    });
+    setShownSeasonsMigrations(allSeasonsSet);
+  }, [showMapObjects, migration]);
   const hideTrack = useCallback(() => {
     setIsInspect(false);
     setShown(false);
@@ -107,7 +118,7 @@ export function useMapTrack(migration: Migration) {
         seasonIndices && hideMapObjects(mapObjects.slice(...seasonIndices));
       }
     };
-  }, [showSeasonMigrationPoints]);
+  }, [migration]);
   useEffect(() => {
     if (shown) {
       showTrack();
@@ -134,8 +145,6 @@ export function useMapTrack(migration: Migration) {
       );
     }
     mapObjects.map((it, index) => {
-      setShown(false);
-      setShownSeasonsMigrations(new Set());
       it.setOpacity(0.5);
       pointsClickEventsListenerRef.current.push(
         it.addListener("click", () => {
@@ -149,11 +158,14 @@ export function useMapTrack(migration: Migration) {
       );
     });
     return () => {
-      pointsClickEventsListenerRef.current.forEach((it) => it.remove());
-      pointsClickEventsListenerRef.current = [];
-      hideTrack();
-      setShownSeasonsMigrations(new Set());
-      setShownSeasonsMigrationsPoints(new Set());
+      if (mapObjects) {
+        pointsClickEventsListenerRef.current.forEach((it) => it.remove());
+        pointsClickEventsListenerRef.current = [];
+        hideMapObjects([polyline]);
+        hideMapObjects(mapObjects);
+        setShownSeasonsMigrations(new Set());
+        setShownSeasonsMigrationsPoints(new Set());
+      }
     };
   }, [mapObjects]);
 

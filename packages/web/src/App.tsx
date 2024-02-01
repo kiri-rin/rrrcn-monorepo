@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import store from "./store/store";
+import store from "./store";
 import { AppBar, MenuItem, Select, styled, Toolbar } from "@mui/material";
-import { LangType, setLangAction } from "./store/store/lang/actions";
-import { RootState } from "./store/store/root-reducer";
+import { LangType, setLangAction } from "./store/lang/actions";
+import { RootState } from "./store/root-reducer";
 import { MainPage } from "./navigation/main-page";
 import "./components/common.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -18,7 +18,7 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <QueryClientProvider client={queryClient}>
-        <AppBar position="sticky" style={{ zIndex: 10000 }}>
+        <AppBar position="relative" style={{ zIndex: 10000 }}>
           <Toolbar variant="dense">
             <Select
               size={"small"}

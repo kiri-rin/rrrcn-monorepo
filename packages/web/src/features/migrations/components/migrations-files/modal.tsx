@@ -11,6 +11,7 @@ import {
   MigrationFilesModalFileTypeSelect,
   MigrationFilesModalSaveButton,
 } from "./style";
+import { useTranslations } from "../../../../utils/translations";
 type MigrationFilesModalProps = DialogProps & {
   files: FileList;
   onParseClick: (filesWithTypes: MigrationFilesParseConfig[]) => void;
@@ -24,6 +25,7 @@ export const MigrationFilesModal = ({
   onParseClick,
   ...props
 }: MigrationFilesModalProps) => {
+  const t = useTranslations();
   const [filesToParse, setFilesToParse] = useState<MigrationFilesParseConfig[]>(
     Array.from(files).map((file) => ({ file, type: TrackerFileTypes.AQUILA }))
   );
@@ -55,14 +57,14 @@ export const MigrationFilesModal = ({
             props.onClose?.(e, "backdropClick");
           }}
         >
-          Cancel
+          {t["common.cancel"]}
         </MigrationFilesModalSaveButton>
         <MigrationFilesModalSaveButton
           onClick={() => {
             onParseClick(filesToParse);
           }}
         >
-          Parse
+          {t["migrations.parse-files"]}
         </MigrationFilesModalSaveButton>
       </MigrationFilesModalButtons>
     </MigrationFilesModalDialog>
@@ -81,6 +83,7 @@ const MigrationFilesModalFile = ({
   onDeleteClick: () => void;
   onChangeType: (type: WorkerMessage["type"]) => void;
 }) => {
+  const t = useTranslations();
   return (
     <MigrationFilesModalFileContainer>
       <MigrationFilesModalFileName title={fileWithType.file.name}>
@@ -98,7 +101,7 @@ const MigrationFilesModalFile = ({
         ))}
       </MigrationFilesModalFileTypeSelect>
       <MigrationFilesModalFileDeleteButton onClick={onDeleteClick}>
-        Delete
+        {t["common.delete"]}
       </MigrationFilesModalFileDeleteButton>
     </MigrationFilesModalFileContainer>
   );

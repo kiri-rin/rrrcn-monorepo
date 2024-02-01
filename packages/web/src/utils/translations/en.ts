@@ -10,6 +10,7 @@ export const enTranslations = {
   "common.save": "Save",
   "common.hide": "Hide",
   "common.show": "Show",
+  "common.cancel": "Cancel",
   "common.objects-plural": (number: number) =>
     getPluralEn({ number, key: "objects" }),
   "geometry.input-at-map": "Set geometry on the map",
@@ -72,5 +73,44 @@ export const enTranslations = {
   "maxent.background_points": "Background points",
   "maxent.generate_background_points": "Generate background points",
   "maxent.background_points_count": "Background points count",
+
   "migrations.title": "Migrations",
+  "migrations.add-files": "Add files",
+  "migrations.add-migration": "Add migration",
+  "migrations.add-season": "Add",
+
+  "migrations.auto-migration": "Auto find migrations",
+  "migrations.parse-files": "parse",
+  "migrations.winter": "Winter",
+  "migrations.autumn": "Autumn",
+  "migrations.summer": "Summer",
+  "migrations.spring": "Spring",
+  "migrations.selected-migrations": "Selected migrations",
+
+  "migrations.generate": "generate",
+  "migrations.generate-count-label": "Generate tracks count",
+  "migrations.generated-tracks-total": "Tracks",
+
+  "migrations.generated-tracks": "Generated tracks",
+  "migrations.generated-areas": "Generated areas",
+  "migrations.indexed-areas": "Indexed areas",
+  "migrations.vulnerability": "Vulnerability",
+  "migrations.vulnerability-config": "config",
+  "migrations.vulnerability-errors-in-config": "errors in config",
+  "migrations.vulnerability-run": "run",
+  "migrations.area-use-in-vulnerability": "use in vulnerability",
+  "migrations.area-statistics": "details",
+  "migrations.area-index": "index",
+  "migrations.area-real-tracks": "uniq flights",
+  "migrations.area-total-tracks": "generated tracks",
+
+  "migrations.point-index": "index",
+  "migrations.point-date": "date",
+  "migrations.point-altitude": "altitude",
+  "migrations.point-info": "Tracker info",
+  "migrations.vulnerability-selecred-areas": "Selected areas",
+
+  "migrations.area-heights": "Altitude (m)",
+  "migrations.area-real-heights": "Real points",
+  "migrations.area-generated-heights": "Generated points",
 };

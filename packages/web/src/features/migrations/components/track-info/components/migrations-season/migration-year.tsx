@@ -1,10 +1,31 @@
-import { IndexedMigration } from "../migrations";
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Button, TextField, Typography } from "@mui/material";
-import { Migration, MigrationYear, SEASONS } from "../types";
-import { BirdMigrationSelectSeasonModal } from "./migration-select-season";
-import { serializeMigrationSeason } from "./track-info/use-map-track";
+import { IndexedMigration } from "../../../../index";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Migration, MigrationYear, SEASONS } from "../../../../types";
+import { BirdMigrationSelectSeasonModal } from "./add-migration-modal";
+import { serializeMigrationSeason } from "../../use-map-track";
+import {
+  MigrationSeasonDates,
+  MigrationSeasonShowMarkersButton,
+  MigrationSeasonTitle,
+  MigrationSeasonTitleRow,
+} from "./style";
+import { useMigrationsContext } from "../../../../context/migrations";
+import { Strings, useTranslations } from "../../../../../../utils/translations";
+import { ruTranslations } from "../../../../../../utils/translations/ru";
 
+const sortedSeasons = [
+  SEASONS.WINTER,
+  SEASONS.SPRING,
+  SEASONS.SUMMER,
+  SEASONS.AUTUMN,
+];
 export const BirdMigrationYear = ({
   migration,
   year,
@@ -13,7 +34,6 @@ export const BirdMigrationYear = ({
   onHideSeason,
   onChangeMigration,
   shownSeasons,
-  shownSeasonsPoints,
 }: {
   shownSeasons: Set<string>;
   shownSeasonsPoints: Set<string>;
@@ -30,6 +50,7 @@ export const BirdMigrationYear = ({
   const [newSeasonMigration, setNewSeasonMigration] = useState<
     [number, number | null] | undefined
   >();
+  const t = useTranslations();
   const yearInfo = migration.years[year] || {};
   const onAddMigration = useCallback((season: SEASONS) => {
     setEditMigration(null);
@@ -63,11 +84,10 @@ export const BirdMigrationYear = ({
   return (
     <>
       <Typography variant={"h5"}>{year}</Typography>
-      {Object.values(SEASONS)
+      {sortedSeasons
         .filter((season) => yearInfo[season])
         .map((season) => (
           <>
-            <Typography variant={"h6"}>{season}</Typography>
             <BirdMigrationSeason
               isEdit={editMigration === season}
               onEdit={() => {
@@ -104,7 +124,13 @@ export const BirdMigrationYear = ({
         ))}
       {addMigration && (
         <>
-          <Typography variant={"h6"}>{addMigration}</Typography>
+          <Typography variant={"h6"}>
+            {
+              t[
+                `migrations.${addMigration.toLowerCase()}` as unknown as keyof Strings
+              ] as string
+            }
+          </Typography>
           <BirdMigrationSeason
             isNew={true}
             onEdit={() => {}}
@@ -140,13 +166,14 @@ export const BirdMigrationYear = ({
           setShowSeasonModal(true);
         }}
       >
-        Add migration
+        {t["migrations.add-migration"]}
       </Button>
       {showSeasonModal && (
         <BirdMigrationSelectSeasonModal
           migration={migration}
           onCancel={() => {
             setAddMigration(null);
+            setShowSeasonModal(false);
           }}
           onFinish={(year, season) => {
             setShowSeasonModal(false);
@@ -189,6 +216,9 @@ export const BirdMigrationSeason = ({
   onHideSeason: () => any;
   onChange: (indices: [number, number]) => void;
 }) => {
+  const { selectedSeasons, addSelectedSeason, toggleSelectedSeason } =
+    useMigrationsContext();
+  const t = useTranslations();
   const yearInfo = migration.years[year] || {};
   const defaultIndices = isNew
     ? [0, 0]
@@ -198,15 +228,38 @@ export const BirdMigrationSeason = ({
     ? `
                     ${migration.geojson.features[
                       yearInfo[season]![0]
-                    ]?.properties?.date.toISOString()} 
+                    ]?.properties?.date.toLocaleDateString()} 
                     - 
                     ${migration.geojson.features[
                       yearInfo[season]![1]
-                    ]?.properties?.date.toISOString()}`
+                    ]?.properties?.date.toLocaleDateString()}`
     : "";
   return (
     <div key={season + year} title={title}>
-      <Typography className={"common__ellipsis-text"}>{title}</Typography>
+      <MigrationSeasonTitleRow>
+        <FormControlLabel
+          label={
+            <>
+              <MigrationSeasonDates>
+                <MigrationSeasonTitle>
+                  {t[`migrations.${season}`]}
+                </MigrationSeasonTitle>
+                {title}
+              </MigrationSeasonDates>
+            </>
+          }
+          checked={!!selectedSeasons[migration.id]?.[year]?.[season]}
+          onChange={() => toggleSelectedSeason(migration.id, year, season)}
+          control={<Checkbox />}
+        />
+        <MigrationSeasonShowMarkersButton
+          fill={isShown ? "blue" : "gray"}
+          onClick={() => {
+            isShown ? onHideSeason() : onShowSeason();
+          }}
+        />
+      </MigrationSeasonTitleRow>
+
       {(isEdit || isNew) && (
         <div>
           <TextField
@@ -231,20 +284,7 @@ export const BirdMigrationSeason = ({
           />
         </div>
       )}
-      <Button
-        onClick={() => {
-          isShown ? onHideSeason() : onShowSeason();
-        }}
-      >
-        {isShown ? "Hide" : "Show"}
-      </Button>
-      <Button
-        onClick={() => {
-          onHideSeason();
-        }}
-      >
-        {isPointsShown ? "Hide points" : "Show points"}
-      </Button>
+
       <Button
         onClick={(e) => {
           if (isEdit) {
@@ -255,7 +295,7 @@ export const BirdMigrationSeason = ({
           }
         }}
       >
-        {isEdit || isNew ? "Cancel" : "Edit"}
+        {isEdit || isNew ? t["common.cancel"] : t["common.edit"]}
       </Button>
       {(isEdit || isNew) && (
         <Button
@@ -265,7 +305,7 @@ export const BirdMigrationSeason = ({
               onChange([startIndex, endIndex]);
           }}
         >
-          Save
+          {t["common.save"]}
         </Button>
       )}
       {!isNew && (
@@ -274,7 +314,7 @@ export const BirdMigrationSeason = ({
             onDeleteMigration();
           }}
         >
-          Delete
+          {t["common.delete"]}
         </Button>
       )}
     </div>

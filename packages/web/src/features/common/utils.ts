@@ -10,15 +10,20 @@ import { serializeRequestToForm } from "../../utils/request";
 import { FormType } from "../../navigation/main-page/left-panel";
 import { useCallback } from "react";
 
-import {
+import type {
   DataExtractionConfig,
   PopulationConfig,
   RandomForestConfig,
   SurvivalNestConfig,
-} from "@rrrcn/services/dist/src/analytics_config_types";
+} from "@rrrcn/services/src/analytics_config_types";
 import { MaxentBodyType } from "admin/src/api/analysis/models";
+import { MultipleAreaVulnerabilityRequest } from "@rrrcn/services/dist/src/controllers/vulnerability/multiple-area-vulnerability";
 
 export type GetDataBodyType = { type: "data"; config: DataExtractionConfig };
+export type VulnerabilityBodyType = {
+  type: "vulnerability";
+  config: MultipleAreaVulnerabilityRequest;
+};
 export type RandomForestBodyType = {
   type: "random-forest";
   config: RandomForestConfig;
@@ -32,6 +37,7 @@ export type SurvivalBodyType = {
   config: SurvivalNestConfig;
 };
 export type AnalysisBodyType =
+  | VulnerabilityBodyType
   | GetDataBodyType
   | RandomForestBodyType
   | PopulationEstimateBodyType
@@ -40,22 +46,24 @@ export type AnalysisBodyType =
 
 export const useSendAnalysis = (analysisType: AnalysisBodyType["type"]) => {
   const queryClient = useQueryClient();
-  const { data: analysisState, mutateAsync: postAnalysis } = useMutation(
-    "analysis-results",
-    api.analysis.postApiAnalysisProcess,
-    {
-      onSuccess(data) {
-        queryClient.setQueriesData("analysis-results", data);
-      },
-    }
-  );
+  const {
+    data: analysisState,
+    mutateAsync: postAnalysis,
+    ...mutationProps
+  } = useMutation("analysis-results", api.analysis.postApiAnalysisProcess, {
+    onSuccess(data) {
+      queryClient.setQueriesData("analysis-results", data);
+    },
+  });
   const onSend = useCallback(
+    //TODO refactor
     (
       data:
         | FormType["data"]
         | FormType["randomForest"]
         | FormType["population"]
         | Partial<SurvivalNestConfig>
+        | MultipleAreaVulnerabilityRequest
     ) => {
       let config: AnalysisBodyType | undefined;
       switch (analysisType) {
@@ -94,6 +102,12 @@ export const useSendAnalysis = (analysisType: AnalysisBodyType["type"]) => {
           } as SurvivalBodyType;
           break;
         }
+        default: {
+          config = {
+            type: analysisType,
+            config: data,
+          } as VulnerabilityBodyType;
+        }
       }
       if (config) {
         const form = new FormData();
@@ -103,5 +117,5 @@ export const useSendAnalysis = (analysisType: AnalysisBodyType["type"]) => {
     },
     [analysisType, postAnalysis]
   );
-  return { analysisState, postAnalysis, onSend };
+  return { analysisState, postAnalysis, onSend, ...mutationProps };
 };

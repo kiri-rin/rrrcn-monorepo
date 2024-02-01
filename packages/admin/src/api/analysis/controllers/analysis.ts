@@ -4,14 +4,18 @@ import {
   DataExtractionConfig,
   PopulationConfig,
   SurvivalNestConfig,
-} from "@rrrcn/services/dist/src/analytics_config_types";
-import { extractData } from "@rrrcn/services/dist/src/controllers/extract-data/extract-data";
-import scripts from "@rrrcn/services/dist/src/services/ee-data";
-import { randomForest } from "@rrrcn/services/dist/src/controllers/random-forest/random-forest";
-import { RandomForestConfig } from "@rrrcn/services/dist/src/analytics_config_types";
-import { populationEstimation } from "@rrrcn/services/dist/src/controllers/population-estimation";
-import { estimateNestSurvival } from "@rrrcn/services/dist/src/controllers/survival/survival-nest-mark";
-import { maxent } from "@rrrcn/services/dist/src/controllers/maxent/maxent";
+} from "@rrrcn/services/src/analytics_config_types";
+import { extractData } from "@rrrcn/services/src/controllers/extract-data/extract-data";
+import scripts from "@rrrcn/services/src/services/ee-data";
+import { randomForest } from "@rrrcn/services/src/controllers/random-forest/random-forest";
+import { RandomForestConfig } from "@rrrcn/services/src/analytics_config_types";
+import { populationEstimation } from "@rrrcn/services/src/controllers/population-estimation";
+import { estimateNestSurvival } from "@rrrcn/services/src/controllers/survival/survival-nest-mark";
+import { maxent } from "@rrrcn/services/src/controllers/maxent/maxent";
+import {
+  multipleAreaVulnerabilityController,
+  MultipleAreaVulnerabilityRequest,
+} from "@rrrcn/services/src/controllers/vulnerability/multiple-area-vulnerability";
 
 const { PassThrough } = require("stream");
 
@@ -32,7 +36,12 @@ export type MaxentBodyType = {
   type: "survival";
   config: SurvivalNestConfig;
 };
+export type VulnerabilityBodyType = {
+  type: "vulnerability";
+  config: MultipleAreaVulnerabilityRequest;
+};
 export type AnalysisBodyType =
+  | VulnerabilityBodyType
   | GetDataBodyType
   | RandomForestBodyType
   | PopulationEstimateBodyType
@@ -46,6 +55,7 @@ const analysisServices = {
   migrations: "",
   survival: estimateNestSurvival,
   maxent: maxent,
+  vulnerability: multipleAreaVulnerabilityController,
 };
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
   async processAnalysis(

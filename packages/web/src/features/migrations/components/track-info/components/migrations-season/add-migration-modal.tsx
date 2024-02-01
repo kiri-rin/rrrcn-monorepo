@@ -1,9 +1,10 @@
-import { IndexedMigration } from "../migrations";
-import { SEASONS } from "../types";
+import { IndexedMigration } from "../../../../index";
+import { SEASONS } from "../../../../types";
 import React, { useMemo } from "react";
 import Modal from "@mui/material/Modal";
-import { Offset } from "../../../App";
+import { Offset } from "../../../../../../App";
 import { Box, Button } from "@mui/material";
+import { useTranslations } from "../../../../../../utils/translations";
 
 export const BirdMigrationSelectSeasonModal = ({
   onCancel,
@@ -16,6 +17,7 @@ export const BirdMigrationSelectSeasonModal = ({
   onFinish: (year: number, season: SEASONS) => any;
   selectedMigration?: [number, number | null];
 }) => {
+  const t = useTranslations();
   const selectedYears = useMemo(() => {
     if (!selectedMigration?.every((it) => it !== null)) {
       return [];
@@ -48,11 +50,12 @@ export const BirdMigrationSelectSeasonModal = ({
                     onFinish(year, season);
                   }}
                 >
-                  Add {season} {year}
+                  {t["migrations.add-season"]}Add {t[`migrations.${season}`]}{" "}
+                  {year}
                 </Button>
               ));
           })}
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel}>{t["common.cancel"]}</Button>
         </Box>
       </>
     </Modal>

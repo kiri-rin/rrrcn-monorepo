@@ -1,4 +1,4 @@
-import { PopulationDistanceConfigType } from "@rrrcn/services/dist/src/analytics_config_types";
+import type { PopulationDistanceConfigType } from "@rrrcn/services/src/analytics_config_types";
 import { CommonPaper } from "../../components/common";
 import { Checkbox, Input, MenuItem, Select, Typography } from "@mui/material";
 import { useTranslations } from "../../utils/translations";
@@ -15,7 +15,7 @@ export const PopulationDistanceForm = ({ name }: { name: string }) => {
   return (
     <>
       <CommonPaper
-        error={
+        $error={
           (touched[`${name}.distanceFile`] ||
             touched[`${name}.totalArea`] ||
             submitCount) &&
