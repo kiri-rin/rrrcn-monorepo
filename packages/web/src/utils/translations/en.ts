@@ -101,7 +101,7 @@ export const enTranslations = {
   "migrations.area-use-in-vulnerability": "use in vulnerability",
   "migrations.area-statistics": "details",
   "migrations.area-index": "index",
-  "migrations.area-real-tracks": "real tracks",
+  "migrations.area-real-tracks": "uniq flights",
   "migrations.area-total-tracks": "generated tracks",
 
   "migrations.point-index": "index",
@@ -109,4 +109,8 @@ export const enTranslations = {
   "migrations.point-altitude": "altitude",
   "migrations.point-info": "Tracker info",
   "migrations.vulnerability-selecred-areas": "Selected areas",
+
+  "migrations.area-heights": "Altitude (m)",
+  "migrations.area-real-heights": "Real points",
+  "migrations.area-generated-heights": "Generated points",
 };

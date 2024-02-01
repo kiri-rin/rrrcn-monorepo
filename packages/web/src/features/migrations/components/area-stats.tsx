@@ -11,22 +11,32 @@ export const MigrationSelectedAreaStatisticsModal = ({
   onClose: () => void;
   area: IndexedArea;
 }) => {
+  const t = useTranslations();
   const altitudes = useMemo(() => {
     return uniq([
       ...Object.keys(area.altitudeStatistics),
-      ...area.probabilities.altitudes.map((it) => it.value),
-    ]);
-  }, []);
-  const t = useTranslations();
+      ...area.probabilities.altitudes.map((it) => String(it.value)),
+    ]).sort((a, b) => Math.sign(Number(a) - Number(b)));
+  }, [area]);
+
   return (
-    <Dialog open={true} onClose={onClose}>
+    <Dialog
+      style={{ marginTop: 100, marginBottom: 100 }}
+      open={true}
+      onClose={onClose}
+    >
       <table>
+        <tr>
+          <td>{t["migrations.area-heights"]}</td>
+          <td>{t["migrations.area-real-heights"]}</td>
+          <td>{t["migrations.area-generated-heights"]}</td>
+        </tr>
         {altitudes.map((it) => (
           <tr>
             <td>{it}</td>
             <td>
               {area.probabilities.altitudes.find(
-                ({ value: alt, count }) => alt === it
+                ({ value: alt, count }) => String(alt) === String(it)
               )?.count || ""}
             </td>
             <td>{area.altitudeStatistics[it] || ""}</td>

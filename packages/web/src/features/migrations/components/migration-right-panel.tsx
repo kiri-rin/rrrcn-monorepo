@@ -67,9 +67,9 @@ export const MigrationRightPanel = () => {
                 onChange={() => toggleSelectedArea(selectedBBox)}
                 control={<Checkbox />}
               />
-              {/*<Button onClick={() => setOpenAreaStats(true)}>*/}
-              {/*  {t["migrations.area-statistics"]}*/}
-              {/*</Button>*/}
+              <Button onClick={() => setOpenAreaStats(true)}>
+                {t["migrations.area-statistics"]}
+              </Button>
               {openAreaStates && (
                 <MigrationSelectedAreaStatisticsModal
                   area={selectedBBox}

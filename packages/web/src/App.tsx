@@ -18,7 +18,7 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <QueryClientProvider client={queryClient}>
-        <AppBar position="sticky" style={{ zIndex: 10000 }}>
+        <AppBar position="relative" style={{ zIndex: 10000 }}>
           <Toolbar variant="dense">
             <Select
               size={"small"}

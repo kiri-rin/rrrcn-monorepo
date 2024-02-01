@@ -57,15 +57,15 @@ export const useGeneratedAreas = () => {
           fillColor: "black",
         });
     };
-  }, [selectedBBox]);
+  }, [selectedBBox, mapObjectsRef]);
   useEffect(() => {
     if (generatedMigrations) {
       mapObjectsRef.current = parseGeojson(generatedMigrations.grid);
       mapObjectsRef.current.forEach((polygon, index) => {
         listenersRef.current.push(
           polygon.addListener("click", () => {
-            setSelectedBBox(
-              selectedBBox?.index !== index
+            setSelectedBBox((prev) =>
+              prev?.index !== index
                 ? {
                     ...generatedMigrations.indexedAreas[index],
                     index: index,
@@ -81,6 +81,8 @@ export const useGeneratedAreas = () => {
     }
 
     return () => {
+      setSelectedBBox(null);
+
       listenersRef.current.forEach((listener) => {
         listener.remove();
       });

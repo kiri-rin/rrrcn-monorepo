@@ -105,4 +105,8 @@ export const ruTranslations = {
   "migrations.area-index": "Индекс",
   "migrations.area-real-tracks": "Уникальных пролетов",
   "migrations.area-total-tracks": "Сгенерированных треков",
+
+  "migrations.area-heights": "Высота (м)",
+  "migrations.area-real-heights": "Реальных точек",
+  "migrations.area-generated-heights": "Сгенерированных точек",
 };

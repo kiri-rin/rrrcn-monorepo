@@ -3,10 +3,16 @@ import {
   PropsWithChildren,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { MigrationPointProperties } from "../types";
-import { IndexedArea } from "@rrrcn/services/src/controllers/migrations/types";
+import {
+  GenerateTracksResponse,
+  IndexedArea,
+} from "@rrrcn/services/src/controllers/migrations/types";
+import { useMigrationsContext } from "./migrations";
+import { useQuery } from "react-query";
 
 const MigrationSelectedItemsContext = createContext<{
   selectedPoint: GeoJSON.Feature<

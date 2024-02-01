@@ -163,9 +163,7 @@ export const MigrationsChooseAreas = () => {
         )
       )}
       {/*{migrationSplitAreaState && <ParamsImageInput name={"params"} />}*/}
-      {generatedMigrations && (
-        <MigrationsVulnerability mapObjects={mapObjectsRef.current} />
-      )}
+      <MigrationsVulnerability mapObjects={mapObjectsRef.current} />
     </FormikContext.Provider>
   );
 };
