@@ -73,6 +73,7 @@ export const MigrationFilesModal = ({
 const TrackerFileTypesArray = [
   TrackerFileTypes.AQUILA,
   TrackerFileTypes.ORNITELLA,
+  TrackerFileTypes.DRUID,
 ];
 const MigrationFilesModalFile = ({
   fileWithType,

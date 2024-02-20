@@ -2,6 +2,7 @@ import { Migration } from "../../types";
 export enum TrackerFileTypes {
   AQUILA = "aquila",
   ORNITELLA = "ornitella",
+  DRUID = "druid",
 }
 export type WorkerMessage = {
   type: TrackerFileTypes;

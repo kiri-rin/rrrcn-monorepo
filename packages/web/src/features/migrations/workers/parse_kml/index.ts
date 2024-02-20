@@ -4,6 +4,7 @@ import { parseAquilaKML } from "./aquila";
 import { Migration } from "../../types";
 import { indexTrackByYears } from "../index_tracks/by-date";
 import { parseOrnitellaKML } from "./ornitella";
+import { parseDruidKML } from "./druid";
 const DOMParser = new (require("xmldom").DOMParser)();
 const queue: WorkerMessage[] = [];
 let processing = false;
@@ -21,6 +22,9 @@ const processData = (
   switch (type) {
     case TrackerFileTypes.ORNITELLA:
       parser = parseOrnitellaKML;
+      break;
+    case TrackerFileTypes.DRUID:
+      parser = parseDruidKML;
       break;
     case TrackerFileTypes.AQUILA:
     default:

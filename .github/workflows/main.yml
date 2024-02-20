@@ -99,9 +99,16 @@ jobs:
          run: yarn build_web
        - name: Upload web build
          uses: actions/upload-artifact@v3
+       - name: Build docker
+         run: docker compose -f ./packages/web/docker-compose.yml build
          with:
            name: web-build
            path: ./packages/web/build
+       - name: Login to registry
+           run: docker login -u $DOCKER_REGISTRY_LOGIN -p $DOCKER_REGISTRY_PASSWORD
+       - name: Push to registry
+           run: docker compose -f ./packages/web/docker-compose.yml push
+
 
    deploy_admin:
      needs: [setup, build_admin]
