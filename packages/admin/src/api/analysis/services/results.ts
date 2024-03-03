@@ -56,13 +56,11 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
           });
           archive.on("end", async () => {
             fs.rmSync(tempFolderPath, { recursive: true });
-            const updated = await resultService.update(resultId, {
-              data: {
-                status: "completed",
-                finished_at: new Date().toISOString(),
-              },
+            await this.completeProcessingAnalysisRequest({
+              resultId,
+              analysis_data: res,
+              logs,
             });
-            console.error({ updated });
           });
 
           archive.pipe(output);
@@ -73,26 +71,65 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
         .catch(async (e) => {
           console.log(e);
           logs += e;
-          const updated = await resultService.update(resultId, {
-            data: {
-              status: "error",
-              finished_at: new Date().toISOString(),
-              logs,
-            },
+          await this.errorProcessingAnalysisRequest({
+            resultId,
+            logs,
           });
           stream.end(`id: error\ndata: ${e} \n\n`);
         });
     } catch (e) {
       fs.rmSync(tempFolderPath, { recursive: true });
       logs += e;
-      await resultService.update(resultId, {
-        data: {
-          status: "error",
-          finished_at: new Date().toISOString(),
-          logs,
-        },
+      await this.errorProcessingAnalysisRequest({
+        resultId,
+        logs,
       });
       stream.end(`id: error\ndata: ${e} \n\n`);
     }
+  },
+  async startProcessingAnalysisRequest({ userId, type }) {
+    const resultService = strapi.service("api::result.result");
+
+    return await resultService.create({
+      data: {
+        status: "processing",
+        type,
+        user: userId,
+      },
+    });
+  },
+  async completeProcessingAnalysisRequest({ resultId, analysis_data, logs }) {
+    const resultService = strapi.service("api::result.result");
+    const finishedResultService = strapi.service(
+      "api::analysis-result.analysis-result"
+    );
+
+    const { type } = await resultService.update(resultId, {
+      data: {
+        status: "error",
+        finished_at: new Date().toISOString(),
+        logs,
+      },
+    });
+    await finishedResultService.create({
+      data: {
+        finished_at: new Date().toISOString(),
+        analysis_data,
+        type,
+        users_result: resultId,
+        spatial_grid_cell: analysis_data?.meta?.spatial_grid_cell,
+      },
+    });
+  },
+  async errorProcessingAnalysisRequest({ resultId, logs }) {
+    const resultService = strapi.service("api::result.result");
+
+    await resultService.update(resultId, {
+      data: {
+        status: "error",
+        finished_at: new Date().toISOString(),
+        logs,
+      },
+    });
   },
 });

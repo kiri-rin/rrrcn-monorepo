@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "spatial_grids",
+  "info": {
+    "singularName": "spatial-grid",
+    "pluralName": "spatial-grids",
+    "displayName": "SpatialGrid"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "bbox_left": {
+      "type": "float"
+    },
+    "bbox_top": {
+      "type": "float"
+    },
+    "bbox_right": {
+      "type": "float"
+    },
+    "bbox_bottom": {
+      "type": "float"
+    },
+    "polygon": {
+      "type": "json"
+    },
+    "spatial_grid_cells": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::spatial-grid-cell.spatial-grid-cell",
+      "mappedBy": "spatial_grid"
+    }
+  }
+}

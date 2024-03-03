@@ -1,7 +1,7 @@
 import { useTranslations } from "../../utils/translations";
 import { useSendAnalysis } from "../common/utils";
 import { FormikContext, useFormik } from "formik";
-import { CommonPaper } from "../../components/common";
+import { CommonPaper } from "../../components/common/common";
 import Typography from "@mui/material/Typography";
 import { Button, Input, TextField } from "@mui/material";
 import React from "react";

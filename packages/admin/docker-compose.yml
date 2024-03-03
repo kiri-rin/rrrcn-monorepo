@@ -20,7 +20,16 @@ services:
       - "8000:8000"
     volumes:
       - strapi_public:/app/api/public
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+    - pgdata:/var/lib/postgresql/data/pgdata
+
 volumes:
+  pgdata: rrrcn_pgdata
   strapi_database:
     external: ${STRAPI_USE_EXTERNAL_DB:-false}
   strapi_public:

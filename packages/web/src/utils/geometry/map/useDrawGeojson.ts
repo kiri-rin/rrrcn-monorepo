@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { MapDrawingContext } from "../../../components/map/MapEdit";
+import { MapDrawingContext } from "@/components/map/map-edit";
 import { GeoJSON, GeoJsonProperties, Geometry } from "geojson";
 export type GoogleMapObject =
   | google.maps.Polygon

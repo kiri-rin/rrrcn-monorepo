@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 
-import "../../features/random-forest/data-extraction.scss";
+import "../../features/classifications/random-forest/data-extraction.scss";
 import { MainPageLeftPanel } from "../../navigation/main-page/left-panel";
 import {
   MapDrawingContext,
   MapDrawingShape,
   MapEdit,
-} from "../../components/map/MapEdit";
+} from "@/components/map/map-edit";
 import { AnalysisRightPanel } from "../../navigation/main-page/right-panel";
 import { GoogleMapObject } from "../../utils/geometry/map/useDrawGeojson";
 

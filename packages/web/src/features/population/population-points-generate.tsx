@@ -1,6 +1,6 @@
 import type { PopulationRandomGenerationConfigType } from "@rrrcn/services/src/analytics_config_types";
-import { CommonPaper } from "../../components/common";
-import { GeometryInput } from "../../components/geometry-input";
+import { CommonPaper } from "../../components/common/common";
+import { GeometryInput } from "../../components/geometry-inputs/geometry-input";
 import { Checkbox, Input, Typography } from "@mui/material";
 import { useTranslations } from "../../utils/translations";
 import { useField, useFormikContext } from "formik";

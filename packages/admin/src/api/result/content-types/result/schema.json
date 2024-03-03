@@ -4,7 +4,7 @@
   "info": {
     "singularName": "result",
     "pluralName": "results",
-    "displayName": "Result",
+    "displayName": "UsersResult",
     "description": ""
   },
   "options": {
@@ -42,6 +42,18 @@
     },
     "logs": {
       "type": "richtext"
+    },
+    "spatial_grid_cell": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::spatial-grid-cell.spatial-grid-cell",
+      "inversedBy": "results"
+    },
+    "analysis_results": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::analysis-result.analysis-result",
+      "mappedBy": "users_result"
     }
   }
 }

@@ -10,5 +10,14 @@ export default factories.createCoreService(
     getResultFolder(resultId) {
       return `./public/tmp/${resultId}`;
     },
+    getUsersResults(userId, params = {}) {
+      return strapi.entityService.findOne("api:results.results", {
+        ...params,
+        filters: {
+          ...(params.filters || {}),
+          user: userId,
+        },
+      });
+    },
   })
 );

@@ -6,7 +6,7 @@ import {
 } from "../../../../utils/geometry/map/useDrawGeojson";
 import { GeoJSON } from "geojson";
 import { Migration, SEASONS } from "../../types";
-import { MapDrawingContext } from "../../../../components/map/MapEdit";
+import { MapDrawingContext } from "@/components/map/map-edit";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../../../../api";
 import { SelectedTracksSeasonsType } from "../../index";
@@ -24,7 +24,7 @@ import { exportGeneratedMigrationsTracks } from "./utils/export";
 import { useMigrationsContext } from "../../context/migrations";
 import { MigrationsVulnerability } from "../vulnerability";
 import { useTranslations } from "../../../../utils/translations";
-import { CommonPaper } from "../../../../components/common";
+import { CommonPaper } from "../../../../components/common/common";
 
 export const MigrationsChooseAreas = () => {
   const t = useTranslations();

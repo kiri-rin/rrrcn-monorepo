@@ -3,7 +3,7 @@ import {
   GoogleMapObject,
   parseGeojson,
 } from "../../../../../utils/geometry/map/useDrawGeojson";
-import { MapDrawingContext } from "../../../../../components/map/MapEdit";
+import { MapDrawingContext } from "@/components/map/map-edit";
 import { useMutation, useQuery } from "react-query";
 import { GenerateTracksResponse } from "@rrrcn/services/src/controllers/migrations/types";
 import { useMigrationSelectedItems } from "../../../context/selected-items";

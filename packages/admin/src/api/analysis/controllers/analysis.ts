@@ -63,16 +63,16 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
       request: Request & { fullBody: AnalysisBodyType };
     }
   ) {
-    console.error(ctx.request.fullBody);
-    const resultService = strapi.service("api::result.result");
+    const user = ctx.state.user;
+    const resultService = strapi.service("api::analysis.results");
 
     const { config, type } = ctx.request.fullBody;
-    const { id: resultId, uid: resultUID } = await resultService.create({
-      data: {
-        status: "processing",
+
+    const { id: resultId, uid: resultUID } =
+      await resultService.startProcessingAnalysisRequest({
         type,
-      },
-    });
+        userId: user?.id,
+      });
     ctx.body = [resultUID];
     resultStreams[resultId] = new PassThrough();
     strapi.service("api::analysis.results").processServiceAndStreamResults({

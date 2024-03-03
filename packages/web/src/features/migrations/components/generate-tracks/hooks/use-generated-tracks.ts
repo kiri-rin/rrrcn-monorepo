@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GoogleMapObject } from "../../../../../utils/geometry/map/useDrawGeojson";
-import { MapDrawingContext } from "../../../../../components/map/MapEdit";
+import { MapDrawingContext } from "@/components/map/map-edit";
 import { useQuery } from "react-query";
 import { getFeaturesPolyline } from "../../../utils/map-objects";
 import {

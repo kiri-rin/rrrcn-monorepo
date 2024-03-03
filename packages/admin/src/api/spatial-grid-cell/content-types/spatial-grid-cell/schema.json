@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "spatial_grid_cells",
+  "info": {
+    "singularName": "spatial-grid-cell",
+    "pluralName": "spatial-grid-cells",
+    "displayName": "SpatialGridCell"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "spatial_grid": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::spatial-grid.spatial-grid",
+      "inversedBy": "spatial_grid_cells"
+    },
+    "bbox_left": {
+      "type": "float"
+    },
+    "bbox_top": {
+      "type": "float"
+    },
+    "bbox_right": {
+      "type": "float"
+    },
+    "bbox_bottom": {
+      "type": "float"
+    },
+    "polygon": {
+      "type": "json"
+    },
+    "results": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::result.result",
+      "mappedBy": "spatial_grid_cell"
+    },
+    "analysis_results": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::analysis-result.analysis-result",
+      "mappedBy": "spatial_grid_cell"
+    }
+  }
+}

@@ -1,28 +1,35 @@
 import Drawer from "@mui/material/Drawer";
 import { Offset } from "../../App";
 import { Button, Tab, TabProps, Tabs } from "@mui/material";
-import React, { ComponentType, useEffect, useRef, useState } from "react";
+import React, {
+  ComponentType,
+  FunctionComponent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   DataExtractionConfigForm,
   DataExtractionInput,
-} from "../../features/random-forest/data-extraction";
+} from "@/features/classifications/random-forest/data-extraction";
 import {
   RandomForestConfigForm,
   RandomForestInputConfig,
-} from "../../features/random-forest/random-forest";
+} from "@/features/classifications/random-forest/random-forest";
 import { Strings, useTranslations } from "../../utils/translations";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { api } from "../../api";
+import { api } from "@/api/index";
 import {
   PopulationForm,
   PopulationInputConfig,
-} from "../../features/population/population";
-import { MigrationsForm } from "../../features/migrations";
-import { SurvivalForm } from "../../features/survival/survival";
-import { MaxentConfigForm } from "../../features/maxent/maxent";
+} from "@/features/population/population";
+import { MigrationsForm } from "@/features/migrations";
+import { SurvivalForm } from "@/features/survival/survival";
+import { MaxentConfigForm } from "@/features/classifications/maxent/maxent";
 import { AnalysisRightPanel } from "./right-panel";
 
 export type FormType = {
+  //TODO unused
   data?: Partial<DataExtractionInput>;
   randomForest?: Partial<RandomForestInputConfig>;
   population?: Partial<PopulationInputConfig>;
@@ -34,7 +41,10 @@ export type FormType = {
     migrations: any;
   };
 };
-const TABS: { label: keyof Strings; Component: ComponentType }[] = [
+const TABS: {
+  label: keyof Strings;
+  Component: FunctionComponent;
+}[] = [
   {
     label: "data-extraction.title",
     Component: DataExtractionConfigForm,

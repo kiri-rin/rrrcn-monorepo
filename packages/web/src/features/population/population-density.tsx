@@ -1,5 +1,5 @@
 import type { PopulationDensityType } from "@rrrcn/services/src/analytics_config_types";
-import { CommonPaper } from "../../components/common";
+import { CommonPaper } from "../../components/common/common";
 import { Checkbox, Input, MenuItem, Select, Typography } from "@mui/material";
 import { useTranslations } from "../../utils/translations";
 import { useField, useFormikContext } from "formik";

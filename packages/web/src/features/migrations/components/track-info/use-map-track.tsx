@@ -2,7 +2,7 @@ import { Migration, SEASONS } from "../../types";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { IndexedMigration } from "../../index";
 import { parseGeojson } from "../../../../utils/geometry/map/useDrawGeojson";
-import { MapDrawingContext } from "../../../../components/map/MapEdit";
+import { MapDrawingContext } from "@/components/map/map-edit";
 import {
   getMigrationPathsPolylines,
   getMigrationPolyline,

@@ -5,7 +5,7 @@ import type {
   PopulationDistanceConfigType,
   PopulationRandomGenerationConfigType,
 } from "@rrrcn/services/src/analytics_config_types";
-import { CommonPaper } from "../../components/common";
+import { CommonPaper } from "../../components/common/common";
 import { useTranslations } from "../../utils/translations";
 import React from "react";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,11 +14,11 @@ import { FormikContext, useField, useFormik, useFormikContext } from "formik";
 import {
   defaultRFConfig,
   RandomForestInputConfig,
-} from "../random-forest/random-forest";
+} from "../classifications/random-forest/random-forest";
 import { PopulationDistanceForm } from "./population-distance";
 import { PopulationDensityForm } from "./population-density";
 import { useSendAnalysis } from "../common/utils";
-import { RandomForestInputSchema } from "../random-forest/rf-schemas";
+import { RandomForestInputSchema } from "../classifications/random-forest/rf-schemas";
 import { PopulationSchema } from "./population-schemas";
 import { Button } from "@mui/material";
 const Components = {

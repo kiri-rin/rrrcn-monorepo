@@ -7,7 +7,8 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "build": "strapi build",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "postinstall": "patch-package"
   },
   "installConfig": {
     "hoistingLimits": "workspaces"
@@ -21,7 +22,9 @@
     "@types/koa": "^2.13.5"
   },
   "dependencies": {
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@google/earthengine": "^0.1.341",
+    "@purest/providers": "^1.0.4",
     "@strapi/plugin-i18n": "4.6.1",
     "@strapi/plugin-users-permissions": "4.6.1",
     "@strapi/strapi": "4.6.1",
@@ -40,6 +43,8 @@
     "object-path": "^0.11.8",
     "regression": "^2.0.1",
     "shpjs": "^4.0.4",
+    "strapi-plugin-auth-ext": "^0.0.11",
+    "strapi-plugin-permissions-bootstrap": "^1.0.1",
     "uuidv4": "^6.2.13"
   },
   "author": {

@@ -3,6 +3,7 @@
  */
 
 import { factories } from "@strapi/strapi";
+import { Context } from "koa";
 const fs = require("fs");
 
 export default factories.createCoreController(
@@ -42,6 +43,15 @@ export default factories.createCoreController(
         Connection: "keep-alive",
       });
       ctx.body = resultStreams[resultId as string];
+    },
+    async getMyResults(ctx: Context) {
+      const user = ctx.state.user;
+      if (!user) {
+        return ctx.unauthorized();
+      }
+      return await strapi
+        .service("api::results.results")
+        .getUsersResults(user.id, ctx.query);
     },
   })
 );

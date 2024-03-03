@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "analysis_results",
+  "info": {
+    "singularName": "analysis-result",
+    "pluralName": "analysis-results",
+    "displayName": "AnalysisResult",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "users_result": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::result.result",
+      "inversedBy": "analysis_results"
+    },
+    "spatial_grid_cell": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::spatial-grid-cell.spatial-grid-cell",
+      "inversedBy": "analysis_results"
+    },
+    "analysis_type": {
+      "type": "enumeration",
+      "enum": [
+        "classification",
+        "population",
+        "vulnerability"
+      ]
+    },
+    "analysis_data": {
+      "type": "json"
+    },
+    "admin_comment": {
+      "type": "richtext",
+      "private": true
+    },
+    "parent_results": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::analysis-result.analysis-result",
+      "inversedBy": "children_results"
+    },
+    "children_results": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::analysis-result.analysis-result",
+      "inversedBy": "parent_results"
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}

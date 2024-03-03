@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "react-query";
 import { api } from "../../api";
-import { mapScriptsConfigToRequest } from "../random-forest/utils";
-import { DataExtractionInput } from "../random-forest/data-extraction";
+import { mapScriptsConfigToRequest } from "../classifications/random-forest/utils";
+import { DataExtractionInput } from "../classifications/random-forest/data-extraction";
 import {
   mapRFConfigToRequest,
   RandomForestInputConfig,
-} from "../random-forest/random-forest";
-import { serializeRequestToForm } from "../../utils/request";
-import { FormType } from "../../navigation/main-page/left-panel";
+} from "../classifications/random-forest/random-forest";
+import { serializeRequestToForm } from "@/utils/request";
+import { FormType } from "@/navigation/main-page/left-panel";
 import { useCallback } from "react";
 
 import type {

@@ -2,7 +2,7 @@ import { useMigrationSelectedItems } from "../context/selected-items";
 import Drawer from "@mui/material/Drawer";
 import { Offset } from "../../../App";
 import React, { useState } from "react";
-import { CommonPaper } from "../../../components/common";
+import { CommonPaper } from "../../../components/common/common";
 import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import { useMigrationVulnerabilityContext } from "../context/vulnerability-areas";
 import { AnalysisRightPanel } from "../../../navigation/main-page/right-panel";

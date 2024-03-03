@@ -1,4 +1,4 @@
-import { CommonShowMarkersButton } from "../../../../../../components/common";
+import { CommonShowMarkersButton } from "../../../../../../components/common/common";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 

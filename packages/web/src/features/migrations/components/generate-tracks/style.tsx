@@ -1,5 +1,8 @@
 import styled from "@emotion/styled";
-import { CommonPaper, CommonShowButton } from "../../../../components/common";
+import {
+  CommonPaper,
+  CommonShowButton,
+} from "../../../../components/common/common";
 import { Typography } from "@mui/material";
 
 export const MigrationGeneratedTracksContainer = styled(CommonPaper)``;
