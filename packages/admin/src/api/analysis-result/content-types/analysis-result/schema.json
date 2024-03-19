@@ -27,8 +27,11 @@
     "analysis_type": {
       "type": "enumeration",
       "enum": [
-        "classification",
+        "data",
         "population",
+        "survival",
+        "classification",
+        "migration",
         "vulnerability"
       ]
     },
@@ -61,6 +64,34 @@
         "videos",
         "audios"
       ]
+    },
+    "species": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::species.species"
+    },
+    "spatial_grid": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::spatial-grid.spatial-grid"
+    },
+    "bbox_left": {
+      "type": "float"
+    },
+    "bbox_top": {
+      "type": "float"
+    },
+    "bbox_right": {
+      "type": "float"
+    },
+    "bbox_bottom": {
+      "type": "float"
+    },
+    "polygon": {
+      "type": "json"
+    },
+    "published": {
+      "type": "boolean"
     }
   }
 }

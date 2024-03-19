@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mapbox/shp-write": "^0.4.3",
@@ -10,6 +11,7 @@
     "@mui/material": "^5.11.10",
     "@mui/x-date-pickers": "^6.18.0",
     "@react-google-maps/api": "^2.18.1",
+    "@reduxjs/toolkit": "^2.2.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -27,19 +29,23 @@
     "formik": "^2.2.9",
     "geojson": "^0.5.0",
     "i18next": "^23.10.0",
+    "localforage": "^1.10.0",
     "lodash": "^4.17.21",
+    "match-sorter": "^6.3.4",
     "moment": "^2.29.4",
     "parse-kml": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^14.0.5",
     "react-query": "^3.39.3",
-    "react-redux": "^8.0.5",
+    "react-redux": "^9.1.0",
+    "react-router-dom": "^6.22.2",
     "react-scripts": "5.0.1",
     "recoil": "^0.7.7",
     "redux": "^4.2.1",
     "redux-saga": "^1.2.2",
     "sass": "^1.59.2",
+    "sort-by": "^1.2.0",
     "typesafe-actions": "^5.1.0",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
@@ -48,10 +54,10 @@
     "yup": "^1.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "DISABLE_ESLINT_PLUGIN=true craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "workspaces": {
     "nohoist": [
@@ -81,7 +87,6 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.191",
-    "react-app-alias": "^2.2.2",
-    "react-app-rewired": "^2.2.1"
+    "react-app-alias": "^2.2.2"
   }
 }

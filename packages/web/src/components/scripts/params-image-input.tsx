@@ -1,6 +1,6 @@
-import { RandomForestInputConfig } from "@/features/classifications/random-forest/random-forest";
+import { RandomForestInputConfig } from "@/features/analysis/classifications/random-forest/random-forest";
 import { ScriptSelectInput } from "./script-input";
-import { ScriptInputConfig } from "@/features/classifications/random-forest/data-extraction";
+import { ScriptInputConfig } from "@/features/analysis/classifications/random-forest/data-extraction";
 import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary/AccordionSummary";
@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FieldArray, useField, useFormikContext } from "formik";
 import { useQuery } from "react-query";
 import { api } from "@/api/index";
-import { PasteScriptsConfigModal } from "@/features/classifications/random-forest/components/paste-scripts-config";
+import { PasteScriptsConfigModal } from "@/features/analysis/classifications/random-forest/components/paste-scripts-config";
 export const ParamsImageInput = ({ name }: { name: string }) => {
   const { submitCount } = useFormikContext();
   const [{ value: config }, fieldMeta, { setValue: setConfig }] = useField<

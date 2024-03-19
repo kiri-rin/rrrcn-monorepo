@@ -1,0 +1,766 @@
+[
+  {
+    "id": 1,
+    "name": "Authenticated",
+    "description": "Default role given to authenticated user.",
+    "type": "authenticated",
+    "createdAt": "2023-02-21T17:48:20.257Z",
+    "updatedAt": "2024-03-19T14:46:44.116Z",
+    "permissions": {
+      "api::analysis": {
+        "controllers": {
+          "analysis": {
+            "processAnalysis": {
+              "enabled": true,
+              "policy": ""
+            },
+            "getAvailableScripts": {
+              "enabled": true,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::analysis-result": {
+        "controllers": {
+          "analysis-result": {
+            "find": {
+              "enabled": true,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": true,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::migration": {
+        "controllers": {
+          "migration": {
+            "splitArea": {
+              "enabled": true,
+              "policy": ""
+            },
+            "generateTracks": {
+              "enabled": true,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::result": {
+        "controllers": {
+          "result": {
+            "getResultArchive": {
+              "enabled": true,
+              "policy": ""
+            },
+            "getLoadingInfo": {
+              "enabled": true,
+              "policy": ""
+            },
+            "getMyResults": {
+              "enabled": true,
+              "policy": ""
+            },
+            "find": {
+              "enabled": true,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": true,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::spatial-grid": {
+        "controllers": {
+          "spatial-grid": {
+            "find": {
+              "enabled": true,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": true,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::spatial-grid-cell": {
+        "controllers": {
+          "spatial-grid-cell": {
+            "find": {
+              "enabled": true,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": true,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::species": {
+        "controllers": {
+          "species": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::vulnerability-info": {
+        "controllers": {
+          "vulnerability-info": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::content-type-builder": {
+        "controllers": {
+          "components": {
+            "getComponents": {
+              "enabled": false,
+              "policy": ""
+            },
+            "getComponent": {
+              "enabled": false,
+              "policy": ""
+            }
+          },
+          "content-types": {
+            "getContentTypes": {
+              "enabled": false,
+              "policy": ""
+            },
+            "getContentType": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::email": {
+        "controllers": {
+          "email": {
+            "send": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::upload": {
+        "controllers": {
+          "content-api": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "destroy": {
+              "enabled": false,
+              "policy": ""
+            },
+            "upload": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::auth-ext": {
+        "controllers": {
+          "authExt": {
+            "authStep": {
+              "enabled": false,
+              "policy": ""
+            },
+            "resetProvider": {
+              "enabled": true,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::i18n": {
+        "controllers": {
+          "locales": {
+            "listLocales": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::users-permissions": {
+        "controllers": {
+          "auth": {
+            "callback": {
+              "enabled": false,
+              "policy": ""
+            },
+            "changePassword": {
+              "enabled": true,
+              "policy": ""
+            },
+            "resetPassword": {
+              "enabled": false,
+              "policy": ""
+            },
+            "connect": {
+              "enabled": false,
+              "policy": ""
+            },
+            "forgotPassword": {
+              "enabled": false,
+              "policy": ""
+            },
+            "register": {
+              "enabled": false,
+              "policy": ""
+            },
+            "emailConfirmation": {
+              "enabled": false,
+              "policy": ""
+            },
+            "sendEmailConfirmation": {
+              "enabled": false,
+              "policy": ""
+            }
+          },
+          "user": {
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "count": {
+              "enabled": false,
+              "policy": ""
+            },
+            "destroy": {
+              "enabled": false,
+              "policy": ""
+            },
+            "me": {
+              "enabled": true,
+              "policy": ""
+            }
+          },
+          "role": {
+            "createRole": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "updateRole": {
+              "enabled": false,
+              "policy": ""
+            },
+            "deleteRole": {
+              "enabled": false,
+              "policy": ""
+            }
+          },
+          "permissions": {
+            "getPermissions": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "id": 2,
+    "name": "Public",
+    "description": "Default role given to unauthenticated user.",
+    "type": "public",
+    "createdAt": "2023-02-21T17:48:20.275Z",
+    "updatedAt": "2024-03-19T14:48:37.932Z",
+    "permissions": {
+      "api::analysis": {
+        "controllers": {
+          "analysis": {
+            "processAnalysis": {
+              "enabled": true,
+              "policy": ""
+            },
+            "getAvailableScripts": {
+              "enabled": true,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::analysis-result": {
+        "controllers": {
+          "analysis-result": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::migration": {
+        "controllers": {
+          "migration": {
+            "splitArea": {
+              "enabled": true,
+              "policy": ""
+            },
+            "generateTracks": {
+              "enabled": true,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::result": {
+        "controllers": {
+          "result": {
+            "getResultArchive": {
+              "enabled": true,
+              "policy": ""
+            },
+            "getLoadingInfo": {
+              "enabled": true,
+              "policy": ""
+            },
+            "getMyResults": {
+              "enabled": false,
+              "policy": ""
+            },
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::spatial-grid": {
+        "controllers": {
+          "spatial-grid": {
+            "find": {
+              "enabled": true,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": true,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::spatial-grid-cell": {
+        "controllers": {
+          "spatial-grid-cell": {
+            "find": {
+              "enabled": true,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::species": {
+        "controllers": {
+          "species": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::vulnerability-info": {
+        "controllers": {
+          "vulnerability-info": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::content-type-builder": {
+        "controllers": {
+          "components": {
+            "getComponents": {
+              "enabled": false,
+              "policy": ""
+            },
+            "getComponent": {
+              "enabled": false,
+              "policy": ""
+            }
+          },
+          "content-types": {
+            "getContentTypes": {
+              "enabled": false,
+              "policy": ""
+            },
+            "getContentType": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::email": {
+        "controllers": {
+          "email": {
+            "send": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::upload": {
+        "controllers": {
+          "content-api": {
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "destroy": {
+              "enabled": false,
+              "policy": ""
+            },
+            "upload": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::auth-ext": {
+        "controllers": {
+          "authExt": {
+            "authStep": {
+              "enabled": true,
+              "policy": ""
+            },
+            "resetProvider": {
+              "enabled": true,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::i18n": {
+        "controllers": {
+          "locales": {
+            "listLocales": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "plugin::users-permissions": {
+        "controllers": {
+          "auth": {
+            "callback": {
+              "enabled": true,
+              "policy": ""
+            },
+            "changePassword": {
+              "enabled": false,
+              "policy": ""
+            },
+            "resetPassword": {
+              "enabled": true,
+              "policy": ""
+            },
+            "connect": {
+              "enabled": true,
+              "policy": ""
+            },
+            "forgotPassword": {
+              "enabled": true,
+              "policy": ""
+            },
+            "register": {
+              "enabled": true,
+              "policy": ""
+            },
+            "emailConfirmation": {
+              "enabled": true,
+              "policy": ""
+            },
+            "sendEmailConfirmation": {
+              "enabled": true,
+              "policy": ""
+            }
+          },
+          "user": {
+            "create": {
+              "enabled": false,
+              "policy": ""
+            },
+            "update": {
+              "enabled": false,
+              "policy": ""
+            },
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "count": {
+              "enabled": false,
+              "policy": ""
+            },
+            "destroy": {
+              "enabled": false,
+              "policy": ""
+            },
+            "me": {
+              "enabled": false,
+              "policy": ""
+            }
+          },
+          "role": {
+            "createRole": {
+              "enabled": false,
+              "policy": ""
+            },
+            "findOne": {
+              "enabled": false,
+              "policy": ""
+            },
+            "find": {
+              "enabled": false,
+              "policy": ""
+            },
+            "updateRole": {
+              "enabled": false,
+              "policy": ""
+            },
+            "deleteRole": {
+              "enabled": false,
+              "policy": ""
+            }
+          },
+          "permissions": {
+            "getPermissions": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      }
+    }
+  }
+]

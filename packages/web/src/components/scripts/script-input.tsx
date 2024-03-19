@@ -4,7 +4,7 @@ import { Button, Select, TextField } from "@mui/material";
 import type { scriptKey } from "@rrrcn/services/src/services/ee-data";
 import MenuItem from "@mui/material/MenuItem";
 import { ScriptDatesInput } from "../date-inputs/script-dates";
-import { ScriptInputConfig } from "@/features/classifications/random-forest/data-extraction";
+import { ScriptInputConfig } from "@/features/analysis/classifications/random-forest/data-extraction";
 import { useTranslations } from "@/utils/translations";
 import { useQuery } from "react-query";
 import { api } from "@/api/index";

@@ -1,10 +1,14 @@
-import { Action, action, createReducer, PayloadAction } from "typesafe-actions";
-import { LangType, setLangAction } from "./actions";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+export type LangType = "ru" | "en";
 
-export const langReducer = createReducer<LangType, Action>("en").handleAction(
-  [setLangAction],
-  (state: LangType, action) => {
-    console.log(action.payload);
-    return action.payload;
-  }
-);
+export const langSlice = createSlice({
+  name: "langReducer",
+  initialState: "en" as LangType,
+  reducers: {
+    setLang: (state, action: PayloadAction<LangType>) => {
+      state = action.payload;
+    },
+  },
+});
+export const langReducer = langSlice.reducer;
+export const setLangAction = langSlice.actions.setLang;

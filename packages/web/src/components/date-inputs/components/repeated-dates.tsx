@@ -1,8 +1,8 @@
 import { Button, MenuItem, Select, SelectProps } from "@mui/material";
 import { AddBoxRounded, Close } from "@mui/icons-material";
 import React from "react";
-import { LangType } from "../../../store/lang/actions";
-import { RootState } from "../../../store/root-reducer";
+import { LangType } from "@/store/lang/reducer";
+import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { getIdGetter } from "@/utils/id";
 import {
@@ -118,7 +118,10 @@ export const DatesRepeatedInput = ({
     </RepeatedDateInputContainer>
   );
 };
-const YearSelect = ({ children, ...props }: SelectProps<number>) => (
+const YearSelect = ({
+  children,
+  ...props
+}: Omit<SelectProps<number>, "variant">) => (
   <Select size={"small"} {...props}>
     {yearsArray.map((year) => (
       <MenuItem value={year}>{year}</MenuItem>

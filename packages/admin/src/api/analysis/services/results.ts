@@ -1,7 +1,7 @@
 import { extractData } from "@rrrcn/services/src/controllers/extract-data/extract-data";
 import { Strapi } from "@strapi/strapi";
 import fs from "fs";
-import util from "util";
+import { mapServicesResponseToResult } from "../utils/services-result";
 const archiver = require("archiver");
 
 module.exports = ({ strapi }: { strapi: Strapi }) => ({
@@ -106,18 +106,21 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
 
     const { type } = await resultService.update(resultId, {
       data: {
-        status: "error",
+        status: "completed",
         finished_at: new Date().toISOString(),
         logs,
       },
     });
+    const analysisResult = mapServicesResponseToResult({
+      type,
+      response: analysis_data,
+    });
     await finishedResultService.create({
       data: {
+        analysisResult,
         finished_at: new Date().toISOString(),
-        analysis_data,
-        type,
         users_result: resultId,
-        spatial_grid_cell: analysis_data?.meta?.spatial_grid_cell,
+        // spatial_grid_cell: analysis_data?.meta?.spatial_grid_cell,
       },
     });
   },

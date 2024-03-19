@@ -33,7 +33,7 @@ export type SurvivalBodyType = {
   config: SurvivalNestConfig;
 };
 export type MaxentBodyType = {
-  type: "survival";
+  type: "maxent";
   config: SurvivalNestConfig;
 };
 export type VulnerabilityBodyType = {
@@ -68,12 +68,12 @@ module.exports = ({ strapi }: { strapi: Strapi }) => ({
 
     const { config, type } = ctx.request.fullBody;
 
-    const { id: resultId, uid: resultUID } =
-      await resultService.startProcessingAnalysisRequest({
-        type,
-        userId: user?.id,
-      });
-    ctx.body = [resultUID];
+    const resultEntity = await resultService.startProcessingAnalysisRequest({
+      type,
+      userId: user?.id,
+    });
+    const { id: resultId, uid: resultUID } = resultEntity;
+    ctx.body = resultEntity;
     resultStreams[resultId] = new PassThrough();
     strapi.service("api::analysis.results").processServiceAndStreamResults({
       service: analysisServices[type],

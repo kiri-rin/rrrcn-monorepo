@@ -3,11 +3,14 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import store from "@/store";
+import { userReduxApi, userSlice } from "@/store/user";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 window.console.warn = () => {};
+store.dispatch(userReduxApi.endpoints.loadUser.initiate({}));
 root.render(
   <>
     <App />

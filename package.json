@@ -3,8 +3,9 @@
   "packageManager": "yarn@3.2.1",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "libraries/packages/*"
+    "packages/admin",
+    "packages/web",
+    "packages/rrrcn-services"
   ],
   "nohoist": [
     "**/web",
@@ -20,9 +21,9 @@
     "postinstall": "patch-package",
     "start-admin": "tsc --build ./packages/rrrcn-services && yarn workspace admin develop",
     "start-web": "tsc --build ./packages/rrrcn-services && yarn workspace web start",
-    "build_admin": "tsc --build ./packages/rrrcn-services && yarn workspace admin build",
-    "build_web": "tsc --build ./packages/rrrcn-services && yarn workspace web build",
-    "build_services": "tsc --build ./packages/rrrcn-services "
+    "build-admin": "tsc --build ./packages/rrrcn-services && yarn workspace admin build",
+    "build-web": "tsc --build ./packages/rrrcn-services && yarn workspace web build",
+    "build-services": "tsc --build ./packages/rrrcn-services "
   },
   "dependencies": {
     "patch-package": "^6.5.0",

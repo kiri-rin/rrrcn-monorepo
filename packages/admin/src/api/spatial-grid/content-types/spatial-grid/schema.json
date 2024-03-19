@@ -4,7 +4,8 @@
   "info": {
     "singularName": "spatial-grid",
     "pluralName": "spatial-grids",
-    "displayName": "SpatialGrid"
+    "displayName": "SpatialGrid",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -34,6 +35,14 @@
       "relation": "oneToMany",
       "target": "api::spatial-grid-cell.spatial-grid-cell",
       "mappedBy": "spatial_grid"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "cell_size": {
+      "type": "float",
+      "required": true,
+      "min": 5
     }
   }
 }

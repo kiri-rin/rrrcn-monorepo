@@ -50,7 +50,7 @@ export default factories.createCoreController(
         return ctx.unauthorized();
       }
       return await strapi
-        .service("api::results.results")
+        .service("api::result.result")
         .getUsersResults(user.id, ctx.query);
     },
   })

@@ -18,5 +18,14 @@ module.exports = {
         prefix: "",
       },
     },
+    {
+      method: "GET",
+      path: "/result/my",
+      handler: "result.getMyResults",
+      config: {
+        policies: [],
+        prefix: "",
+      },
+    },
   ],
 };

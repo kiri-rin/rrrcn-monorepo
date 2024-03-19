@@ -11,7 +11,7 @@ export default factories.createCoreService(
       return `./public/tmp/${resultId}`;
     },
     getUsersResults(userId, params = {}) {
-      return strapi.entityService.findOne("api:results.results", {
+      return strapi.entityService.findPage("api::result.result", {
         ...params,
         filters: {
           ...(params.filters || {}),

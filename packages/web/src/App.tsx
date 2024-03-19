@@ -3,39 +3,21 @@ import "./App.css";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./store";
 import { AppBar, MenuItem, Select, styled, Toolbar } from "@mui/material";
-import { LangType, setLangAction } from "./store/lang/actions";
-import { RootState } from "./store/root-reducer";
-import { MainPage } from "./navigation/main-page";
+import { RootState } from "./store";
 import "./components/common.scss";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { RootRouter } from "@/navigation";
+import { useLoadUserQuery } from "./store/user";
 export const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const queryClient = new QueryClient();
 function App() {
-  const dispatch = useDispatch();
-  const lang = useSelector((state: RootState) => state.lang);
+  // useLoadUserQuery({});
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <QueryClientProvider client={queryClient}>
-        <AppBar position="relative" style={{ zIndex: 10000 }}>
-          <Toolbar variant="dense">
-            <Select
-              size={"small"}
-              style={{ backgroundColor: "white" }}
-              value={lang}
-              onChange={({ target: { value } }) => {
-                dispatch(setLangAction(value as LangType));
-              }}
-            >
-              <MenuItem value={"en"}>en</MenuItem>
-              <MenuItem value={"ru"}>ru</MenuItem>
-            </Select>
-          </Toolbar>
-        </AppBar>
-        <div>
-          <MainPage />
-        </div>
+        <RootRouter />
       </QueryClientProvider>
     </LocalizationProvider>
   );

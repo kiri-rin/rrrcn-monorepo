@@ -4,7 +4,8 @@
   "info": {
     "singularName": "spatial-grid-cell",
     "pluralName": "spatial-grid-cells",
-    "displayName": "SpatialGridCell"
+    "displayName": "SpatialGridCell",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -43,6 +44,15 @@
       "relation": "oneToMany",
       "target": "api::analysis-result.analysis-result",
       "mappedBy": "spatial_grid_cell"
+    },
+    "vulnerability_infos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vulnerability-info.vulnerability-info",
+      "mappedBy": "spatial_grid_cell"
+    },
+    "total_vulnerability": {
+      "type": "decimal"
     }
   }
 }

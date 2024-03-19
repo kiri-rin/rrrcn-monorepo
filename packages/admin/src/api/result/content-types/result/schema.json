@@ -23,18 +23,22 @@
     "uid": {
       "type": "uid"
     },
-    "users_permissions_user": {
+    "user": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "results"
     },
-    "request_type": {
+    "type": {
       "type": "enumeration",
       "enum": [
         "data",
-        "random_forest",
-        "population"
+        "population",
+        "survival",
+        "maxent",
+        "random-forest",
+        "migration",
+        "vulnerability"
       ]
     },
     "finished_at": {
