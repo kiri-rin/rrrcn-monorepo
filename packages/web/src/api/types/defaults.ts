@@ -632,6 +632,13 @@ type Types = {
       output: any;
     };
   };
+  classifiers: {
+    postApiClassifiersRandomForest: {
+      input: any;
+
+      output: any;
+    };
+  };
   migration: {
     postApiMigrationSplitArea: {
       input: any;
@@ -740,8 +747,8 @@ type Types = {
       output: any;
     };
   };
-  classifiers: {
-    postApiClassifiersRandomForest: {
+  spatialServices: {
+    postApiSpatialServicesGeneralizeAreaPoints: {
       input: any;
 
       output: any;
@@ -754,6 +761,60 @@ type Types = {
       output: any;
     };
     getApiEeDataScripts: {
+      input: any;
+
+      output: any;
+    };
+  };
+  species: {
+    getApiSpeciesMany: {
+      input: any;
+
+      output: any;
+    };
+    getApiSpeciesManyId: {
+      input: any;
+
+      output: any;
+    };
+    postApiSpeciesMany: {
+      input: any;
+
+      output: any;
+    };
+    putApiSpeciesManyId: {
+      input: any;
+
+      output: any;
+    };
+    deleteApiSpeciesManyId: {
+      input: any;
+
+      output: any;
+    };
+  };
+  vulnerabilityInfo: {
+    getApiVulnerabilityInfos: {
+      input: any;
+
+      output: any;
+    };
+    getApiVulnerabilityInfosId: {
+      input: any;
+
+      output: any;
+    };
+    postApiVulnerabilityInfos: {
+      input: any;
+
+      output: any;
+    };
+    putApiVulnerabilityInfosId: {
+      input: any;
+
+      output: any;
+    };
+    deleteApiVulnerabilityInfosId: {
       input: any;
 
       output: any;

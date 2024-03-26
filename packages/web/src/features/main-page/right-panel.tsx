@@ -12,13 +12,14 @@ export const AnalysisRightPanel = () => {
 
   return (
     <>
-      {results?.map(({ uid: resultId }) => (
-        <EventSourceLogs resultId={resultId} key={resultId} />
-      ))}
+      {results?.map(
+        ({ uid: resultId }) =>
+          resultId && <EventSourceLogs resultId={resultId} key={resultId} />
+      )}
     </>
   );
 };
-const EventSourceLogs = ({ resultId }: { resultId: number }) => {
+const EventSourceLogs = ({ resultId }: { resultId: string }) => {
   const {
     message: { message, id: messageId },
     close,

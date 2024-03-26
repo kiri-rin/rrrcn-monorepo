@@ -14,7 +14,7 @@ import type {
   RandomForestConfig,
   SurvivalNestConfig,
 } from "@rrrcn/services/src/analytics_config_types";
-import { MaxentBodyType } from "admin/src/api/analysis/models";
+import { MaxentBodyType } from "admin/src/api/analysis/models"; //TODO what is this
 import { MultipleAreaVulnerabilityRequest } from "@rrrcn/services/dist/src/controllers/vulnerability/multiple-area-vulnerability";
 import { usePostAnalysisMutation } from "@/store/results";
 

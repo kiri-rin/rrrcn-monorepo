@@ -5,7 +5,7 @@
     "description": "Default role given to authenticated user.",
     "type": "authenticated",
     "createdAt": "2023-02-21T17:48:20.257Z",
-    "updatedAt": "2024-03-19T14:46:44.116Z",
+    "updatedAt": "2024-03-26T14:40:47.207Z",
     "permissions": {
       "api::analysis": {
         "controllers": {
@@ -145,6 +145,16 @@
               "policy": ""
             },
             "delete": {
+              "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::spatial-services": {
+        "controllers": {
+          "spatial-services": {
+            "generalizeAreaPoints": {
               "enabled": false,
               "policy": ""
             }
@@ -387,7 +397,7 @@
     "description": "Default role given to unauthenticated user.",
     "type": "public",
     "createdAt": "2023-02-21T17:48:20.275Z",
-    "updatedAt": "2024-03-19T14:48:37.932Z",
+    "updatedAt": "2024-03-26T15:30:30.916Z",
     "permissions": {
       "api::analysis": {
         "controllers": {
@@ -528,6 +538,16 @@
             },
             "delete": {
               "enabled": false,
+              "policy": ""
+            }
+          }
+        }
+      },
+      "api::spatial-services": {
+        "controllers": {
+          "spatial-services": {
+            "generalizeAreaPoints": {
+              "enabled": true,
               "policy": ""
             }
           }

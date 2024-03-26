@@ -19,6 +19,7 @@ import {
   useMigrationVulnerabilityContextValue,
 } from "./context/vulnerability-areas";
 import { MigrationsVulnerability } from "./components/vulnerability";
+import { MigrationsHabitatAreas } from "@/features/analysis/migrations/components/habitat-areas";
 
 export type SelectedSeasonsType = {
   [year: string]: { [season in SEASONS]?: boolean };
@@ -97,6 +98,7 @@ export const MigrationsForm = () => {
                 {/*  />*/}
                 {/*</MigrationsDateFilterContainer>*/}
                 <MigrationsFilesInput />
+                <MigrationsHabitatAreas />
                 <MigrationsChooseAreas />
               </div>
               <MigrationRightPanel />

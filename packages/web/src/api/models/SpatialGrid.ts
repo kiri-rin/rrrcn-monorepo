@@ -8,6 +8,8 @@ export type SpatialGrid = {
   bbox_bottom: number | null;
   polygon: object | null;
   spatial_grid_cells: SpatialGridCell[] | null;
+  slug: string | null;
+  cell_size: number;
   createdAt: string | null;
   updatedAt: string | null;
   publishedAt: string | null;

@@ -1,6 +1,7 @@
 import { SpatialGrid } from "./SpatialGrid";
 import { Result } from "./Result";
 import { AnalysisResult } from "./AnalysisResult";
+import { VulnerabilityInfo } from "./VulnerabilityInfo";
 export type SpatialGridCell = {
   id: number;
   spatial_grid: SpatialGrid | null;
@@ -11,6 +12,8 @@ export type SpatialGridCell = {
   polygon: object | null;
   results: Result[] | null;
   analysis_results: AnalysisResult[] | null;
+  vulnerability_infos: VulnerabilityInfo[] | null;
+  total_vulnerability: number | null;
   createdAt: string | null;
   updatedAt: string | null;
   publishedAt: string | null;

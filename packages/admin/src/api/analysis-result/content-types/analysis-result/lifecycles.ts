@@ -9,6 +9,7 @@ export default {
   async beforeUpdate({ params: { where, data } }) {
     const entity = await strapi.db
       .query("api::analysis-result.analysis-result")
+
       .findOne({ where, populate: ["spatial_grid", "species"] });
     const spatialGridId =
       data.spatial_grid?.connect?.[0]?.id ?? entity.spatial_grid?.id;

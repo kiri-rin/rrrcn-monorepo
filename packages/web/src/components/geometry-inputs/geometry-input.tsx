@@ -36,6 +36,13 @@ const mimeTypes: { [p in InputModesType | string]: string } = {
   shp: "application/zip",
 };
 export type GeometryInputConfig = GeometriesImportConfig<File | undefined>;
+export type GeometryInputProps = {
+  value?: GeometryInputConfig;
+  available?: InputModesType[];
+  onChange?: (config: GeometryInputConfig) => any;
+  type?: google.maps.drawing.OverlayType;
+  error?: boolean;
+};
 export const GeometryInput = ({
   value: geometryConfig = {
     type: "csv",
@@ -45,13 +52,7 @@ export const GeometryInput = ({
   onChange: setGeometryConfig = () => {},
   available = inputModes,
   type = "marker" as google.maps.drawing.OverlayType.MARKER,
-}: {
-  value?: GeometryInputConfig;
-  available?: InputModesType[];
-  onChange?: (config: GeometryInputConfig) => any;
-  type?: google.maps.drawing.OverlayType;
-  error?: boolean;
-}) => {
+}: GeometryInputProps) => {
   const onShowOnMap = () => {};
   return (
     <>

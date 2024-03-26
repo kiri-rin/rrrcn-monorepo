@@ -6,10 +6,12 @@ import {
   userResultsReduxApi,
   userResultsSlice,
 } from "@/store/results";
+import { spatialServicesApi } from "@/store/spatial-services";
 
 const initialState = {};
 const store = configureStore({
   reducer: {
+    [spatialServicesApi.reducerPath]: spatialServicesApi.reducer,
     [userReduxApi.reducerPath]: userReduxApi.reducer,
     [userResultsReduxApi.reducerPath]: userResultsReduxApi.reducer,
     lang: langReducer,
@@ -20,6 +22,7 @@ const store = configureStore({
   preloadedState: initialState,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
+      .concat(spatialServicesApi.middleware)
       .concat(userReduxApi.middleware)
       .concat(userResultsReduxApi.middleware),
 });

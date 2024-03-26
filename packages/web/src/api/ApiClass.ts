@@ -1203,6 +1203,19 @@ export class Api {
       >(`/api/analysis-results/${id}`, options),
   };
 
+  classifiers = {
+    postApiClassifiersRandomForest: (
+      data: Types["classifiers"]["postApiClassifiersRandomForest"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["classifiers"]["postApiClassifiersRandomForest"]["output"]
+        >
+      >(`/api/classifiers/randomForest`, data, options),
+  };
+
   migration = {
     postApiMigrationSplitArea: (
       data: Types["migration"]["postApiMigrationSplitArea"]["input"],
@@ -1376,17 +1389,17 @@ export class Api {
       >(`/api/spatial-grid-cells/${id}`, options),
   };
 
-  classifiers = {
-    postApiClassifiersRandomForest: (
-      data: Types["classifiers"]["postApiClassifiersRandomForest"]["input"],
+  spatialServices = {
+    postApiSpatialServicesGeneralizeAreaPoints: (
+      data: Types["spatialServices"]["postApiSpatialServicesGeneralizeAreaPoints"]["input"],
       options?: AxiosRequestConfig
     ) =>
       this.axiosInstance.post<
         any,
         AxiosResponse<
-          Types["classifiers"]["postApiClassifiersRandomForest"]["output"]
+          Types["spatialServices"]["postApiSpatialServicesGeneralizeAreaPoints"]["output"]
         >
-      >(`/api/classifiers/randomForest`, data, options),
+      >(`/api/spatial-services/generalize-area-points`, data, options),
   };
 
   eeData = {
@@ -1404,6 +1417,94 @@ export class Api {
         any,
         AxiosResponse<Types["eeData"]["getApiEeDataScripts"]["output"]>
       >(`/api/ee-data/scripts`, options),
+  };
+
+  species = {
+    getApiSpeciesMany: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["species"]["getApiSpeciesMany"]["output"]>
+      >(`/api/species-many`, options),
+
+    getApiSpeciesManyId: (id: string, options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<Types["species"]["getApiSpeciesManyId"]["output"]>
+      >(`/api/species-many/${id}`, options),
+
+    postApiSpeciesMany: (
+      data: Types["species"]["postApiSpeciesMany"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<Types["species"]["postApiSpeciesMany"]["output"]>
+      >(`/api/species-many`, data, options),
+
+    putApiSpeciesManyId: (
+      id: string,
+      data: Types["species"]["putApiSpeciesManyId"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.put<
+        any,
+        AxiosResponse<Types["species"]["putApiSpeciesManyId"]["output"]>
+      >(`/api/species-many/${id}`, data, options),
+
+    deleteApiSpeciesManyId: (id: string, options?: AxiosRequestConfig) =>
+      this.axiosInstance.delete<
+        any,
+        AxiosResponse<Types["species"]["deleteApiSpeciesManyId"]["output"]>
+      >(`/api/species-many/${id}`, options),
+  };
+
+  vulnerabilityInfo = {
+    getApiVulnerabilityInfos: (options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["vulnerabilityInfo"]["getApiVulnerabilityInfos"]["output"]
+        >
+      >(`/api/vulnerability-infos`, options),
+
+    getApiVulnerabilityInfosId: (id: string, options?: AxiosRequestConfig) =>
+      this.axiosInstance.get<
+        any,
+        AxiosResponse<
+          Types["vulnerabilityInfo"]["getApiVulnerabilityInfosId"]["output"]
+        >
+      >(`/api/vulnerability-infos/${id}`, options),
+
+    postApiVulnerabilityInfos: (
+      data: Types["vulnerabilityInfo"]["postApiVulnerabilityInfos"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.post<
+        any,
+        AxiosResponse<
+          Types["vulnerabilityInfo"]["postApiVulnerabilityInfos"]["output"]
+        >
+      >(`/api/vulnerability-infos`, data, options),
+
+    putApiVulnerabilityInfosId: (
+      id: string,
+      data: Types["vulnerabilityInfo"]["putApiVulnerabilityInfosId"]["input"],
+      options?: AxiosRequestConfig
+    ) =>
+      this.axiosInstance.put<
+        any,
+        AxiosResponse<
+          Types["vulnerabilityInfo"]["putApiVulnerabilityInfosId"]["output"]
+        >
+      >(`/api/vulnerability-infos/${id}`, data, options),
+
+    deleteApiVulnerabilityInfosId: (id: string, options?: AxiosRequestConfig) =>
+      this.axiosInstance.delete<
+        any,
+        AxiosResponse<
+          Types["vulnerabilityInfo"]["deleteApiVulnerabilityInfosId"]["output"]
+        >
+      >(`/api/vulnerability-infos/${id}`, options),
   };
 
   constructor(instance: AxiosInstance = axios.create()) {
